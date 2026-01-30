@@ -1,0 +1,87 @@
+# Weekly Agent Capability Pulse Reminder
+#
+# Intent (Dev Notes):
+# This workflow sends a reminder every Friday to run the Agent Capability Pulse review.
+# It does NOT scrape external sites or make automated role changes.
+# The actual review is performed manually following workflows/07-agent-pulse-review.md.
+#
+# Governed by AI_CONTRACT.md
+
+name: Agent Pulse Weekly Reminder
+
+on:
+  schedule:
+    # Run at 9:00 AM UTC every Friday
+    - cron: '0 9 * * 5'
+  
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  pulse-reminder:
+    name: Send Pulse Review Reminder
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      
+      - name: Generate Reminder
+        run: |
+          echo "=========================================="
+          echo "🔔 AGENT CAPABILITY PULSE REMINDER"
+          echo "=========================================="
+          echo ""
+          echo "It's time for the weekly Agent Capability Pulse review!"
+          echo ""
+          echo "📋 Checklist:"
+          echo "  1. Review internal performance signals from the past week"
+          echo "  2. Check for verified model updates (official sources only)"
+          echo "  3. Run analysis using PROMPTS/agent-pulse-audit.md"
+          echo "  4. Document findings in agents/pulse-decisions.md"
+          echo "  5. If changes recommended, get human approval"
+          echo "  6. Update agents/agent-profiles.yaml if approved"
+          echo ""
+          echo "📚 Documentation:"
+          echo "  - Full process: workflows/07-agent-pulse-review.md"
+          echo "  - Pulse docs: docs/agent-capability-pulse.md"
+          echo "  - Current profiles: agents/agent-profiles.yaml"
+          echo ""
+          echo "⚠️ IMPORTANT RULES:"
+          echo "  - Unverified claims do NOT change roles"
+          echo "  - Human approval required for any role changes"
+          echo "  - This is a reminder only — no automated changes"
+          echo ""
+          echo "=========================================="
+          echo "Week of: $(date +%Y-%m-%d)"
+          echo "=========================================="
+      
+      - name: Check Current Assignments
+        run: |
+          echo ""
+          echo "📊 Current Agent Assignments:"
+          echo ""
+          if [ -f "agents/agent-profiles.yaml" ]; then
+            cat agents/agent-profiles.yaml | head -50
+          else
+            echo "No agent profiles found. Run initial setup first."
+          fi
+      
+      - name: List Recent PRs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo ""
+          echo "📝 PRs Merged This Week:"
+          echo ""
+          # List PRs merged in the last 7 days
+          gh pr list --state merged --limit 10 --json title,mergedAt,author \
+            --template '{{range .}}• {{.title}} ({{.mergedAt}}){{"\n"}}{{end}}' || \
+            echo "Unable to fetch PR list. Check permissions."
+
+# Note: This workflow is intentionally simple.
+# It sends a reminder and displays current state.
+# All actual pulse review work is done manually.
+#
+# To disable reminders: Comment out the schedule trigger.
+# To run manually: Use "Run workflow" in GitHub Actions UI.
