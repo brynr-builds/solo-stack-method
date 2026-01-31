@@ -2,7 +2,7 @@
  * DEV NOTES: Step 6 - Deploy Preview → Production
  * Phase 1: UI scaffold | Phase 2+: Real Netlify/Vercel deployment
  */
-import StepPageLayout from '@/components/StepPageLayout'
+import StepPageLayout from '../../../components/StepPageLayout'
 
 export default function Step6Page() {
   return (

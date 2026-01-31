@@ -2,7 +2,7 @@
  * DEV NOTES: Step 3 - Add AI Contract + Guardrails
  * Phase 1: UI scaffold | Phase 2+: Real contract generation
  */
-import StepPageLayout from '@/components/StepPageLayout'
+import StepPageLayout from '../../../components/StepPageLayout'
 
 export default function Step3Page() {
   return (

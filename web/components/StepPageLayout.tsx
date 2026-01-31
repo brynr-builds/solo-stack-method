@@ -7,26 +7,54 @@
  * - Phase 1: Static placeholders for agent/audit state
  * - Phase 2+: Dynamic state from context system
  * - Compatibility: Used by all /steps/[n]/page.tsx routes
- *   → Do not change props interface without updating all step pages
+ *   → Props interface supports both simple (children) and task-based usage
+ * - FIX 2026-01-31: Added agent, agentRole, tasks props for steps 2-7 compatibility
  */
 
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
 
 interface StepPageLayoutProps {
   stepNumber: number
   title: string
   description: string
-  children: React.ReactNode
+  children?: React.ReactNode
+  // Extended props for task-based steps
+  agent?: string
+  agentRole?: string
+  tasks?: string[]
+  initialMessage?: string
 }
 
 export default function StepPageLayout({ 
   stepNumber, 
   title, 
   description, 
-  children 
+  children,
+  agent,
+  agentRole,
+  tasks,
+  initialMessage
 }: StepPageLayoutProps) {
+  const [chatInput, setChatInput] = useState('')
+  const [messages, setMessages] = useState([
+    { role: 'assistant', content: initialMessage || `I'm ready to help you with ${title}. What would you like to know?` }
+  ])
+
+  const handleSend = () => {
+    if (!chatInput.trim()) return
+    setMessages(prev => [...prev, { role: 'user', content: chatInput }])
+    setTimeout(() => {
+      setMessages(prev => [...prev, { 
+        role: 'assistant', 
+        content: "This is a Phase 1 placeholder. Real AI integration coming in Phase 2." 
+      }])
+    }, 500)
+    setChatInput('')
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -124,7 +152,83 @@ export default function StepPageLayout({
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {children}
+        {children ? (
+          children
+        ) : (
+          /* Task-based layout for steps 2-7 */
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Left Column - Info */}
+            <div className="space-y-6">
+              {/* Agent Info */}
+              {agent && (
+                <div className="card">
+                  <h2 className="text-lg font-semibold mb-2">Current Agent</h2>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-solo-accent text-white flex items-center justify-center font-bold">
+                      {agent.charAt(0)}
+                    </div>
+                    <div>
+                      <div className="font-medium">{agent}</div>
+                      {agentRole && <div className="text-sm text-gray-500">{agentRole}</div>}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Tasks */}
+              {tasks && tasks.length > 0 && (
+                <div className="card">
+                  <h2 className="text-lg font-semibold mb-4">Tasks for this Step</h2>
+                  <ul className="space-y-3">
+                    {tasks.map((task, index) => (
+                      <li key={index} className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium flex-shrink-0">
+                          {index + 1}
+                        </span>
+                        <span className="text-gray-700">{task}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {/* Right Column - AI Chat */}
+            <div className="card flex flex-col h-[500px]">
+              <h2 className="text-lg font-semibold mb-4">AI Assistant</h2>
+              <div className="flex-1 overflow-y-auto space-y-4 mb-4">
+                {messages.map((msg, i) => (
+                  <div
+                    key={i}
+                    className={`p-3 rounded-lg ${
+                      msg.role === 'assistant'
+                        ? 'bg-blue-50 text-gray-800'
+                        : 'bg-gray-100 text-gray-800 ml-8'
+                    }`}
+                  >
+                    {msg.content}
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Ask about this step..."
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-solo-accent focus:border-transparent"
+                />
+                <button
+                  onClick={handleSend}
+                  className="px-4 py-2 bg-solo-accent text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  Send
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Step Navigation */}

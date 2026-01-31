@@ -2,7 +2,7 @@
  * DEV NOTES: Step 4 - Ship First Feature (Hello World Content Hub)
  * Phase 1: UI scaffold | Phase 2+: Real feature building with Claude
  */
-import StepPageLayout from '@/components/StepPageLayout'
+import StepPageLayout from '../../../components/StepPageLayout'
 
 export default function Step4Page() {
   return (

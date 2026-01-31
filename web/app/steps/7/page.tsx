@@ -2,7 +2,7 @@
  * DEV NOTES: Step 7 - Enable Pulse + Maintenance Loop
  * Phase 1: UI scaffold | Phase 2+: Real Stack Pulse integration
  */
-import StepPageLayout from '@/components/StepPageLayout'
+import StepPageLayout from '../../../components/StepPageLayout'
 
 export default function Step7Page() {
   return (

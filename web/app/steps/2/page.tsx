@@ -5,7 +5,7 @@
  * - Phase 2+: OAuth connections to Claude API, ChatGPT API
  */
 
-import StepPageLayout from '@/components/StepPageLayout'
+import StepPageLayout from '../../../components/StepPageLayout'
 
 export default function Step2Page() {
   return (

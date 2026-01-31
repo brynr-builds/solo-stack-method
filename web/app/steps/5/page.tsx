@@ -2,7 +2,7 @@
  * DEV NOTES: Step 5 - Run Dual Audit + Approve
  * Phase 1: UI scaffold | Phase 2+: Real ChatGPT audit integration
  */
-import StepPageLayout from '@/components/StepPageLayout'
+import StepPageLayout from '../../../components/StepPageLayout'
 
 export default function Step5Page() {
   return (
