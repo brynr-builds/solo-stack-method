@@ -48,4 +48,4 @@ Stack Pulse is a real-time dependency monitoring system that tracks tool/package
 >   
 >    3. ---
 >   
->    4. *See also: [Deployment Checklist](./deployment-checklist.md) | [Security Notes](./security-notes.md)*
+>    4. *See also: [Schema Truth](./schema.md) | [Schema Truth](./schema.md) | [Deployment Checklist](./deployment-checklist.md) | [Security Notes](./security-notes.md)*
