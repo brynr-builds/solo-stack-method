@@ -9,20 +9,20 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-    title: 'Solo Stack Method™ — Build real software with AI',
-    description: 'Build real software with AI — without losing control, from idea to deployment.',
+  title: 'Solo Stack Method™ — Build real software with AI',
+  description: 'Build real software with AI — without losing control, from idea to deployment.',
 }
 
 export default function RootLayout({
-    children,
+  children,
 }: {
-    children: React.ReactNode
+  children: React.ReactNode
 }) {
-    return (
-          <html lang="en">
-                <body className="min-h-screen bg-white">
-                  {children}
-                </body>body>
-          </html>html>
-        )
-}</html>
+  return (
+    <html lang="en">
+      <body className="min-h-screen bg-white">
+        {children}
+      </body>
+    </html>
+  )
+}
