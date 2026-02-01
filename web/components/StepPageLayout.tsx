@@ -4,17 +4,22 @@
  * - Governance visibility is PRODUCT LOGIC, not decoration
  *   → Users must see who builds, who audits, and current state
  *   → This builds trust and teaches the workflow even for non-technical users
- * - Phase 1: Static placeholders for agent/audit state
+ * - Phase 1.2: Added PromptGenerator and SubscriptionGate integration
  * - Phase 2+: Dynamic state from context system
- * - Compatibility: Used by all /steps/[n]/page.tsx routes
- *   → Props interface supports both simple (children) and task-based usage
- * - FIX 2026-01-31: Added agent, agentRole, tasks props for steps 2-7 compatibility
+ * 
+ * Compatibility: 
+ * - Used by all /steps/[n]/page.tsx routes
+ * - Props interface supports both simple (children) and task-based usage
+ * - PromptGenerator and GatingBanner are optional enhancements
+ * - Existing step pages continue to work without modification
  */
 
 'use client'
 
 import Link from 'next/link'
 import { useState } from 'react'
+import PromptGenerator from './PromptGenerator'
+import { useSubscription, GatingBanner } from './SubscriptionGate'
 
 interface StepPageLayoutProps {
   stepNumber: number
@@ -26,6 +31,8 @@ interface StepPageLayoutProps {
   agentRole?: string
   tasks?: string[]
   initialMessage?: string
+  // Phase 1.2: Intent summary for prompt generation
+  intentSummary?: string
 }
 
 export default function StepPageLayout({ 
@@ -36,12 +43,17 @@ export default function StepPageLayout({
   agent,
   agentRole,
   tasks,
-  initialMessage
+  initialMessage,
+  intentSummary
 }: StepPageLayoutProps) {
   const [chatInput, setChatInput] = useState('')
   const [messages, setMessages] = useState([
     { role: 'assistant', content: initialMessage || `I'm ready to help you with ${title}. What would you like to know?` }
   ])
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
+  
+  // Get subscription state (defaults to false in Phase 1.2)
+  const { isSubscribed } = useSubscription()
 
   const handleSend = () => {
     if (!chatInput.trim()) return
@@ -152,6 +164,35 @@ export default function StepPageLayout({
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Gating Status Banner */}
+        <div className="mb-6">
+          <GatingBanner />
+        </div>
+
+        {/* ============================================
+            PROMPT GENERATION SECTION (Phase 1.2)
+            Core differentiator - governed AI prompts
+            ============================================ */}
+        <div className="mb-8 p-6 bg-white rounded-xl shadow-sm border border-gray-200">
+          <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-solo-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            Governed Prompt Generation
+          </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Generate step-scoped prompts for execution (Claude) and audit (ChatGPT). 
+            Prompts are versioned, governed, and copy/paste ready.
+          </p>
+          <PromptGenerator
+            stepNumber={stepNumber}
+            stepTitle={title}
+            intentSummary={intentSummary || description}
+            isSubscribed={isSubscribed}
+            onSubscriptionRequired={() => setShowSubscriptionModal(true)}
+          />
+        </div>
+
         {children ? (
           children
         ) : (
@@ -263,6 +304,53 @@ export default function StepPageLayout({
           </div>
         </div>
       </div>
+
+      {/* Subscription Modal */}
+      {showSubscriptionModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-md w-full p-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Subscription Required</h2>
+            <p className="text-gray-600 mb-6">
+              Viewing is free. Acting requires a subscription.
+            </p>
+            
+            <div className="bg-gray-50 rounded-xl p-6 mb-6">
+              <div className="text-4xl font-bold text-solo-primary mb-1">$20</div>
+              <div className="text-gray-500 mb-4">per month</div>
+              
+              <ul className="space-y-2 text-sm">
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>Full prompt generation access</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>Audit prompts included</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="text-green-500">✓</span>
+                  <span>Audit Score system</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="space-y-3">
+              <Link
+                href="/signup"
+                className="block w-full py-3 bg-solo-accent text-white text-center rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+              >
+                Subscribe Now
+              </Link>
+              <button
+                onClick={() => setShowSubscriptionModal(false)}
+                className="block w-full py-3 text-gray-600 text-center hover:text-gray-900 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
