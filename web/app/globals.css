@@ -1,0 +1,36 @@
+/*
+ * DEV NOTES:
+ * - Why: Global styles for Tailwind + custom base styles
+ * - Phase 1: Minimal resets and base typography
+ * - Phase 2+: Component-specific styles, animations
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 15, 23, 42;
+  --background-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: rgb(var(--background-rgb));
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Custom utility classes */
+@layer components {
+  .btn-primary {
+    @apply bg-solo-accent text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors;
+  }
+  
+  .btn-secondary {
+    @apply border-2 border-solo-primary text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-solo-primary hover:text-white transition-colors;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-lg p-6 border border-gray-100;
+  }
+}

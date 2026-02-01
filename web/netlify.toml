@@ -1,0 +1,37 @@
+# Netlify configuration for Solo Stack Method web app
+# DEV NOTES:
+# - Why: Deploy Next.js app to Netlify with optimized settings
+# - Phase 1: Basic deployment, no Edge Functions integration yet
+# - Phase 2+: Connect to Stack Pulse Edge Function, add auth redirects
+
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Next.js on Netlify plugin
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Redirects for SPA routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["admin"]}
+
+# Headers for security
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Environment variable placeholders
+# Set these in Netlify dashboard:
+# - NEXT_PUBLIC_SUPABASE_URL
+# - NEXT_PUBLIC_SUPABASE_ANON_KEY
+# - SUPABASE_SERVICE_ROLE_KEY (for server-side)
