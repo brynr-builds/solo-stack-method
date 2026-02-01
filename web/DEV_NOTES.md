@@ -153,4 +153,43 @@ Environment variables needed for Phase 2:
 
 ---
 
-*Last updated: Phase 1.1 (2026-01-31)*
+## Phase 1.2 Additions (2026-02-01)
+
+### Governed AI Prompt Generation System
+- **PromptGenerator component** — Core differentiator
+  - Step-scoped execution prompts (Claude)
+  - Step-scoped audit prompts (ChatGPT, subscription-gated)
+  - Prompts are text artifacts, versioned, copy/paste executable
+  - Prompt lifecycle enforced: Intent → Draft → Approval → Execute → Audit → Harden
+  - NO auto-execution — human copy/paste is intentional
+
+### Subscription Gating Architecture
+- **SubscriptionGate component** — Wraps gated content
+- **SubscriptionProvider** — App-wide subscription state
+- **GatingBanner** — Shows subscription status
+- **FREE:** Marketing, Pulse (read-only), explanations
+- **PAID:** Execution prompts, audit prompts, Audit Score
+- Locked copy: "Viewing is free. Acting requires a subscription."
+- Phase 1.2: UI + state logic only, NO Stripe integration
+
+### Audit Score System (Enhanced)
+- Mode A: Governance (REQUIRED, BLOCKING)
+  - 8 checks: repo exists, branch workflow, PR opened, audit artifacts, no secrets, intent exists, DEV NOTES, no direct main commits
+- Mode B: Quality (ADVISORY, never blocks)
+  - 7 checks: prompt clarity, DEV NOTES quality, compatibility notes, documentation, takeover readiness, code style, accessibility
+- Simulated audit for demonstration
+- Generate Fix Prompt (Claude) / Review Prompt (ChatGPT) buttons
+
+### New Files (Phase 1.2)
+- `components/PromptGenerator.tsx` — Governed prompt generation
+- `components/SubscriptionGate.tsx` — Subscription gating
+- `components/ClientProviders.tsx` — Client-side providers wrapper
+
+### Modified Files (Phase 1.2)
+- `app/layout.tsx` — Wraps app with ClientProviders
+- `app/audit-score/page.tsx` — Full rubric + UI
+- `components/StepPageLayout.tsx` — Prompt generation + gating integration
+
+---
+
+*Last updated: Phase 1.2 (2026-02-01)*
