@@ -1,5 +1,42 @@
 # Changelog — Solo Stack Method™ Web App
 
+## [Phase 1.3] - 2026-02-02 (Admin + Analytics + CRM + Support)
+
+### Added
+- **Admin Dashboard** (`/admin`) — Owner-only UI with:
+  - System Health: active users, users by step, ship rate, audit pass rate
+  - Process Effectiveness: drop-off by step, avg time, governance failures
+  - Product Analytics: DAU/WAU, signups, conversion, audit score distribution
+  - "Ask the System" panel: natural language queries with simulated AI responses
+- **CRM** (`/admin/clients`) — Process intelligence, NOT sales:
+  - Per-user view: step, subscription, audit score, shipped status
+  - Tagging, internal notes, AI blocker summaries
+  - No email, no automation, no outreach
+- **Admin Config** (`/admin/config`) — Adjustable settings for:
+  - Step titles/descriptions
+  - Gating copy
+  - Audit thresholds (Mode A enable/disable)
+  - Advisory rules (Mode B weights)
+  - Prompt templates (execution + audit)
+  - Monetization copy
+- **AI Support Agent** (`/support`) — Pattern-matched support:
+  - Answers questions using docs, governance specs, and step info
+  - Never executes actions, never mutates data
+  - Explicit escalation path to human
+- **AdminGuard component** — Admin-only access control (mocked flag)
+- **AdminProvider** — React context for admin state
+- **MockData module** — Centralized mock data for all admin features
+
+### Modified
+- **ClientProviders** — Added AdminProvider wrapper
+
+### Phase 1.3 Constraints (V1-Light)
+- All data is mocked (no database, no analytics provider)
+- No Stripe, no Supabase Auth, no external APIs
+- No background jobs, webhooks, or email
+- Config changes are session-only (no persistence)
+- AI responses are pattern-matched (no API calls)
+
 ## [Phase 1.2] - 2026-02-01 (Prompt + Gating + Audit)
 
 ### Added

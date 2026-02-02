@@ -2,6 +2,31 @@
 
 ## DEV NOTES
 
+### Phase 1.3 — Admin + Analytics + CRM + Support (V1-Light)
+
+**What was added:**
+- Admin Dashboard (`/admin`) with 4 tabs: System Health, Process Effectiveness, Product Analytics, Ask the System
+- CRM (`/admin/clients`) for process intelligence — tag, note, AI blocker summaries
+- Admin Config (`/admin/config`) for adjusting process, prompts, gating, audit rules, monetization copy
+- AI Support Agent (`/support`) with pattern-matched responses and explicit escalation
+- AdminGuard + AdminProvider for mocked admin access control
+- MockData.ts for centralized mock data models
+
+**What this phase explicitly does NOT do:**
+- No real database or persistence (all state resets on reload)
+- No real AI API calls (responses are simulated)
+- No Stripe or payment integration
+- No Supabase Auth or role-based access
+- No email, webhooks, background jobs, or automation
+- No external analytics (PostHog, Mixpanel, etc.)
+
+**Why mocked data instead of real?**
+Governance-first: the UI shells, data shapes, and admin controls must be audited and approved
+before connecting real services. This prevents accidental data exposure and ensures the
+admin experience is correct before live data flows through it.
+
+---
+
 ### Tech Stack Justification
 
 | Technology | Why | Free Tier |
