@@ -15,6 +15,10 @@
  * - New route (/admin), does not affect existing routes
  * - Uses AdminGuard for access control (mocked)
  * - Imports MockData for all displayed values
+ *
+ * Phase 1.3b ADDITIONS (2026-02-02):
+ * - Future Local Build Mode: admin-facing placeholder for upcoming local-first analytics
+ * - Additive only, no existing content modified
  */
 
 'use client'
@@ -358,6 +362,26 @@ export default function AdminDashboardPage() {
               )}
             </div>
           )}
+
+          {/* ================================================
+              Phase 1.3b: Future Local Build Mode (admin view)
+              ================================================ */}
+          <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-200">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+                PLANNED
+              </span>
+              <h3 className="text-lg font-bold text-gray-900">Future: Local Build Mode</h3>
+            </div>
+            <p className="text-gray-600 text-sm">
+              In a future phase, users will build locally on their own machines and upload projects for 
+              audit scoring. Admin analytics will then track upload-to-audit conversion, local build 
+              completion rates, and audit pass rates across local vs. hosted builds.
+            </p>
+            <p className="text-xs text-gray-400 mt-2">
+              Phase 1.3b placeholder — no implementation yet.
+            </p>
+          </div>
 
         </main>
       </div>

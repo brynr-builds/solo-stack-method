@@ -1,5 +1,27 @@
 # Changelog — Solo Stack Method™ Web App
 
+## [Phase 1.3b] - 2026-02-02 (Marketing Copy Gaps + Placeholders)
+
+### Added
+- **Differentiation Block** (homepage) — 3 bold differentiators:
+  - Governance-first (dual-audit, evidence-based)
+  - Context as a first-class artifact (in-repo, versioned)
+  - Exit-ready packaging (DEV NOTES, audit trails, prompt evolution)
+- **Sustain the Stack** on `/audit-score` — Optional contribution ask after Mode A passes
+  - Never affects score, features, or access
+  - Copy-only placeholder (no payment integration)
+- **Future Local Build Mode** placeholders:
+  - `/audit-score`: user-facing copy about upcoming local-first workflow
+  - `/admin`: admin-facing analytics placeholder for local build tracking
+
+### Changed
+- Updated DEV NOTES on `page.tsx` (homepage), `audit-score/page.tsx`, `admin/page.tsx`
+
+### NOT included (deferred)
+- No /method page (homepage differentiation block covers the requirement)
+- No payment integration for Sustain the Stack
+- No local build implementation
+
 ## [Phase 1.3] - 2026-02-02 (Admin + Analytics + CRM + Support)
 
 ### Added
