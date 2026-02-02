@@ -10,6 +10,12 @@
  * - New route, does not affect existing routes
  * - Uses SubscriptionGate for access control
  * - Static rubric + placeholders only
+ * 
+ * Phase 1.3b ADDITIONS (2026-02-02):
+ * - Sustain the Stack: optional contribution ask (copy-only, no payment)
+ *   Shows only after Mode A passes. Never affects score or features.
+ * - Future Local Build Mode: placeholder copy for upcoming local-first workflow
+ * - Compatible: additive sections after existing results, no layout changes
  */
 
 'use client'
@@ -437,6 +443,52 @@ export default function AuditScorePage() {
             </button>
           </div>
         )}
+
+        {/* ================================================
+            Phase 1.3b: Sustain the Stack (post-audit)
+            Shows only after results exist. Optional, never
+            affects features or scores.
+            ================================================ */}
+        {hasResults && modeAPassed && (
+          <div className="mt-8 bg-white rounded-xl shadow-lg p-8 border border-green-200">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                OPTIONAL
+              </span>
+              <h3 className="text-xl font-bold text-gray-900">Sustain the Stack</h3>
+            </div>
+            <p className="text-gray-600 mb-4">
+              Your project passed governance. If Solo Stack Method helped you ship, 
+              consider an optional contribution to keep the tools and governance system maintained.
+            </p>
+            <div className="bg-gray-50 rounded-lg p-4 text-sm text-gray-500 space-y-1">
+              <p>• This is entirely voluntary — it never unlocks features.</p>
+              <p>• It never affects your audit score.</p>
+              <p>• It is not required for any functionality.</p>
+              <p className="text-xs italic mt-2">Payment integration coming in a future phase. Copy-only placeholder.</p>
+            </div>
+          </div>
+        )}
+
+        {/* ================================================
+            Phase 1.3b: Future Local Build Mode placeholder
+            ================================================ */}
+        <div className="mt-8 bg-blue-50 rounded-xl p-6 border border-blue-200">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">
+              COMING SOON
+            </span>
+            <h3 className="text-lg font-bold text-gray-900">Local Build Mode</h3>
+          </div>
+          <p className="text-gray-600 text-sm">
+            In a future version, the build will happen locally on your computer. You'll develop with AI agents 
+            on your own machine, then upload your project for audit scoring. This keeps your code private 
+            during development and only exposes it during the governed review process.
+          </p>
+          <p className="text-xs text-gray-400 mt-2">
+            Phase 1.3b placeholder — no implementation yet.
+          </p>
+        </div>
 
         {/* Rubric Documentation */}
         <div className="mt-12 bg-slate-50 rounded-xl p-8">

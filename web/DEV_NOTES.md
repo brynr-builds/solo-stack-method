@@ -2,6 +2,26 @@
 
 ## DEV NOTES
 
+### Phase 1.3b — Marketing Copy Gaps + Future Mode Placeholders
+
+**What was added:**
+- Differentiation block on homepage: 3 factual differentiators (governance-first, context-as-artifact, exit-ready)
+- Sustain the Stack on `/audit-score`: optional post-ship contribution ask (copy-only)
+- Future Local Build Mode placeholders on `/audit-score` and `/admin`
+
+**What this deliberately avoids:**
+- No /method page created (homepage differentiation covers the spec requirement)
+- No payment integration for Sustain the Stack
+- No actual local build implementation
+- No competitor name-attacks (factual positioning only)
+
+**Compatibility:**
+- All changes are additive — no existing content removed or modified
+- No new routes, no new components, no new dependencies
+- Existing layouts and providers untouched
+
+---
+
 ### Phase 1.3 — Admin + Analytics + CRM + Support (V1-Light)
 
 **What was added:**
