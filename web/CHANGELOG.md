@@ -1,5 +1,43 @@
 # Changelog — Solo Stack Method™ Web App
 
+## [Phase 1.2] - 2026-02-01 (Prompt + Gating + Audit)
+
+### Added
+- **PromptGenerator component** — Core differentiator: governed AI prompt generation
+  - Execution prompts for steps 1-7 (Claude)
+  - Audit prompts for steps 1-7 (ChatGPT, subscription-gated)
+  - Copy/paste executable, versioned, no auto-execution
+- **SubscriptionGate component** — Subscription-based execution gating
+  - GatingBanner for subscription status
+  - ClientProviders wrapper for app-wide state
+- **Enhanced Audit Score page** — Full rubric with Mode A (blocking) and Mode B (advisory)
+  - 8 governance checks (Mode A)
+  - 7 quality signals (Mode B)
+  - Simulated audit demonstration
+  - Fix/Review prompt generation buttons
+
+### Changed
+- `StepPageLayout` now includes prompt generation and gating
+- `layout.tsx` wraps app with ClientProviders
+- All step pages now show gating status and prompt generation UI
+
+### New Files
+| File | Purpose |
+|------|--------|
+| `components/PromptGenerator.tsx` | Step-scoped prompt generation |
+| `components/SubscriptionGate.tsx` | Subscription gating |
+| `components/ClientProviders.tsx` | Client providers wrapper |
+
+### Modified Files
+| File | Changes |
+|------|--------|
+| `app/layout.tsx` | ClientProviders integration |
+| `app/audit-score/page.tsx` | Full rubric + enhanced UI |
+| `components/StepPageLayout.tsx` | Prompt generation + gating |
+| `DEV_NOTES.md` | Phase 1.2 documentation |
+
+---
+
 ## [Phase 1.1] - 2026-01-31 (Push-Ready Update)
 
 ### Added
