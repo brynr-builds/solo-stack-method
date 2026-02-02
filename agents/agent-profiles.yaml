@@ -1,0 +1,108 @@
+# Agent Profiles Configuration
+#
+# Intent (Dev Notes):
+# This file defines the AI agents available for Solo Stack Method™ tasks
+# and tracks their role assignments, advisory status, and confidence levels.
+# It is the source of truth for determining which agent handles which role.
+#
+# Last updated: Initial configuration
+# ---
+
+# Global defaults
+defaults:
+  advisory_cycles_required_for_auto: 5
+  weekly_pulse_day: Friday
+  confidence_threshold_for_auto: 61
+
+# Agent definitions
+agents:
+  Claude:
+    display_name: "Claude (Anthropic)"
+    model_family: "claude-3"
+    roles_allowed:
+      - Builder
+      - Final_Auditor
+      - Documentation
+    current_assignments:
+      - Builder  # Default builder per AI_CONTRACT.md
+    advisory_cycles_completed:
+      Builder: 0
+      Final_Auditor: 0
+      Documentation: 0
+    confidence:
+      Builder: 50  # Starting confidence, will adjust based on performance
+      Final_Auditor: 50
+      Documentation: 60
+    auto_assign_enabled: false
+    last_external_update_reviewed: null
+    notes: "Default builder agent. Strong at code generation and documentation."
+
+  ChatGPT:
+    display_name: "ChatGPT (OpenAI)"
+    model_family: "gpt-4"
+    roles_allowed:
+      - Builder
+      - Final_Auditor
+      - Documentation
+    current_assignments:
+      - Final_Auditor  # Default final auditor per AI_CONTRACT.md
+    advisory_cycles_completed:
+      Builder: 0
+      Final_Auditor: 0
+      Documentation: 0
+    confidence:
+      Builder: 50
+      Final_Auditor: 55  # Slightly higher due to audit focus
+      Documentation: 50
+    auto_assign_enabled: false
+    last_external_update_reviewed: null
+    notes: "Default final auditor. Strong at reasoning and edge case analysis."
+
+  # Template for adding new agents
+  # Cursor:
+  #   display_name: "Cursor AI"
+  #   model_family: "cursor"
+  #   roles_allowed:
+  #     - Builder
+  #     - Stabilization
+  #   current_assignments: []
+  #   advisory_cycles_completed:
+  #     Builder: 0
+  #     Stabilization: 0
+  #   confidence:
+  #     Builder: 30
+  #     Stabilization: 40
+  #   auto_assign_enabled: false
+  #   last_external_update_reviewed: null
+  #   notes: "Specialized for codebase stabilization passes."
+
+# Role definitions
+roles:
+  Builder:
+    description: "Creates changes, implements features, writes code/docs"
+    requires_audit: true
+    can_self_audit: true  # For Prompt v1.5
+    cannot_final_audit_own_work: true
+
+  Final_Auditor:
+    description: "Reviews changes for quality, security, and contract compliance"
+    requires_evidence: true
+    verdicts:
+      - Approve
+      - Changes_Requested
+      - Block
+
+  Documentation:
+    description: "Creates and maintains documentation"
+    requires_audit: false  # Lower stakes, faster iteration
+
+  Stabilization:
+    description: "Refactoring and code quality improvements"
+    requires_audit: true
+    preservation_required: true  # Must preserve existing behavior
+
+# Independence rules
+independence:
+  rule: "Builder and Final Auditor must be different agents"
+  exceptions: []
+  enforcement: strict
