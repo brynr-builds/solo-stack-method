@@ -56,6 +56,18 @@ This repository contains the **Solo Stack Method™** — a governance framework
 
 ---
 
+## Workflow vNext — Agent-Assisted Loop
+
+For projects using autonomous agents (Devin, Codex, Sweep, etc.) alongside Cursor:
+
+- **Canonical doc:** `docs/solo-stack-loop-vnext.md`
+- **Templates:** `docs/specs/`, `docs/audits/`, `docs/task-packs/`
+- **Loop:** ChatGPT (spec) → Cursor (anchor) → Agent (task packs) → Claude (audit) → Cursor (integrate) → ChatGPT (final audit) → Ship
+
+This is an optional workflow variant. The Dual Audit Loop and all contract rules still apply.
+
+---
+
 ## The Golden Rules (Summary)
 
 1. **Repo-as-Truth™** — If it's not in the repo, it doesn't exist

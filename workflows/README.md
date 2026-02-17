@@ -15,6 +15,9 @@
 > | `04-deploy-to-production.md` | Safe production deployment |
 > | `05-return-after-time-away.md` | Regain context after a break |
 > | `06-stabilization-pass.md` | Cursor stabilization workflow |
+> | `07-agent-pulse-review.md` | Weekly agent capability pulse |
+>
+> **Optional:** For agent-assisted features, see `docs/solo-stack-loop-vnext.md` and the templates in `docs/specs/`, `docs/audits/`, `docs/task-packs/`.
 >
 > ## How to Use
 >

@@ -53,6 +53,7 @@
 > | Deploying to production | `04-deploy-to-production.md` |
 > | Returning after time away | `05-return-after-time-away.md` |
 > | Cleaning up code | `06-stabilization-pass.md` |
+> | Agent-assisted feature (vNext) | `docs/solo-stack-loop-vnext.md` |
 >
 > ---
 >
