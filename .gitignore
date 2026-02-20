@@ -12,6 +12,7 @@ coverage/
 .turbo/
 .cache/
 *.log
+*.tsbuildinfo
 
 # Env
 .env*

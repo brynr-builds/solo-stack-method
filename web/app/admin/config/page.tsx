@@ -29,17 +29,69 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
+import { startRegistration, WebAuthnAbortService, WebAuthnError } from '@simplewebauthn/browser'
 import { DEFAULT_ADMIN_CONFIG, AdminConfig } from '../../../components/MockData'
 
 export default function AdminConfigPage() {
   const [config, setConfig] = useState<AdminConfig>(DEFAULT_ADMIN_CONFIG)
-  const [activeSection, setActiveSection] = useState<'process' | 'gating' | 'audit' | 'prompts' | 'monetization'>('process')
+  const [activeSection, setActiveSection] = useState<'security' | 'process' | 'gating' | 'audit' | 'prompts' | 'monetization'>('security')
   const [saveMessage, setSaveMessage] = useState<string | null>(null)
+  const [passkeyLoading, setPasskeyLoading] = useState(false)
+  const [passkeyError, setPasskeyError] = useState('')
+  const [passkeySuccess, setPasskeySuccess] = useState(false)
 
   const handleSave = () => {
     // Phase 1.3: No real persistence
     setSaveMessage('Config saved to session. (Phase 1.3: No persistence — resets on reload.)')
     setTimeout(() => setSaveMessage(null), 3000)
+  }
+
+  const handleAddPasskey = async () => {
+    setPasskeyLoading(true)
+    setPasskeyError('')
+    setPasskeySuccess(false)
+    try {
+      const beginRes = await fetch('/api/admin/passkey/register/begin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({}),
+        credentials: 'include',
+      })
+      if (!beginRes.ok) {
+        const data = await beginRes.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to start registration')
+      }
+      const options = await beginRes.json()
+
+      const credential = await startRegistration({ optionsJSON: options })
+
+      const finishRes = await fetch('/api/admin/passkey/register/finish', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ response: credential }),
+        credentials: 'include',
+      })
+
+      if (!finishRes.ok) {
+        const data = await finishRes.json().catch(() => ({}))
+        throw new Error(data.error || 'Verification failed')
+      }
+
+      setPasskeySuccess(true)
+    } catch (err) {
+      WebAuthnAbortService.cancelCeremony()
+      if (err instanceof WebAuthnError) {
+        if (err.code === 'ERROR_CEREMONY_ABORTED') {
+          setPasskeyError('Registration was cancelled.')
+        } else {
+          setPasskeyError(err.message || 'Passkey registration failed')
+        }
+      } else {
+        setPasskeyError(err instanceof Error ? err.message : 'Failed to add passkey')
+      }
+    } finally {
+      setPasskeyLoading(false)
+    }
   }
 
   return (
@@ -82,6 +134,7 @@ export default function AdminConfigPage() {
           {/* Section Navigation */}
           <div className="flex gap-2 mb-8 border-b border-gray-200">
             {[
+              { id: 'security' as const, label: 'Security' },
               { id: 'process' as const, label: 'Process' },
               { id: 'gating' as const, label: 'Gating Copy' },
               { id: 'audit' as const, label: 'Audit Rules' },
@@ -101,6 +154,40 @@ export default function AdminConfigPage() {
               </button>
             ))}
           </div>
+
+          {/* SECURITY SECTION */}
+          {activeSection === 'security' && (
+            <div className="space-y-4">
+              <h2 className="text-lg font-bold text-gray-900">Passkey (Biometrics)</h2>
+              <p className="text-sm text-gray-600 mb-4">
+                Add a passkey to sign in with TouchID, FaceID, or a security key instead of the setup secret.
+              </p>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 max-w-md">
+                {passkeySuccess && (
+                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
+                    Passkey added successfully. You can now sign in with biometrics.
+                  </div>
+                )}
+                {passkeyError && (
+                  <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+                    {passkeyError}
+                  </div>
+                )}
+                <button
+                  onClick={handleAddPasskey}
+                  disabled={passkeyLoading}
+                  className="px-6 py-2 bg-solo-accent text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {passkeyLoading ? 'Registering passkey...' : 'Add Passkey'}
+                </button>
+                {passkeyLoading && (
+                  <p className="mt-3 text-sm text-gray-500">
+                    Look for the TouchID/FaceID prompt—it may appear behind this window.
+                  </p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* PROCESS SECTION */}
           {activeSection === 'process' && (

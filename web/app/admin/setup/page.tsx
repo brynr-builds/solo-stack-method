@@ -3,7 +3,9 @@
 import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { startRegistration } from '@simplewebauthn/browser'
+import { startRegistration, WebAuthnAbortService, WebAuthnError } from '@simplewebauthn/browser'
+
+const REGISTRATION_TIMEOUT_MS = 120_000
 
 function AdminSetupForm() {
   const searchParams = useSearchParams()
@@ -18,6 +20,12 @@ function AdminSetupForm() {
   useEffect(() => {
     setEmail(emailParam)
   }, [emailParam])
+
+  useEffect(() => {
+    return () => {
+      WebAuthnAbortService.cancelCeremony()
+    }
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,7 +47,15 @@ function AdminSetupForm() {
       }
       const options = await beginRes.json()
 
-      const credential = await startRegistration({ optionsJSON: options })
+      const credential = await Promise.race([
+        startRegistration({ optionsJSON: options }),
+        new Promise<never>((_, reject) =>
+          setTimeout(
+            () => reject(new Error('Passkey prompt timed out. Look for a TouchID/FaceID or security key prompt—it may be behind the browser window. Try again.')),
+            REGISTRATION_TIMEOUT_MS
+          )
+        ),
+      ])
 
       const finishRes = await fetch('/api/admin/setup/finish', {
         method: 'POST',
@@ -58,7 +74,18 @@ function AdminSetupForm() {
         window.location.href = finishData.redirectTo || '/admin'
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Setup failed')
+      WebAuthnAbortService.cancelCeremony()
+      if (err instanceof WebAuthnError) {
+        if (err.code === 'ERROR_CEREMONY_ABORTED') {
+          setError('Passkey registration was cancelled.')
+        } else if (err.message?.includes('NotAllowedError') || err.name === 'NotAllowedError') {
+          setError('Passkey prompt was dismissed or timed out. Try again and complete the TouchID/FaceID prompt.')
+        } else {
+          setError(err.message || 'Passkey registration failed')
+        }
+      } else {
+        setError(err instanceof Error ? err.message : 'Setup failed')
+      }
     } finally {
       setLoading(false)
     }
@@ -155,6 +182,20 @@ function AdminSetupForm() {
             >
               {loading ? 'Registering passkey...' : 'Create Admin + Register Passkey'}
             </button>
+            {loading && (
+              <div className="flex flex-col gap-2 mt-2">
+                <p className="text-sm text-gray-500 text-center">
+                  Look for the TouchID/FaceID prompt—it may appear behind this window.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => WebAuthnAbortService.cancelCeremony()}
+                  className="text-sm text-gray-500 hover:text-gray-700 underline"
+                >
+                  Cancel and try again
+                </button>
+              </div>
+            )}
           </form>
         </div>
 

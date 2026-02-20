@@ -35,6 +35,17 @@ export async function verifySessionToken(token: string, secret: string): Promise
 }
 
 /**
+ * Get session from NextRequest (for API routes). Returns payload or null.
+ */
+export async function getSessionFromRequest(
+  request: { cookies: { get: (name: string) => { value: string } | undefined } },
+  secret: string
+): Promise<SessionPayload | null> {
+  const token = request.cookies.get(COOKIE_NAME)?.value
+  return token ? verifySessionToken(token, secret) : null
+}
+
+/**
  * Create a signed session JWT. Call from API routes (Node runtime).
  */
 export async function createSessionToken(

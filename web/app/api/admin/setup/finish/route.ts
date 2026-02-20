@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
     })
 
     res.cookies.set(COOKIE_NAME, sessionToken, {
-      path: '/admin',
+      path: '/',
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

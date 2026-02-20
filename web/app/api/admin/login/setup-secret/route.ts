@@ -1,6 +1,7 @@
 /**
- * POST /api/admin/login/backup
- * Verifies backup code, marks used, creates session.
+ * POST /api/admin/login/setup-secret
+ * Dev-only: Sign in with setup secret when passkey doesn't work on localhost.
+ * Only enabled when ADMIN_RP_ID is "localhost".
  */
 
 import { NextRequest, NextResponse } from 'next/server'
@@ -20,11 +21,6 @@ function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex')
 }
 
-function hashBackupCode(code: string, secret: string): string {
-  const normalized = code.replace(/-/g, '').toLowerCase()
-  return createHash('sha256').update(secret + normalized).digest('hex')
-}
-
 export async function POST(request: NextRequest) {
   try {
     const env = getAdminEnv()
@@ -32,9 +28,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Admin auth not configured' }, { status: 503 })
     }
 
+    if (env.rpId !== 'localhost') {
+      return NextResponse.json({ error: 'Setup secret login is only available for local development' }, { status: 403 })
+    }
+
     const rl = checkRateLimit(
       getClientIdentifier(request),
-      'login-backup',
+      'login-setup-secret',
       env.rateLimitPerMinute
     )
     if (!rl.ok) {
@@ -46,39 +46,24 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
     const email = typeof body?.email === 'string' ? body.email.trim().toLowerCase() : ''
-    const code = typeof body?.code === 'string' ? body.code.trim() : ''
+    const setupSecret = typeof body?.setupSecret === 'string' ? body.setupSecret : ''
 
     if (!email || email !== env.allowedEmail) {
       return NextResponse.json({ error: 'Invalid email' }, { status: 400 })
     }
 
-    if (!code) {
-      return NextResponse.json({ error: 'Backup code required' }, { status: 400 })
+    if (setupSecret !== env.setupSecret) {
+      return NextResponse.json({ error: 'Invalid setup secret' }, { status: 403 })
     }
-
-    const codeHash = hashBackupCode(code, env.sessionSecret)
 
     const userRows = await query<{ id: string }>(
       'SELECT id FROM admin_users WHERE email = $1 AND is_active = true',
       [email]
     )
     if (userRows.length === 0) {
-      return NextResponse.json({ error: 'Invalid code' }, { status: 400 })
+      return NextResponse.json({ error: 'User not found' }, { status: 400 })
     }
     const userId = userRows[0]!.id
-
-    const codeRows = await query<{ id: string }>(
-      'SELECT id FROM admin_backup_codes WHERE user_id = $1 AND code_hash = $2 AND used_at IS NULL',
-      [userId, codeHash]
-    )
-    if (codeRows.length === 0) {
-      return NextResponse.json({ error: 'Invalid code' }, { status: 400 })
-    }
-
-    await query(
-      'UPDATE admin_backup_codes SET used_at = now() WHERE id = $1',
-      [codeRows[0]!.id]
-    )
 
     const sessionToken = await createSessionToken(userId, email, env.sessionSecret, env.sessionTtlHours)
     const tokenHash = hashToken(sessionToken)
@@ -98,7 +83,7 @@ export async function POST(request: NextRequest) {
     res.cookies.set(COOKIE_NAME, sessionToken, {
       path: '/',
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: false,
       sameSite: 'lax',
       maxAge: env.sessionTtlHours * 60 * 60,
     })
