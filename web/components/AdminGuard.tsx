@@ -65,20 +65,6 @@ export default function AdminGuard({ children }: AdminGuardProps) {
           <p className="text-gray-600 mb-6">
             This area is restricted to the project owner.
           </p>
-          
-          {/* Phase 1.3: Dev toggle for testing */}
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
-            <p className="text-xs text-amber-700 font-medium mb-2">
-              Phase 1.3 — Dev Mode Toggle
-            </p>
-            <button
-              onClick={() => setAdmin(true)}
-              className="px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-semibold hover:bg-amber-600 transition-colors"
-            >
-              Enable Admin (Dev Only)
-            </button>
-          </div>
-          
           <Link
             href="/dashboard"
             className="text-solo-accent hover:underline text-sm"

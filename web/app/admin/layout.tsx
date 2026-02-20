@@ -1,19 +1,13 @@
 /*
  * DEV NOTES / Intent:
- * - Why: Admin layout wraps all /admin/* routes with navigation and access control
- * - What it does NOT do: No real auth check — uses mocked isAdmin flag
- * - Phase 1.3: UI shell only, admin state is simulated via React state
- * - Phase 2+: Replace with Supabase auth role check
- *
- * Compatibility:
- * - 'use client' for interactive admin nav
- * - Children render inside admin chrome
- * - Does not affect non-admin routes
+ * - Admin layout wraps all /admin/* routes with navigation
+ * - Auth is enforced by middleware (server-side). No client bypass.
+ * - Only reached when session is valid (except /admin/login, /admin/setup which have no layout chrome)
  */
 
 'use client'
 
-import { ReactNode, useState } from 'react'
+import { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -22,28 +16,16 @@ interface AdminLayoutProps {
 }
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  // Phase 1.3: Mocked admin flag — no real auth
-  const [isAdmin] = useState(true)
   const pathname = usePathname()
 
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h1>
-          <p className="text-gray-600 mb-4">Admin access required.</p>
-          <Link href="/dashboard" className="text-solo-accent hover:underline">
-            Return to Dashboard
-          </Link>
-        </div>
-      </div>
-    )
+  if (pathname === '/admin/enter-email' || pathname === '/admin/login' || pathname === '/admin/setup') {
+    return <>{children}</>
   }
 
   const navItems = [
     { href: '/admin', label: 'Dashboard', icon: '📊' },
     { href: '/admin/clients', label: 'Clients', icon: '👥' },
-    { href: '/admin/configure', label: 'Configure', icon: '⚙️' },
+    { href: '/admin/config', label: 'Configure', icon: '⚙️' },
   ]
 
   return (
@@ -72,9 +54,11 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <span className="text-xs bg-amber-500/20 text-amber-300 px-2 py-1 rounded">
-              V1 — Mocked Data
-            </span>
+            <form action="/api/admin/logout" method="POST" className="inline">
+              <button type="submit" className="text-sm text-gray-300 hover:text-white">
+                Sign out
+              </button>
+            </form>
             <Link href="/dashboard" className="text-sm text-gray-300 hover:text-white">
               ← Back to App
             </Link>

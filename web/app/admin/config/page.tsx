@@ -29,7 +29,6 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import AdminGuard from '../../../components/AdminGuard'
 import { DEFAULT_ADMIN_CONFIG, AdminConfig } from '../../../components/MockData'
 
 export default function AdminConfigPage() {
@@ -44,7 +43,7 @@ export default function AdminConfigPage() {
   }
 
   return (
-    <AdminGuard>
+    <>
       <div className="min-h-screen bg-gray-50">
         {/* Navigation */}
         <nav className="bg-white border-b border-gray-200">
@@ -288,6 +287,6 @@ export default function AdminConfigPage() {
 
         </main>
       </div>
-    </AdminGuard>
+    </>
   )
 }

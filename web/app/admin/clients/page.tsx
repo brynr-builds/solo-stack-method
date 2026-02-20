@@ -28,7 +28,6 @@
 
 import Link from 'next/link'
 import { useState } from 'react'
-import AdminGuard from '../../../components/AdminGuard'
 import { MOCK_USERS, MockUser } from '../../../components/MockData'
 
 export default function CRMPage() {
@@ -92,7 +91,7 @@ export default function CRMPage() {
   }
 
   return (
-    <AdminGuard>
+    <>
       <div className="min-h-screen bg-gray-50">
         {/* Navigation */}
         <nav className="bg-white border-b border-gray-200">
@@ -256,6 +255,6 @@ export default function CRMPage() {
           </div>
         </main>
       </div>
-    </AdminGuard>
+    </>
   )
 }
