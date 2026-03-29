@@ -281,15 +281,39 @@ If secrets are accidentally committed:
 
 ---
 
-## When In Doubt
+## V2: The Builder's OS
 
-1. Read this contract first
-2. Check `/workflows/` for relevant process
-3. Review `/PROMPTS/` for applicable templates
-4. Check `/agents/agent-profiles.yaml` for current assignments
-5. Ask the human if still unclear
-6. Document your decision
+### Execution Protocol (Mandatory)
+
+All AI agent sessions must follow `EXECUTION_PROTOCOL.md`:
+
+1. **Initialize** — Scan `PROMPTS/` and load `pulse.json`
+2. **Verify** — Confirm `web/` is accessible
+3. **Execute** — Follow the Mind-Shift Agent sequence (Architect, Artisan, Mentor)
+4. **Pulse** — Update `pulse.json` every 60 seconds during active work
+5. **Log** — Update `LEARNING_LOG.md` after every file change
+
+### Clarification Agent (Mandatory for Vague Requests)
+
+If a user's intent is vague or incomplete, activate `PROMPTS/clarification-agent.md` before planning. Produce a Shared Understanding document (`PROMPTS/shared-understanding-template.md`) and get user approval before writing code.
+
+### Error Handling (Mandatory)
+
+When errors occur, follow the Error Diagnostics → Self-Heal chain. See `docs/solo-stack/ERROR_HANDLING.md`. Never show raw error output to the user without a plain English translation.
 
 ---
 
-*Last updated: 2025-01-30 | This is the canonical source for AI governance in Solo Stack Method™*
+## When In Doubt
+
+1. Read this contract first
+2. Read `EXECUTION_PROTOCOL.md` for the 5-step protocol
+3. Check `/workflows/` for relevant process
+4. Review `/PROMPTS/` for applicable templates
+5. Check `/agents/agent-profiles.yaml` for current assignments
+6. Check `pulse.json` for current stack state
+7. Ask the human if still unclear
+8. Document your decision
+
+---
+
+*Last updated: 2026-03-28 | This is the canonical source for AI governance in Solo Stack Method™*

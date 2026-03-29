@@ -24,6 +24,9 @@
 > | `/workflows/` | Step-by-step task guides |
 > | `/docs/` | System documentation |
 > | `/PROMPTS/` | Reusable AI prompts |
+> | `EXECUTION_PROTOCOL.md` | V2 — 5-step codex for every AI session |
+> | `pulse.json` | V2 — Stack Pulse heartbeat (status, last task, timestamps) |
+> | `LEARNING_LOG.md` | V2 — Plain English log of every change (Mentor Agent) |
 >
 > ---
 >
@@ -53,6 +56,8 @@
 > | Deploying to production | `04-deploy-to-production.md` |
 > | Returning after time away | `05-return-after-time-away.md` |
 > | Cleaning up code | `06-stabilization-pass.md` |
+> | Understanding the pulse | `docs/solo-stack/STACK_PULSE.md` |
+> | Handling errors | `docs/solo-stack/ERROR_HANDLING.md` |
 >
 > ---
 >

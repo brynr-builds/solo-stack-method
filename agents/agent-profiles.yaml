@@ -101,6 +101,26 @@ roles:
     requires_audit: true
     preservation_required: true  # Must preserve existing behavior
 
+  # V2 Mind-Shift Agent Roles
+  Architect:
+    description: "Plans and structures work before code is written. Creates task lists in workflows/."
+    requires_audit: false
+    outputs: ["workflows/", "pulse.json"]
+    prompt: "PROMPTS/architect-agent.md"
+
+  Artisan:
+    description: "Executes code changes with precision from an Architect-approved plan."
+    requires_audit: true
+    requires_plan: true  # Must have an Architect plan before starting
+    prompt: "PROMPTS/artisan-agent.md"
+
+  Mentor:
+    description: "Writes plain English learning log entries after every file change."
+    requires_audit: false
+    outputs: ["LEARNING_LOG.md"]
+    prompt: "PROMPTS/mentor-agent.md"
+    mandatory: true  # Every Artisan change triggers a Mentor entry
+
 # Independence rules
 independence:
   rule: "Builder and Final Auditor must be different agents"
