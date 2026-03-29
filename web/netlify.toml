@@ -29,8 +29,17 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
+# Scheduled function: refresh Stack Pulse data daily from npm registry
+[functions]
+  directory = "netlify/functions"
+
+[[scheduled-functions]]
+  function = "pulse-refresh"
+  schedule = "@daily"
+
 # Environment variable placeholders
 # Set these in Netlify dashboard:
 # - NEXT_PUBLIC_SUPABASE_URL
 # - NEXT_PUBLIC_SUPABASE_ANON_KEY
-# - SUPABASE_SERVICE_ROLE_KEY (for server-side)
+# - SUPABASE_SERVICE_ROLE_KEY (for server-side writes)
+# - PULSE_REFRESH_SECRET (generate: openssl rand -hex 32)
