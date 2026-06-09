@@ -100,6 +100,37 @@ export async function createFromTemplate(opts: {
   return { ok: false, status: res.status, message }
 }
 
+/** Create or update a text file in a repo (GitHub Contents API). Used to drop the plan's
+ *  SPEC.md + build brief into the user's new repo so their agent builds from THEIR plan. */
+export async function putFile(opts: {
+  token: string
+  fullName: string // "owner/repo"
+  path: string
+  content: string
+  message: string
+}): Promise<{ ok: boolean; status: number }> {
+  // Look up an existing file's sha (so we update rather than fail if it already exists).
+  let sha: string | undefined
+  const getRes = await fetch(`${GH}/repos/${opts.fullName}/contents/${opts.path}`, {
+    headers: ghHeaders(opts.token),
+    cache: 'no-store',
+  })
+  if (getRes.ok) {
+    const existing: any = await getRes.json()
+    sha = existing?.sha
+  }
+  const res = await fetch(`${GH}/repos/${opts.fullName}/contents/${opts.path}`, {
+    method: 'PUT',
+    headers: ghHeaders(opts.token),
+    body: JSON.stringify({
+      message: opts.message,
+      content: Buffer.from(opts.content, 'utf8').toString('base64'),
+      ...(sha ? { sha } : {}),
+    }),
+  })
+  return { ok: res.status === 200 || res.status === 201, status: res.status }
+}
+
 /** Repo names: lowercase, url-safe. */
 export function sanitizeRepoName(input: string): string {
   return (

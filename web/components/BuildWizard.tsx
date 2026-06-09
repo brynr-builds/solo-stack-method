@@ -1,67 +1,97 @@
 /*
  * DEV NOTES (2026-06-09):
- * - Why: The Model A build flow, written for a GENUINELY non-technical user. Each stage explains
- *   the free account it needs, sets it up, and confirms the cost is $0. No jargon ("repository",
- *   "clone", terminal commands) — the final step uses Cursor's no-terminal GUI clone.
- *   The 4 stages map onto the Method's 7 steps (labeled in the UI).
- * - All GitHub work happens server-side via /api/build/* (the token never reaches the browser).
+ * - Why: The build flow, written for a non-technical user. Stages: PLAN → Connect → Create →
+ *   Publish → Build. Step 1 (Plan) is the evidence-based intake (PlanIntake) that produces a
+ *   plan + SPEC.md + tailored brief; those get committed into the user's repo after it's created,
+ *   so their agent builds THEIR plan, not the generic template.
+ * - The plan is persisted to localStorage so it survives the GitHub OAuth redirect (which leaves
+ *   the page and comes back). All GitHub work is server-side via /api/build/*.
  */
 'use client'
 
 import { useEffect, useState } from 'react'
+import PlanIntake from './PlanIntake'
+import type { Plan } from '../lib/build/plan'
 
-type Me = { configured: boolean; connected: boolean; login?: string; avatar?: string }
+type Me = { configured: boolean; connected: boolean; login?: string }
 
-const STAGES = ['Connect', 'Create', 'Publish', 'Build'] as const
+const STAGES = ['Plan', 'Connect', 'Create', 'Publish', 'Build'] as const
 type Stage = (typeof STAGES)[number]
+const PLAN_KEY = 'ssm_build_plan'
 
 export default function BuildWizard({ templateRepo }: { templateRepo: string }) {
   const [me, setMe] = useState<Me | null>(null)
-  const [stage, setStage] = useState<Stage>('Connect')
+  const [stage, setStage] = useState<Stage>('Plan')
+  const [plan, setPlan] = useState<Plan | null>(null)
   const [name, setName] = useState('')
-  const [creating, setCreating] = useState(false)
+  const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [repo, setRepo] = useState<{ url: string; fullName: string } | null>(null)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
     if (params.get('error')) setError(humanizeError(params.get('error')!))
+
+    let saved: Plan | null = null
+    try {
+      const raw = localStorage.getItem(PLAN_KEY)
+      if (raw) saved = JSON.parse(raw)
+    } catch { /* ignore */ }
+    if (saved) setPlan(saved)
+
     fetch('/api/build/me')
       .then((r) => r.json())
       .then((data: Me) => {
         setMe(data)
-        if (data.connected) setStage('Create')
+        if (!saved) setStage('Plan')
+        else if (!data.connected) setStage('Connect')
+        else setStage('Create')
       })
       .catch(() => setMe({ configured: false, connected: false }))
   }, [])
 
+  function onPlanComplete(p: Plan) {
+    try { localStorage.setItem(PLAN_KEY, JSON.stringify(p)) } catch { /* ignore */ }
+    setPlan(p)
+    setStage('Connect')
+  }
+
   async function createRepo() {
-    setCreating(true)
-    setError(null)
+    setBusy(true); setError(null)
     try {
       const res = await fetch('/api/build/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name }),
       })
       const data = await res.json()
-      if (!res.ok) setError(data.error || 'Could not create your site.')
-      else {
-        setRepo({ url: data.url, fullName: data.fullName })
-        setStage('Publish')
+      if (!res.ok) { setError(data.error || 'Could not create your site.'); setBusy(false); return }
+      setRepo({ url: data.url, fullName: data.fullName })
+      // Commit the plan into the new repo (best-effort; non-fatal if it fails).
+      if (plan) {
+        try {
+          await fetch('/api/build/spec', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ fullName: data.fullName, spec: plan.specMarkdown, brief: plan.briefMarkdown }),
+          })
+        } catch { /* non-fatal */ }
       }
+      setStage('Publish')
     } catch {
       setError('Network error — please try again.')
     } finally {
-      setCreating(false)
+      setBusy(false)
     }
   }
 
   async function disconnect() {
     await fetch('/api/build/logout', { method: 'POST' })
     setMe({ configured: true, connected: false })
-    setStage('Connect')
+    setStage(plan ? 'Connect' : 'Plan')
     setRepo(null)
+  }
+
+  function startOver() {
+    try { localStorage.removeItem(PLAN_KEY) } catch { /* ignore */ }
+    setPlan(null); setRepo(null); setStage('Plan')
   }
 
   if (me === null) return <p className="text-center text-gray-500 py-12">Loading…</p>
@@ -79,139 +109,107 @@ export default function BuildWizard({ templateRepo }: { templateRepo: string }) 
     )
   }
 
+  // Step 1: the planning intake (its own UI, with its own progress).
+  if (stage === 'Plan') {
+    return <PlanIntake onComplete={onPlanComplete} />
+  }
+
   const siteName = repo?.fullName.split('/')[1]
 
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Persistent free reassurance */}
-      <p className="text-center text-sm text-green-700 bg-green-50 border border-green-100 rounded-full px-4 py-1.5 inline-block w-full mb-6">
+      <p className="text-center text-sm text-green-700 bg-green-50 border border-green-100 rounded-full px-4 py-1.5 inline-block w-full mb-4">
         Everything here is <strong>free</strong> — no credit card. (A custom web address later is optional, ~$10/yr.)
       </p>
 
-      <Stepper current={stage} connected={me.connected} hasRepo={!!repo} />
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm mb-6">{error}</div>
-      )}
-
-      {/* 1 — Connect (free accounts) */}
-      {stage === 'Connect' && (
-        <div className="card">
-          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 1 · Your free account</div>
-          <h3 className="text-xl font-bold text-solo-primary mb-2">First, connect GitHub</h3>
-          <p className="text-gray-600 mb-4">
-            GitHub is a free service that stores your website&rsquo;s files — think of it like Google
-            Drive, but for a website. Your site lives in <em>your</em> account, so it&rsquo;s always yours.
-            When you click below you&rsquo;ll sign in, or make a free account in about a minute.
-          </p>
-
-          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-5">
-            <p className="font-semibold text-gray-800 mb-2 text-sm">What you&rsquo;ll need — all free, no card:</p>
-            <ul className="text-sm text-gray-600 space-y-1">
-              <li>✓ A <strong>GitHub</strong> account — created on the next click (stores your site)</li>
-              <li>✓ A <strong>Netlify</strong> account — free hosting, we&rsquo;ll set it up in step 3</li>
-              <li>✓ The free <strong>Cursor</strong> app — to change your site by chatting (step 4)</li>
-            </ul>
-          </div>
-
-          <a href="/api/build/login" className="btn-primary inline-flex items-center gap-2">
-            <GitHubMark /> Connect or create my free GitHub
-          </a>
-          <p className="text-xs text-gray-400 mt-3">
-            We only ask permission to create one public site for you — nothing private. Disconnect anytime.
-          </p>
+      {plan && (
+        <div className="text-center text-xs text-gray-400 mb-4">
+          ✓ Plan ready: <span className="text-gray-600">{plan.answers.oneLiner || 'your site'}</span>
+          <button onClick={startOver} className="ml-2 underline hover:text-gray-600">start over</button>
         </div>
       )}
 
-      {/* 2 — Create */}
+      <Stepper current={stage} connected={me.connected} hasRepo={!!repo} />
+
+      {error && <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm mb-6">{error}</div>}
+
+      {stage === 'Connect' && (
+        <div className="card">
+          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 2 · Your free account</div>
+          <h3 className="text-xl font-bold text-solo-primary mb-2">Now connect GitHub</h3>
+          <p className="text-gray-600 mb-4">
+            GitHub is a free service that stores your website&rsquo;s files — like Google Drive, but for a
+            website. Your site lives in <em>your</em> account, so it&rsquo;s always yours. Click below to sign in
+            or make a free account (about a minute). Your plan is saved.
+          </p>
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-5 text-sm text-gray-600">
+            <p className="font-semibold text-gray-800 mb-2">What you&rsquo;ll need — all free, no card:</p>
+            <ul className="space-y-1">
+              <li>✓ A <strong>GitHub</strong> account — next click (stores your site)</li>
+              <li>✓ A <strong>Netlify</strong> account — free hosting, step 4</li>
+              <li>✓ The free <strong>Cursor</strong> app — to build by chatting, step 5</li>
+            </ul>
+          </div>
+          <a href="/api/build/login" className="btn-primary inline-flex items-center gap-2"><GitHubMark /> Connect or create my free GitHub</a>
+          <p className="text-xs text-gray-400 mt-3">We only ask permission to create one public site for you — nothing private.</p>
+        </div>
+      )}
+
       {stage === 'Create' && (
         <div className="card">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-xs uppercase tracking-wide text-solo-accent">Step 2 · Create your site</div>
-            {me.login && (
-              <button onClick={disconnect} className="text-xs text-gray-400 hover:text-gray-600">
-                signed in as @{me.login} · disconnect
-              </button>
-            )}
+            <div className="text-xs uppercase tracking-wide text-solo-accent">Step 3 · Create your site</div>
+            {me.login && <button onClick={disconnect} className="text-xs text-gray-400 hover:text-gray-600">@{me.login} · disconnect</button>}
           </div>
           <h3 className="text-xl font-bold text-solo-primary mb-2">Name your site</h3>
           <p className="text-gray-600 mb-4">
-            We&rsquo;ll make your own free copy of the starter website, saved to your GitHub. Pick any
-            name — your name, your business, your idea. You can change it later. (Use letters,
-            numbers and dashes.)
+            We&rsquo;ll make your own free copy of the starter, saved to your GitHub — and drop your plan
+            (<code>SPEC.md</code> + a brief for your AI) right into it. Pick any name; you can change it later.
           </p>
           <div className="flex gap-2">
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="my-portfolio"
-              className="flex-1 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-solo-accent/40"
-            />
-            <button onClick={createRepo} disabled={creating || !name.trim()} className="btn-primary disabled:opacity-50">
-              {creating ? 'Creating…' : 'Create my site'}
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="my-portfolio"
+              className="flex-1 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-solo-accent/40" />
+            <button onClick={createRepo} disabled={busy || !name.trim()} className="btn-primary disabled:opacity-50">
+              {busy ? 'Creating…' : 'Create my site'}
             </button>
           </div>
-          <p className="text-xs text-gray-400 mt-3">Free. Makes a copy of the Solo Stack starter in your account.</p>
+          <p className="text-xs text-gray-400 mt-3">Free. Copy of the Solo Stack starter, with your plan baked in.</p>
         </div>
       )}
 
-      {/* 3 — Publish (deploy) */}
       {stage === 'Publish' && repo && (
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 3 · Put it online (free)</div>
+          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 4 · Put it online (free)</div>
           <h3 className="text-xl font-bold text-solo-primary mb-2">Your site is created 🎉</h3>
           <p className="text-gray-600 mb-4">
-            It&rsquo;s saved to your GitHub as{' '}
-            <a href={repo.url} target="_blank" rel="noreferrer" className="text-solo-accent font-medium underline">{repo.fullName}</a>.
-            Now let&rsquo;s put it on the internet — for free — so anyone can visit it.
+            It&rsquo;s saved as <a href={repo.url} target="_blank" rel="noreferrer" className="text-solo-accent font-medium underline">{repo.fullName}</a>,
+            with your plan inside it. Now put it on the internet — free — so anyone can visit.
           </p>
-          <p className="text-gray-600 mb-4">
-            <strong>Netlify</strong> hosts your site free and re-publishes it automatically whenever
-            you change it. Click below, sign in with GitHub (free), and click through the prompts —
-            about a minute. There are <em>no settings to change</em>.
-          </p>
-          <a
-            href={`https://app.netlify.com/start/deploy?repository=${encodeURIComponent(repo.url)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="btn-primary inline-block"
-          >
-            Publish free on Netlify →
-          </a>
-          <p className="text-xs text-gray-400 mt-3">
-            Prefer Vercel or Cloudflare Pages? They&rsquo;re free too — import the same site. Want to do this later? You can skip and come back.
-          </p>
-          <div className="mt-5">
-            <button onClick={() => setStage('Build')} className="text-solo-accent font-medium hover:underline">
-              Done (or skip) → next: make it yours
-            </button>
-          </div>
+          <p className="text-gray-600 mb-4"><strong>Netlify</strong> hosts it free and re-publishes automatically when you change it. Sign in with GitHub (free), click through — about a minute, no settings to change.</p>
+          <a href={`https://app.netlify.com/start/deploy?repository=${encodeURIComponent(repo.url)}`} target="_blank" rel="noreferrer" className="btn-primary inline-block">Publish free on Netlify →</a>
+          <p className="text-xs text-gray-400 mt-3">Prefer Vercel or Cloudflare Pages? Free too — import the same site.</p>
+          <div className="mt-5"><button onClick={() => setStage('Build')} className="text-solo-accent font-medium hover:underline">Done (or skip) → next: make it yours</button></div>
         </div>
       )}
 
-      {/* 4 — Build (direct the agent, no terminal) */}
       {stage === 'Build' && repo && (
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 4 · Make it yours by chatting</div>
-          <h3 className="text-xl font-bold text-solo-primary mb-2">Now change it just by talking to an AI</h3>
+          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 5 · Make it yours by chatting</div>
+          <h3 className="text-xl font-bold text-solo-primary mb-2">Hand your plan to the AI</h3>
           <p className="text-gray-600 mb-4">
-            You won&rsquo;t write any code. You&rsquo;ll use a free app called <strong>Cursor</strong> and
-            simply <em>tell it</em> what you want — &ldquo;change my name to…&rdquo;, &ldquo;make it
-            blue&rdquo;, &ldquo;add a contact section&rdquo; — and it edits your site for you.
+            You won&rsquo;t write code. You&rsquo;ll use a free app called <strong>Cursor</strong> and paste the brief
+            we wrote from <em>your</em> plan — it tells the AI exactly what to build.
           </p>
           <ol className="space-y-3 text-gray-700 mb-5">
-            <li><strong>1.</strong> Download <strong>Cursor</strong> (free): <a className="text-solo-accent underline" href="https://cursor.com" target="_blank" rel="noreferrer">cursor.com</a> — it&rsquo;s a normal app you install.</li>
-            <li><strong>2.</strong> Open Cursor → choose <strong>&ldquo;Clone repo&rdquo;</strong> → pick <code>{siteName}</code>. (No typing commands — it&rsquo;s a button.)</li>
-            <li><strong>3.</strong> Open <a className="text-solo-accent underline" href={`${repo.url}/blob/main/BUILD.md`} target="_blank" rel="noreferrer">BUILD.md</a> and copy the <strong>Step 1</strong> prompt into Cursor&rsquo;s chat box. Keep going through the prompts.</li>
+            <li><strong>1.</strong> Download <strong>Cursor</strong> (free): <a className="text-solo-accent underline" href="https://cursor.com" target="_blank" rel="noreferrer">cursor.com</a>.</li>
+            <li><strong>2.</strong> In Cursor → <strong>&ldquo;Clone repo&rdquo;</strong> → pick <code>{siteName}</code>. (A button — no typing commands.)</li>
+            <li><strong>3.</strong> Open <a className="text-solo-accent underline" href={`${repo.url}/blob/main/BUILD-BRIEF.md`} target="_blank" rel="noreferrer">BUILD-BRIEF.md</a> and paste it into Cursor&rsquo;s chat. The AI builds your plan, section by section — you approve each change.</li>
           </ol>
-          <p className="text-gray-600 mb-5">
-            Every change you approve is saved automatically and your live site updates on its own.
-            That&rsquo;s the whole loop — your site, your words, no code.
-          </p>
+          <p className="text-gray-600 mb-5">Your full plan is also saved as <a className="text-solo-accent underline" href={`${repo.url}/blob/main/SPEC.md`} target="_blank" rel="noreferrer">SPEC.md</a> in your repo. Every change you approve auto-updates your live site.</p>
           <a href={repo.url} target="_blank" rel="noreferrer" className="btn-primary">Open my site on GitHub →</a>
           <details className="mt-4 text-sm text-gray-500">
             <summary className="cursor-pointer">Comfortable with a terminal? (optional)</summary>
-            <p className="mt-2">You can use Claude Code instead: <code>git clone {repo.url}.git</code>, then open it and run Claude Code. Cursor above is the no-terminal route.</p>
+            <p className="mt-2">Use Claude Code instead: <code>git clone {repo.url}.git</code>, then open it and run Claude Code with the brief.</p>
           </details>
         </div>
       )}
@@ -222,21 +220,15 @@ export default function BuildWizard({ templateRepo }: { templateRepo: string }) 
 function Stepper({ current, connected, hasRepo }: { current: Stage; connected: boolean; hasRepo: boolean }) {
   const idx = STAGES.indexOf(current)
   return (
-    <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+    <div className="flex items-center justify-center gap-1.5 mb-8 flex-wrap">
       {STAGES.map((s, i) => {
-        const done = i < idx || (s === 'Connect' && connected) || (s === 'Create' && hasRepo)
+        const done = i < idx || (s === 'Connect' && connected && idx > 1) || (s === 'Create' && hasRepo)
         const active = s === current
         return (
-          <div key={s} className="flex items-center gap-2">
-            <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                active ? 'bg-solo-accent text-white' : done ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
-              }`}
-            >
-              {done && !active ? '✓' : i + 1}
-            </div>
+          <div key={s} className="flex items-center gap-1.5">
+            <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${active ? 'bg-solo-accent text-white' : done ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>{done && !active ? '✓' : i + 1}</div>
             <span className={`text-sm ${active ? 'text-solo-primary font-semibold' : 'text-gray-400'}`}>{s}</span>
-            {i < STAGES.length - 1 && <span className="text-gray-300 mx-1">—</span>}
+            {i < STAGES.length - 1 && <span className="text-gray-300">—</span>}
           </div>
         )
       })}
