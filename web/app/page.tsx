@@ -75,16 +75,16 @@ export default function HomePage() {
                 <li>• You have a product idea but not engineering skills</li>
                 <li>• You want real software, not just a demo</li>
                 <li>• You understand AI is powerful but chaotic</li>
-                <li>• You're willing to follow a process</li>
+                <li>• You&apos;re willing to follow a process</li>
                 <li>• You want to actually ship something</li>
               </ul>
             </div>
             <div className="card">
               <h3 className="text-xl font-bold text-red-500 mb-4">✗ This is NOT for you if...</h3>
               <ul className="space-y-3 text-gray-600">
-                <li>• You want to "vibe code" with no structure</li>
+                <li>• You want to &quot;vibe code&quot; with no structure</li>
                 <li>• You expect AI to read your mind</li>
-                <li>• You're looking for a no-code builder</li>
+                <li>• You&apos;re looking for a no-code builder</li>
                 <li>• You refuse to learn anything new</li>
                 <li>• You want magic, not method</li>
               </ul>
@@ -114,7 +114,7 @@ export default function HomePage() {
               <h3 className="text-lg font-bold text-gray-900 mb-2">Governance-First</h3>
               <p className="text-gray-600 text-sm">
                 Dual-audit workflow with evidence-based decision trails. Every change goes through a PR, 
-                every PR gets audited by a second AI. Not "just vibe and ship."
+                every PR gets audited by a second AI. Not &quot;just vibe and ship.&quot;
               </p>
             </div>
 
@@ -227,7 +227,7 @@ export default function HomePage() {
           </div>
           <h2 className="text-3xl font-bold mb-4">This Product Is Built Using the Same Process It Teaches</h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-            Every feature of Solo Stack Method was built using the governed workflow you'll learn. 
+            Every feature of Solo Stack Method was built using the governed workflow you&apos;ll learn.
             Claude builds, ChatGPT audits, and every change goes through a pull request.
           </p>
           <Link href="https://github.com/brynr-builds/solo-stack-method" target="_blank" className="btn-secondary">
@@ -246,7 +246,7 @@ export default function HomePage() {
           </div>
           <h2 className="text-3xl font-bold mb-4">Build Software Companies Can Buy</h2>
           <p className="text-gray-600 mb-8">
-            This isn't just about building apps or websites. You're creating a <strong>sellable software package</strong> — 
+            This isn&apos;t just about building apps or websites. You&apos;re creating a <strong>sellable software package</strong> —
             one that a dev team could take over tomorrow without calling you for help.
           </p>
           
@@ -275,7 +275,7 @@ export default function HomePage() {
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-400">✓</span>
-                <span><strong>Explicit context</strong> — no tribal knowledge, no "ask the founder"</span>
+                <span><strong>Explicit context</strong> — no tribal knowledge, no &quot;ask the founder&quot;</span>
               </li>
               <li className="flex items-start gap-2">
                 <span className="text-green-400">✓</span>
@@ -286,7 +286,7 @@ export default function HomePage() {
           
           <p className="text-gray-500 text-sm">
             <strong>Note:</strong> This is a method and governance system, not a guarantee of acquisition.
-            But if the opportunity comes, you'll be ready.
+            But if the opportunity comes, you&apos;ll be ready.
           </p>
         </div>
       </section>
@@ -303,7 +303,7 @@ export default function HomePage() {
             <h2 className="text-3xl font-bold">Sustain the Stack</h2>
           </div>
           <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
-            After you've shipped successfully, you can optionally contribute to keep this project sustainable.
+            After you&apos;ve shipped successfully, you can optionally contribute to keep this project sustainable.
           </p>
           
           <div className="card max-w-lg mx-auto text-center">
@@ -319,7 +319,7 @@ export default function HomePage() {
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-gray-400">•</span>
-                <span>Shows up only after you've deployed</span>
+                <span>Shows up only after you&apos;ve deployed</span>
               </li>
             </ul>
             
