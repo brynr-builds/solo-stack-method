@@ -34,6 +34,9 @@ export default function HomePage() {
             Solo Stack Method™
           </div>
           <div className="flex items-center gap-6">
+            <Link href="/tools" className="text-gray-600 hover:text-solo-primary transition-colors">
+              The Stack
+            </Link>
             <Link href="/pulse" className="text-gray-600 hover:text-solo-primary transition-colors">
               Stack Pulse
             </Link>
@@ -397,6 +400,7 @@ export default function HomePage() {
             © 2026 Solo Stack Method™. All rights reserved.
           </div>
           <div className="flex gap-6 text-sm">
+            <Link href="/tools" className="text-gray-500 hover:text-solo-primary">The Stack</Link>
             <Link href="/pulse" className="text-gray-500 hover:text-solo-primary">Stack Pulse</Link>
             <Link href="/audit-score" className="text-gray-500 hover:text-solo-primary">Audit Score</Link>
             <Link href="/terms" className="text-gray-500 hover:text-solo-primary">Terms</Link>
