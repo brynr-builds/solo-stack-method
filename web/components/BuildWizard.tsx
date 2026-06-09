@@ -258,7 +258,7 @@ function PlanReadyNoGitHub({ plan, onStartOver }: { plan: Plan | null; onStartOv
       </p>
       <div className="flex flex-wrap gap-2 mb-4">
         <button onClick={() => copy('brief', plan.briefMarkdown)} className="btn-primary">{copied === 'brief' ? 'Copied ✓' : 'Copy the build brief'}</button>
-        <button onClick={() => copy('spec', plan.specMarkdown)} className="btn-secondary">{copied === 'spec' ? 'Copied ✓' : 'Copy the full spec'}</button>
+        <button onClick={() => copy('spec', plan.specMarkdown)} className="text-sm text-gray-500 hover:text-gray-700 underline px-2">{copied === 'spec' ? 'Copied ✓' : 'Copy the full spec'}</button>
         <button onClick={onStartOver} className="text-sm text-gray-400 hover:text-gray-600 px-2">start over</button>
       </div>
       <PlanPairTools />

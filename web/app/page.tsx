@@ -43,9 +43,6 @@ export default function HomePage() {
             <Link href="/pulse" className="text-gray-600 hover:text-solo-primary transition-colors">
               Stack Pulse
             </Link>
-            <Link href="/login" className="btn-secondary text-sm py-2 px-4">
-              Log In
-            </Link>
             <Link href="/build" className="btn-primary text-sm py-2 px-4">
               Build your site
             </Link>
@@ -57,10 +54,11 @@ export default function HomePage() {
       <section className="pt-32 pb-20 px-6">
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-solo-primary leading-tight mb-6">
-            Build real software with AI — without losing control, from idea to deployment.
+            Build real software with AI — without losing control.
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            A governed workflow for non-technical builders who want to ship real projects using AI as their execution engine — plus the curated, honestly-ranked stack of tools to do it.
+            For non-technical builders who want to ship real software with AI — with a curated,
+            honestly-ranked stack to build it on.
           </p>
           <div className="flex justify-center gap-4">
             <Link href="/build" className="btn-primary text-lg px-8 py-4">
