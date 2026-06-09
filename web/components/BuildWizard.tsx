@@ -1,7 +1,8 @@
 /*
  * DEV NOTES (2026-06-09):
- * - Why: The Model A build flow. Walks a non-technical user through: connect GitHub → create their
- *   repo from the solo-stack-starter template → connect a deploy host → direct their agent.
+ * - Why: The Model A build flow, written for a GENUINELY non-technical user. Each stage explains
+ *   the free account it needs, sets it up, and confirms the cost is $0. No jargon ("repository",
+ *   "clone", terminal commands) — the final step uses Cursor's no-terminal GUI clone.
  *   The 4 stages map onto the Method's 7 steps (labeled in the UI).
  * - All GitHub work happens server-side via /api/build/* (the token never reaches the browser).
  */
@@ -11,7 +12,7 @@ import { useEffect, useState } from 'react'
 
 type Me = { configured: boolean; connected: boolean; login?: string; avatar?: string }
 
-const STAGES = ['Connect', 'Create', 'Deploy', 'Direct'] as const
+const STAGES = ['Connect', 'Create', 'Publish', 'Build'] as const
 type Stage = (typeof STAGES)[number]
 
 export default function BuildWizard({ templateRepo }: { templateRepo: string }) {
@@ -44,14 +45,13 @@ export default function BuildWizard({ templateRepo }: { templateRepo: string }) 
         body: JSON.stringify({ name }),
       })
       const data = await res.json()
-      if (!res.ok) {
-        setError(data.error || 'Could not create the repo.')
-      } else {
+      if (!res.ok) setError(data.error || 'Could not create your site.')
+      else {
         setRepo({ url: data.url, fullName: data.fullName })
-        setStage('Deploy')
+        setStage('Publish')
       }
     } catch {
-      setError('Network error — try again.')
+      setError('Network error — please try again.')
     } finally {
       setCreating(false)
     }
@@ -64,63 +64,81 @@ export default function BuildWizard({ templateRepo }: { templateRepo: string }) 
     setRepo(null)
   }
 
-  if (me === null) {
-    return <p className="text-center text-gray-500 py-12">Loading…</p>
-  }
+  if (me === null) return <p className="text-center text-gray-500 py-12">Loading…</p>
 
   if (!me.configured) {
     return (
       <div className="card max-w-xl mx-auto">
         <h3 className="text-lg font-bold text-solo-primary mb-2">Almost ready</h3>
         <p className="text-gray-600 mb-3">
-          The GitHub connection isn&rsquo;t set up on this deployment yet. The site owner needs to
-          create a GitHub OAuth App and set three environment variables.
+          The GitHub connection isn&rsquo;t set up on this site yet. The site owner needs to add a
+          GitHub OAuth App and three settings (a one-time, 5-minute step).
         </p>
-        <p className="text-sm text-gray-500">
-          Setup guide: <code>docs/solo-stack/BUILD_FLOW_SETUP.md</code> in the repo.
-        </p>
+        <p className="text-sm text-gray-500">Setup guide: <code>docs/solo-stack/BUILD_FLOW_SETUP.md</code>.</p>
       </div>
     )
   }
 
+  const siteName = repo?.fullName.split('/')[1]
+
   return (
     <div className="max-w-2xl mx-auto">
+      {/* Persistent free reassurance */}
+      <p className="text-center text-sm text-green-700 bg-green-50 border border-green-100 rounded-full px-4 py-1.5 inline-block w-full mb-6">
+        Everything here is <strong>free</strong> — no credit card. (A custom web address later is optional, ~$10/yr.)
+      </p>
+
       <Stepper current={stage} connected={me.connected} hasRepo={!!repo} />
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 text-sm mb-6">{error}</div>
       )}
 
-      {/* Connect */}
+      {/* 1 — Connect (free accounts) */}
       {stage === 'Connect' && (
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Steps 1–2 · Repo + stack</div>
-          <h3 className="text-xl font-bold text-solo-primary mb-2">Connect your GitHub</h3>
-          <p className="text-gray-600 mb-5">
-            We&rsquo;ll create a new website repository in <em>your</em> GitHub account from the
-            Solo Stack starter. You own it — we only need permission to create the public repo.
+          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 1 · Your free account</div>
+          <h3 className="text-xl font-bold text-solo-primary mb-2">First, connect GitHub</h3>
+          <p className="text-gray-600 mb-4">
+            GitHub is a free service that stores your website&rsquo;s files — think of it like Google
+            Drive, but for a website. Your site lives in <em>your</em> account, so it&rsquo;s always yours.
+            When you click below you&rsquo;ll sign in, or make a free account in about a minute.
           </p>
+
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 mb-5">
+            <p className="font-semibold text-gray-800 mb-2 text-sm">What you&rsquo;ll need — all free, no card:</p>
+            <ul className="text-sm text-gray-600 space-y-1">
+              <li>✓ A <strong>GitHub</strong> account — created on the next click (stores your site)</li>
+              <li>✓ A <strong>Netlify</strong> account — free hosting, we&rsquo;ll set it up in step 3</li>
+              <li>✓ The free <strong>Cursor</strong> app — to change your site by chatting (step 4)</li>
+            </ul>
+          </div>
+
           <a href="/api/build/login" className="btn-primary inline-flex items-center gap-2">
-            <GitHubMark /> Connect GitHub
+            <GitHubMark /> Connect or create my free GitHub
           </a>
-          <p className="text-xs text-gray-400 mt-3">Scope: create public repos only. Disconnect anytime.</p>
+          <p className="text-xs text-gray-400 mt-3">
+            We only ask permission to create one public site for you — nothing private. Disconnect anytime.
+          </p>
         </div>
       )}
 
-      {/* Create */}
+      {/* 2 — Create */}
       {stage === 'Create' && (
         <div className="card">
           <div className="flex items-center justify-between mb-2">
-            <div className="text-xs uppercase tracking-wide text-solo-accent">Steps 1–3 · Create your repo</div>
+            <div className="text-xs uppercase tracking-wide text-solo-accent">Step 2 · Create your site</div>
             {me.login && (
               <button onClick={disconnect} className="text-xs text-gray-400 hover:text-gray-600">
-                @{me.login} · disconnect
+                signed in as @{me.login} · disconnect
               </button>
             )}
           </div>
           <h3 className="text-xl font-bold text-solo-primary mb-2">Name your site</h3>
           <p className="text-gray-600 mb-4">
-            This becomes your repository name (and the start of your URL). You can rename later.
+            We&rsquo;ll make your own free copy of the starter website, saved to your GitHub. Pick any
+            name — your name, your business, your idea. You can change it later. (Use letters,
+            numbers and dashes.)
           </p>
           <div className="flex gap-2">
             <input
@@ -130,44 +148,71 @@ export default function BuildWizard({ templateRepo }: { templateRepo: string }) 
               className="flex-1 border border-gray-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-solo-accent/40"
             />
             <button onClick={createRepo} disabled={creating || !name.trim()} className="btn-primary disabled:opacity-50">
-              {creating ? 'Creating…' : 'Create my repo'}
+              {creating ? 'Creating…' : 'Create my site'}
             </button>
           </div>
-          <p className="text-xs text-gray-400 mt-3">From template: <code>{templateRepo}</code></p>
+          <p className="text-xs text-gray-400 mt-3">Free. Makes a copy of the Solo Stack starter in your account.</p>
         </div>
       )}
 
-      {/* Deploy */}
-      {stage === 'Deploy' && repo && (
+      {/* 3 — Publish (deploy) */}
+      {stage === 'Publish' && repo && (
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 7 · Deploy</div>
-          <h3 className="text-xl font-bold text-solo-primary mb-2">Your repo is live 🎉</h3>
+          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 3 · Put it online (free)</div>
+          <h3 className="text-xl font-bold text-solo-primary mb-2">Your site is created 🎉</h3>
           <p className="text-gray-600 mb-4">
-            Created <a href={repo.url} target="_blank" rel="noreferrer" className="text-solo-accent font-medium underline">{repo.fullName}</a>.
-            Now connect it to a host so every push auto-deploys:
+            It&rsquo;s saved to your GitHub as{' '}
+            <a href={repo.url} target="_blank" rel="noreferrer" className="text-solo-accent font-medium underline">{repo.fullName}</a>.
+            Now let&rsquo;s put it on the internet — for free — so anyone can visit it.
           </p>
-          <ul className="space-y-3 mb-5 text-gray-700">
-            <li>• <strong>Netlify:</strong> <a className="text-solo-accent underline" href="https://app.netlify.com/start" target="_blank" rel="noreferrer">New site from Git</a> → pick this repo → Deploy (no build settings needed).</li>
-            <li>• <strong>Vercel / Cloudflare Pages:</strong> import the repo, framework preset “Other / None”.</li>
-          </ul>
-          <button onClick={() => setStage('Direct')} className="btn-primary">Next: build it with your agent →</button>
+          <p className="text-gray-600 mb-4">
+            <strong>Netlify</strong> hosts your site free and re-publishes it automatically whenever
+            you change it. Click below, sign in with GitHub (free), and click through the prompts —
+            about a minute. There are <em>no settings to change</em>.
+          </p>
+          <a
+            href={`https://app.netlify.com/start/deploy?repository=${encodeURIComponent(repo.url)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="btn-primary inline-block"
+          >
+            Publish free on Netlify →
+          </a>
+          <p className="text-xs text-gray-400 mt-3">
+            Prefer Vercel or Cloudflare Pages? They&rsquo;re free too — import the same site. Want to do this later? You can skip and come back.
+          </p>
+          <div className="mt-5">
+            <button onClick={() => setStage('Build')} className="text-solo-accent font-medium hover:underline">
+              Done (or skip) → next: make it yours
+            </button>
+          </div>
         </div>
       )}
 
-      {/* Direct */}
-      {stage === 'Direct' && repo && (
+      {/* 4 — Build (direct the agent, no terminal) */}
+      {stage === 'Build' && repo && (
         <div className="card">
-          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Steps 4–6 · Build &amp; audit</div>
-          <h3 className="text-xl font-bold text-solo-primary mb-2">Direct your agent</h3>
+          <div className="text-xs uppercase tracking-wide text-solo-accent mb-1">Step 4 · Make it yours by chatting</div>
+          <h3 className="text-xl font-bold text-solo-primary mb-2">Now change it just by talking to an AI</h3>
           <p className="text-gray-600 mb-4">
-            Open your repo in an AI editor (Claude Code or Cursor) and follow the copy-paste prompts
-            in <a className="text-solo-accent underline" href={`${repo.url}/blob/main/BUILD.md`} target="_blank" rel="noreferrer">BUILD.md</a>.
-            Your repo already contains the rules (<code>AGENTS.md</code>) so the agent works the right way.
+            You won&rsquo;t write any code. You&rsquo;ll use a free app called <strong>Cursor</strong> and
+            simply <em>tell it</em> what you want — &ldquo;change my name to…&rdquo;, &ldquo;make it
+            blue&rdquo;, &ldquo;add a contact section&rdquo; — and it edits your site for you.
           </p>
-          <pre className="bg-slate-900 text-slate-100 rounded-lg p-3 text-sm overflow-x-auto mb-4"><code>git clone {repo.url}.git
-cd {repo.fullName.split('/')[1]}
-# then open it in Claude Code / Cursor and paste the Step 1 prompt from BUILD.md</code></pre>
-          <a href={repo.url} target="_blank" rel="noreferrer" className="btn-primary">Open my repo →</a>
+          <ol className="space-y-3 text-gray-700 mb-5">
+            <li><strong>1.</strong> Download <strong>Cursor</strong> (free): <a className="text-solo-accent underline" href="https://cursor.com" target="_blank" rel="noreferrer">cursor.com</a> — it&rsquo;s a normal app you install.</li>
+            <li><strong>2.</strong> Open Cursor → choose <strong>&ldquo;Clone repo&rdquo;</strong> → pick <code>{siteName}</code>. (No typing commands — it&rsquo;s a button.)</li>
+            <li><strong>3.</strong> Open <a className="text-solo-accent underline" href={`${repo.url}/blob/main/BUILD.md`} target="_blank" rel="noreferrer">BUILD.md</a> and copy the <strong>Step 1</strong> prompt into Cursor&rsquo;s chat box. Keep going through the prompts.</li>
+          </ol>
+          <p className="text-gray-600 mb-5">
+            Every change you approve is saved automatically and your live site updates on its own.
+            That&rsquo;s the whole loop — your site, your words, no code.
+          </p>
+          <a href={repo.url} target="_blank" rel="noreferrer" className="btn-primary">Open my site on GitHub →</a>
+          <details className="mt-4 text-sm text-gray-500">
+            <summary className="cursor-pointer">Comfortable with a terminal? (optional)</summary>
+            <p className="mt-2">You can use Claude Code instead: <code>git clone {repo.url}.git</code>, then open it and run Claude Code. Cursor above is the no-terminal route.</p>
+          </details>
         </div>
       )}
     </div>
@@ -177,7 +222,7 @@ cd {repo.fullName.split('/')[1]}
 function Stepper({ current, connected, hasRepo }: { current: Stage; connected: boolean; hasRepo: boolean }) {
   const idx = STAGES.indexOf(current)
   return (
-    <div className="flex items-center justify-center gap-2 mb-8">
+    <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
       {STAGES.map((s, i) => {
         const done = i < idx || (s === 'Connect' && connected) || (s === 'Create' && hasRepo)
         const active = s === current
@@ -209,9 +254,9 @@ function GitHubMark() {
 
 function humanizeError(code: string): string {
   switch (code) {
-    case 'not_configured': return 'GitHub connection isn’t set up on this deployment yet.'
-    case 'bad_state': return 'Security check failed (expired link). Please try connecting again.'
-    case 'token_exchange': return 'GitHub sign-in failed. Please try again.'
+    case 'not_configured': return 'GitHub connection isn’t set up on this site yet.'
+    case 'bad_state': return 'That link expired. Please try connecting again.'
+    case 'token_exchange': return 'GitHub sign-in didn’t complete. Please try again.'
     default: return 'Something went wrong. Please try again.'
   }
 }
