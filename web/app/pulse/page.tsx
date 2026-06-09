@@ -55,7 +55,6 @@ export default function PulsePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     // TODO Phase 2: Store in Supabase, generate personalized link
-    console.log('Newsletter signup:', { email, selectedTools })
     setSubmitted(true)
   }
 
@@ -209,9 +208,9 @@ export default function PulsePage() {
           ) : (
             <div className="text-center">
               <div className="text-4xl mb-4">✓</div>
-              <h2 className="text-2xl font-bold mb-2">You're Subscribed!</h2>
+              <h2 className="text-2xl font-bold mb-2">You&apos;re Subscribed!</h2>
               <p className="text-gray-300 mb-4">
-                You'll receive updates for: {selectedTools.join(', ') || 'All tools'}
+                You&apos;ll receive updates for: {selectedTools.join(', ') || 'All tools'}
               </p>
               <p className="text-sm text-gray-400">
                 Check your email for a personalized link to return with your preferences saved.
