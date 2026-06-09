@@ -130,11 +130,19 @@ export async function POST(request: NextRequest) {
     )
 
     const backupCodes = generateBackupCodes(10)
-    for (const code of backupCodes) {
-      const codeHash = hashBackupCode(code, env.sessionSecret)
+    if (backupCodes.length > 0) {
+      const values: string[] = []
+      const params: unknown[] = []
+
+      for (let i = 0; i < backupCodes.length; i++) {
+        const codeHash = hashBackupCode(backupCodes[i], env.sessionSecret)
+        params.push(userId, codeHash)
+        values.push(`($${params.length - 1}, $${params.length})`)
+      }
+
       await query(
-        `INSERT INTO admin_backup_codes (user_id, code_hash) VALUES ($1, $2)`,
-        [userId, codeHash]
+        `INSERT INTO admin_backup_codes (user_id, code_hash) VALUES ${values.join(', ')}`,
+        params
       )
     }
 
