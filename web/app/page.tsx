@@ -406,6 +406,7 @@ export default function HomePage() {
             <Link href="/audit-score" className="text-gray-500 hover:text-solo-primary">Audit Score</Link>
             <Link href="/terms" className="text-gray-500 hover:text-solo-primary">Terms</Link>
             <Link href="/privacy" className="text-gray-500 hover:text-solo-primary">Privacy</Link>
+            <a href="mailto:hello@solostackmethod.io" className="text-gray-500 hover:text-solo-primary">Contact</a>
           </div>
         </div>
       </footer>
