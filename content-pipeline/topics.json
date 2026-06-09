@@ -1,0 +1,72 @@
+[
+  {
+    "type": "guides",
+    "slug": "the-solo-founder-stack-and-what-it-costs",
+    "title": "The Solo Founder Stack (And What It Actually Costs in 2026)",
+    "angle": "The exact tools a solo builder needs end-to-end — domain, hosting, email, funnel, AI, design — with real monthly cost. The canonical 'our stack' hub page. LOW competition, high value, internal-links to everything.",
+    "programs": ["cloudways", "kit", "clickfunnels", "copy-ai", "canva", "semrush", "namecheap"]
+  },
+  {
+    "type": "guides",
+    "slug": "how-much-does-it-cost-to-build-a-saas-with-ai",
+    "title": "How Much Does It Cost to Build a SaaS with AI? (Real Numbers)",
+    "angle": "Honest cost breakdown for shipping an AI-built SaaS solo: hosting + email + funnel + AI tools. LOW competition wedge tied to our repo.",
+    "programs": ["cloudways", "kinsta", "kit", "clickfunnels", "copy-ai"]
+  },
+  {
+    "type": "compare",
+    "slug": "cloudways-vs-kinsta",
+    "title": "Cloudways vs Kinsta — Which Should a Solo Builder Use? (2026)",
+    "angle": "Managed hosting head-to-head for someone deploying an AI-built app. Price, performance, who each is for.",
+    "programs": ["cloudways", "kinsta"]
+  },
+  {
+    "type": "compare",
+    "slug": "cloudways-vs-wp-engine",
+    "title": "Cloudways vs WP Engine — Honest Comparison for Founders (2026)",
+    "angle": "App/WordPress hosting comparison. Cloudways flexibility vs WP Engine managed-WP polish.",
+    "programs": ["cloudways", "wp-engine"]
+  },
+  {
+    "type": "compare",
+    "slug": "teachable-vs-thinkific",
+    "title": "Teachable vs Thinkific — Best Course Platform for Solo Creators (2026)",
+    "angle": "Course-platform comparison for a creator monetizing knowledge. Pricing, payouts, lock-in.",
+    "programs": ["teachable", "thinkific"]
+  },
+  {
+    "type": "compare",
+    "slug": "leadpages-vs-clickfunnels",
+    "title": "Leadpages vs ClickFunnels — Which Funnel Tool for Solopreneurs? (2026)",
+    "angle": "Landing pages vs full funnels. Who actually needs ClickFunnels vs who's fine on Leadpages.",
+    "programs": ["leadpages", "clickfunnels"]
+  },
+  {
+    "type": "compare",
+    "slug": "mailerlite-vs-kit",
+    "title": "MailerLite vs Kit — Best Starter Email Tool for a Small Newsletter (2026)",
+    "angle": "Narrow, LOW-competition comparison for someone with a tiny list deciding between the two simplest options.",
+    "programs": ["mailerlite", "kit"]
+  },
+  {
+    "type": "guides",
+    "slug": "best-ai-tools-to-build-a-saas-solo",
+    "title": "The Best AI Tools to Build a SaaS Solo (No Engineering Team)",
+    "angle": "The AI toolchain for a non-technical founder: writing, design, plus where it ships. Tied to the method.",
+    "programs": ["copy-ai", "canva", "cloudways"]
+  },
+  {
+    "type": "guides",
+    "slug": "best-vpn-for-indie-hackers",
+    "title": "Best VPN for Indie Hackers and Remote Founders (2026)",
+    "angle": "Practical VPN pick for builders working from cafes/abroad. NordVPN vs Surfshark, who each suits.",
+    "programs": ["nordvpn", "surfshark"]
+  },
+  {
+    "type": "guides",
+    "slug": "is-semrush-worth-it-for-solo-founders",
+    "title": "Is Semrush Worth It for Solo Founders? An Honest Take",
+    "angle": "Honest 'is this overkill for me' guide. When a solo builder actually needs Semrush vs free tools.",
+    "programs": ["semrush"]
+  }
+]
