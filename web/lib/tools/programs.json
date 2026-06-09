@@ -748,5 +748,35 @@
     "sourceUrl": "https://www.framer.com/partners/",
     "verified": false,
     "caveat": "Verify recurring duration and network before publishing."
+  },
+  {
+    "slug": "taskade",
+    "name": "Taskade",
+    "company": "Taskade",
+    "niche": "productivity",
+    "nicheLabel": "Productivity",
+    "tier": 2,
+    "featured": false,
+    "rank": 38,
+    "score": 72,
+    "commission": {
+      "model": "recurring",
+      "ratePct": 20,
+      "flatUsd": null,
+      "recurringMonths": null
+    },
+    "cookieDays": 90,
+    "approval": "easy",
+    "network": "in-house",
+    "newSiteFriendly": true,
+    "payoutCountries": "global",
+    "demand": "AI outlining/planning for solo founders",
+    "why": "AI planning tool; 20% lifetime recurring, instant approval, new-site friendly",
+    "applyUrl": "https://www.taskade.com/affiliate",
+    "merchantUrl": "https://www.taskade.com",
+    "affiliateUrl": null,
+    "sourceUrl": "https://www.taskade.com/affiliate",
+    "verified": false,
+    "caveat": "Rate varies on Taskade's site (20% baseline vs 'up to 50%' promo) \u2014 verify in-dashboard."
   }
 ]

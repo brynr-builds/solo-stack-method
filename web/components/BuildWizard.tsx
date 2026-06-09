@@ -96,22 +96,14 @@ export default function BuildWizard({ templateRepo }: { templateRepo: string }) 
 
   if (me === null) return <p className="text-center text-gray-500 py-12">Loading…</p>
 
-  if (!me.configured) {
-    return (
-      <div className="card max-w-xl mx-auto">
-        <h3 className="text-lg font-bold text-solo-primary mb-2">Almost ready</h3>
-        <p className="text-gray-600 mb-3">
-          The GitHub connection isn&rsquo;t set up on this site yet. The site owner needs to add a
-          GitHub OAuth App and three settings (a one-time, 5-minute step).
-        </p>
-        <p className="text-sm text-gray-500">Setup guide: <code>docs/solo-stack/BUILD_FLOW_SETUP.md</code>.</p>
-      </div>
-    )
-  }
-
-  // Step 1: the planning intake (its own UI, with its own progress).
+  // Step 1 — planning works regardless of GitHub config (it's free + valuable on its own).
   if (stage === 'Plan') {
     return <PlanIntake onComplete={onPlanComplete} />
+  }
+
+  // GitHub not wired on this deployment: don't dead-end — let them keep their plan.
+  if (!me.configured) {
+    return <PlanReadyNoGitHub plan={plan} onStartOver={startOver} />
   }
 
   const siteName = repo?.fullName.split('/')[1]
@@ -211,8 +203,65 @@ export default function BuildWizard({ templateRepo }: { templateRepo: string }) 
             <summary className="cursor-pointer">Comfortable with a terminal? (optional)</summary>
             <p className="mt-2">Use Claude Code instead: <code>git clone {repo.url}.git</code>, then open it and run Claude Code with the brief.</p>
           </details>
+          <PlanPairTools />
         </div>
       )}
+    </div>
+  )
+}
+
+/** Optional, honest affiliate tie-ins that pair with the plan. Route through /go (logs the click,
+ *  redirects to the merchant; starts earning once a tracking link is wired). */
+function PlanPairTools() {
+  return (
+    <div className="mt-6 pt-5 border-t border-gray-100">
+      <div className="text-xs uppercase tracking-wide text-gray-400 mb-3">Optional · tools that pair with your plan</div>
+      <div className="grid sm:grid-cols-2 gap-3 text-sm">
+        <a href="/go/taskade" target="_blank" rel="sponsored nofollow noopener noreferrer" className="border border-gray-200 rounded-lg p-3 hover:border-solo-accent transition-colors">
+          <div className="font-semibold text-solo-primary">Keep organizing → Taskade</div>
+          <div className="text-gray-500">Your plan, tasks &amp; notes in one place. Free tier.</div>
+        </a>
+        <a href="/go/copy-ai" target="_blank" rel="sponsored nofollow noopener noreferrer" className="border border-gray-200 rounded-lg p-3 hover:border-solo-accent transition-colors">
+          <div className="font-semibold text-solo-primary">AI help with copy → Copy.ai</div>
+          <div className="text-gray-500">Draft headlines &amp; section text fast. Free tier.</div>
+        </a>
+      </div>
+      <p className="text-xs text-gray-400 mt-2">Affiliate links — same price for you; only tools we&rsquo;d actually use.</p>
+    </div>
+  )
+}
+
+/** When the owner hasn't wired GitHub yet: the plan still has value — let them copy it and use it
+ *  in any AI editor, rather than dead-ending. Makes Step 1 a standalone free tool. */
+function PlanReadyNoGitHub({ plan, onStartOver }: { plan: Plan | null; onStartOver: () => void }) {
+  const [copied, setCopied] = useState<string | null>(null)
+  const copy = (what: string, text: string) => {
+    try { navigator.clipboard.writeText(text); setCopied(what); setTimeout(() => setCopied(null), 1500) } catch { /* ignore */ }
+  }
+  if (!plan) {
+    return (
+      <div className="card max-w-xl mx-auto">
+        <h3 className="text-lg font-bold text-solo-primary mb-2">Plan your site</h3>
+        <p className="text-gray-600">Start with Step 1 to turn your idea into a plan. (Auto-creating the GitHub repo isn&rsquo;t set up on this site yet — but you can still make and keep your plan.)</p>
+        <button onClick={onStartOver} className="btn-primary mt-4">Start planning →</button>
+      </div>
+    )
+  }
+  return (
+    <div className="card max-w-2xl mx-auto">
+      <h3 className="text-xl font-bold text-solo-primary mb-2">✓ Your plan is ready</h3>
+      <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm text-gray-700 mb-4"
+           dangerouslySetInnerHTML={{ __html: plan.summary.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>') }} />
+      <p className="text-gray-600 mb-4 text-sm">
+        Auto-creating your GitHub repo isn&rsquo;t enabled on this site yet — but your plan is the
+        valuable part. Copy it and paste the brief into any AI editor (Cursor, Claude Code, ChatGPT) to build.
+      </p>
+      <div className="flex flex-wrap gap-2 mb-4">
+        <button onClick={() => copy('brief', plan.briefMarkdown)} className="btn-primary">{copied === 'brief' ? 'Copied ✓' : 'Copy the build brief'}</button>
+        <button onClick={() => copy('spec', plan.specMarkdown)} className="btn-secondary">{copied === 'spec' ? 'Copied ✓' : 'Copy the full spec'}</button>
+        <button onClick={onStartOver} className="text-sm text-gray-400 hover:text-gray-600 px-2">start over</button>
+      </div>
+      <PlanPairTools />
     </div>
   )
 }

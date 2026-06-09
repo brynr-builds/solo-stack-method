@@ -46,8 +46,8 @@ export default function HomePage() {
             <Link href="/login" className="btn-secondary text-sm py-2 px-4">
               Log In
             </Link>
-            <Link href="/signup" className="btn-primary text-sm py-2 px-4">
-              Start Building
+            <Link href="/build" className="btn-primary text-sm py-2 px-4">
+              Build your site
             </Link>
           </div>
         </div>
@@ -63,11 +63,11 @@ export default function HomePage() {
             A governed workflow for non-technical builders who want to ship real projects using AI as their execution engine — plus the curated, honestly-ranked stack of tools to do it.
           </p>
           <div className="flex justify-center gap-4">
-            <Link href="/tools" className="btn-primary text-lg px-8 py-4">
-              Explore The Stack →
+            <Link href="/build" className="btn-primary text-lg px-8 py-4">
+              Build your site →
             </Link>
-            <Link href="/guides" className="btn-secondary text-lg px-8 py-4">
-              Read the Guides
+            <Link href="/tools" className="btn-secondary text-lg px-8 py-4">
+              Explore The Stack
             </Link>
           </div>
         </div>
@@ -366,6 +366,10 @@ export default function HomePage() {
             <ul className="text-left space-y-3 mb-8">
               <li className="flex items-center gap-2">
                 <span className="text-solo-success">✓</span>
+                <span>Plan &amp; build a real website by directing an AI — in your own GitHub repo</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <span className="text-solo-success">✓</span>
                 <span>The full Solo Stack Method framework (open on GitHub)</span>
               </li>
               <li className="flex items-center gap-2">
@@ -381,11 +385,11 @@ export default function HomePage() {
                 <span>Stack Pulse — know when your tools change</span>
               </li>
             </ul>
-            <Link href="/tools" className="btn-primary w-full block">
-              Explore The Stack →
+            <Link href="/build" className="btn-primary w-full block">
+              Build your site — free →
             </Link>
             <p className="text-xs text-gray-400 mt-4">
-              A Pro tier (the guided 7-step workflow + dual-audit) is in the works.
+              A Pro tier (the in-product AI agent + managed upgrades) is in the works.
             </p>
           </div>
         </div>
