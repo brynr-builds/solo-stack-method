@@ -242,7 +242,7 @@ export default function CRMPage() {
                     {aiSummary ? (
                       <pre className="text-sm text-gray-800 whitespace-pre-wrap font-sans bg-gray-50 rounded-lg p-4">{aiSummary}</pre>
                     ) : (
-                      <p className="text-xs text-gray-400">Click "Summarize Blockers" to generate an AI analysis.</p>
+                      <p className="text-xs text-gray-400">Click &quot;Summarize Blockers&quot; to generate an AI analysis.</p>
                     )}
                   </div>
                 </div>
