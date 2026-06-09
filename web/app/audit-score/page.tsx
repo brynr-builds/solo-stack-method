@@ -481,7 +481,7 @@ export default function AuditScorePage() {
             <h3 className="text-lg font-bold text-gray-900">Local Build Mode</h3>
           </div>
           <p className="text-gray-600 text-sm">
-            In a future version, the build will happen locally on your computer. You'll develop with AI agents 
+            In a future version, the build will happen locally on your computer. You&apos;ll develop with AI agents
             on your own machine, then upload your project for audit scoring. This keeps your code private 
             during development and only exposes it during the governed review process.
           </p>
