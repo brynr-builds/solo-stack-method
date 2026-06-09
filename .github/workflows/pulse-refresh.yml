@@ -1,0 +1,49 @@
+# Stack Pulse — automatic refresh
+# Fetches the current latest version + release date for every tool in web/lib/pulse/sources.json
+# and commits web/lib/pulse/snapshot.json when anything changed. Netlify then auto-deploys, so the
+# live /pulse page updates automatically. (This is the "autodeploys updates as they're pushed" loop.)
+#
+# Note: this commits a DATA file directly to the default branch — the one sanctioned auto-commit
+# (no code, no secrets). The page also fetches live at runtime (ISR), so this is the resilient
+# fallback, not the only refresh mechanism.
+
+name: stack-pulse-refresh
+
+on:
+  schedule:
+    - cron: "17 */6 * * *" # every 6 hours (offset to avoid the top-of-hour rush)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pulse-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Refresh the pulse snapshot
+        run: node scripts/refresh-pulse.mjs
+
+      - name: Commit if the snapshot changed
+        run: |
+          if git diff --quiet -- web/lib/pulse/snapshot.json; then
+            echo "No tool updates since last run — nothing to commit."
+            exit 0
+          fi
+          git config user.name  "stack-pulse-bot"
+          git config user.email "stack-pulse-bot@users.noreply.github.com"
+          git add web/lib/pulse/snapshot.json
+          git commit -m "chore(pulse): refresh stack snapshot [skip ci]
+
+          INTENT: automated Stack Pulse data refresh (versions/release dates)."
+          git push

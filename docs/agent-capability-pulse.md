@@ -8,7 +8,7 @@
 
 ## Overview
 
-The Agent Capability Pulse is a **weekly assessment** that evaluates each AI agent's fitness for specific roles (Builder, Final Auditor, etc.) based on:
+The Agent Capability Pulse is a **weekly assessment** that evaluates each AI agent's fitness for specific roles (Builder, Auditor, etc.) based on:
 
 1. **Internal signals** — Performance metrics from actual work in this repository
 2. **Verified external updates** — Confirmed model releases and capability changes
@@ -78,8 +78,23 @@ Invalid sources:
 # Example from agent-profiles.yaml
 advisory_cycles_completed:
   Builder: 3        # Still in advisory (needs 5)
-  Final_Auditor: 7  # Past advisory, auto-assign eligible
+  Auditor: 7        # Past advisory, auto-assign eligible
 ```
+
+---
+
+## Models Are De-Pinned (roles, not model families)
+
+Assignments reference **roles** that resolve through the `capability_table` in
+`agents/agent-profiles.yaml` — never a hard-coded model. The pulse keeps that table current.
+
+- Each table entry has a `model_ref` and a `last_verified` date. Updating a model is a one-line edit.
+- **Weigh the harness, not just the base model.** The scaffold (Claude Code / Codex / Cursor) can
+  swing real-world coding performance as much as the underlying model — assess the agent+harness pair.
+- **Prefer a different provider for the Auditor** than the Builder, so the audit has independent
+  blind spots (see `docs/adr/0001-independent-cross-model-audit.md`).
+- A stale `last_verified` (e.g. months old, or pinned to a retired model) is itself a finding: it
+  means the pulse hasn't actually been run. Fix it.
 
 ---
 
@@ -139,4 +154,4 @@ Confidence is updated weekly based on internal signals.
 
 ---
 
-*Last updated: Governed by AI_CONTRACT.md*
+*Last updated: 2026-06-09 · Governed by AI_CONTRACT.md*

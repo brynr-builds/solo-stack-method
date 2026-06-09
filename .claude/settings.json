@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "//": "Scoped Approval Gateway, machine-enforced. The prose version lives in AI_CONTRACT.md; THIS is the source of truth agents obey. allow = no prompt, ask = confirm first, deny = never.",
+  "permissions": {
+    "allow": [
+      "Read",
+      "Edit(docs/**)",
+      "Edit(workflows/**)",
+      "Edit(PROMPTS/**)",
+      "Edit(logs/**)",
+      "Write(docs/**)",
+      "Write(workflows/**)",
+      "Write(PROMPTS/**)",
+      "Edit(**/*.md)",
+      "Bash(git status)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx tsc --noEmit)"
+    ],
+    "ask": [
+      "Edit(web/app/**)",
+      "Edit(web/lib/**)",
+      "Edit(web/components/**)",
+      "Edit(src/**)",
+      "Edit(**/migrations/**)",
+      "Edit(agents/**)",
+      "Write(web/**)",
+      "Bash(git push:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run build)"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(web/.env*)",
+      "Read(**/secrets/**)",
+      "Edit(**/.env*)",
+      "Edit(**/*billing*)",
+      "Edit(**/*payment*)",
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(:* DROP TABLE:*)",
+      "Bash(:* TRUNCATE:*)"
+    ]
+  }
+}

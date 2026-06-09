@@ -34,14 +34,20 @@ export default function HomePage() {
             Solo Stack Method™
           </div>
           <div className="flex items-center gap-6">
+            <Link href="/tools" className="text-gray-600 hover:text-solo-primary transition-colors">
+              The Stack
+            </Link>
+            <Link href="/guides" className="text-gray-600 hover:text-solo-primary transition-colors">
+              Guides
+            </Link>
             <Link href="/pulse" className="text-gray-600 hover:text-solo-primary transition-colors">
               Stack Pulse
             </Link>
             <Link href="/login" className="btn-secondary text-sm py-2 px-4">
               Log In
             </Link>
-            <Link href="/signup" className="btn-primary text-sm py-2 px-4">
-              Start Building
+            <Link href="/build" className="btn-primary text-sm py-2 px-4">
+              Build your site
             </Link>
           </div>
         </div>
@@ -54,11 +60,14 @@ export default function HomePage() {
             Build real software with AI — without losing control, from idea to deployment.
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            A governed workflow for non-technical builders who want to ship real projects using AI as their execution engine.
+            A governed workflow for non-technical builders who want to ship real projects using AI as their execution engine — plus the curated, honestly-ranked stack of tools to do it.
           </p>
           <div className="flex justify-center gap-4">
-            <Link href="/signup" className="btn-primary text-lg px-8 py-4">
-              Start Your First Project — $20/month
+            <Link href="/build" className="btn-primary text-lg px-8 py-4">
+              Build your site →
+            </Link>
+            <Link href="/tools" className="btn-secondary text-lg px-8 py-4">
+              Explore The Stack
             </Link>
           </div>
         </div>
@@ -346,46 +355,42 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Pricing */}
+      {/* Start Free — affiliate-first; subscription demoted to a future note (owner decision 2026-06-09) */}
       <section className="py-20 px-6">
         <div className="max-w-md mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12">Simple Pricing</h2>
+          <h2 className="text-3xl font-bold text-center mb-3">Start Free</h2>
+          <p className="text-center text-gray-600 mb-10">
+            The method, The Stack, and the guides are free to use. No account required.
+          </p>
           <div className="card text-center">
-            <div className="text-5xl font-bold text-solo-primary mb-2">$20</div>
-            <div className="text-gray-500 mb-6">per month</div>
             <ul className="text-left space-y-3 mb-8">
               <li className="flex items-center gap-2">
                 <span className="text-solo-success">✓</span>
-                <span>One active project</span>
+                <span>Plan &amp; build a real website by directing an AI — in your own GitHub repo</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-solo-success">✓</span>
-                <span>Full 7-step guided workflow</span>
+                <span>The full Solo Stack Method framework (open on GitHub)</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-solo-success">✓</span>
-                <span>Step-scoped AI chat assistance</span>
+                <span>The Stack — curated, honestly-ranked tools for solo builders</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-solo-success">✓</span>
-                <span>Dual audit system (Claude + ChatGPT)</span>
+                <span>Dogfooded guides &amp; comparisons</span>
               </li>
               <li className="flex items-center gap-2">
                 <span className="text-solo-success">✓</span>
-                <span>Stack Pulse monitoring</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-solo-success">✓</span>
-                <span>Enterprise-takeover-ready output</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-solo-success">✓</span>
-                <span>Cancel anytime</span>
+                <span>Stack Pulse — know when your tools change</span>
               </li>
             </ul>
-            <Link href="/signup" className="btn-primary w-full block">
-              Start Building Today
+            <Link href="/build" className="btn-primary w-full block">
+              Build your site — free →
             </Link>
+            <p className="text-xs text-gray-400 mt-4">
+              A Pro tier (the in-product AI agent + managed upgrades) is in the works.
+            </p>
           </div>
         </div>
       </section>
@@ -397,6 +402,8 @@ export default function HomePage() {
             © 2026 Solo Stack Method™. All rights reserved.
           </div>
           <div className="flex gap-6 text-sm">
+            <Link href="/tools" className="text-gray-500 hover:text-solo-primary">The Stack</Link>
+            <Link href="/guides" className="text-gray-500 hover:text-solo-primary">Guides</Link>
             <Link href="/pulse" className="text-gray-500 hover:text-solo-primary">Stack Pulse</Link>
             <Link href="/audit-score" className="text-gray-500 hover:text-solo-primary">Audit Score</Link>
             <Link href="/terms" className="text-gray-500 hover:text-solo-primary">Terms</Link>

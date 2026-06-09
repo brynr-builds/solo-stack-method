@@ -1,0 +1,16 @@
+[
+  { "name": "Next.js",        "category": "Framework", "npm": "next",                  "url": "https://nextjs.org" },
+  { "name": "React",          "category": "Framework", "npm": "react",                 "url": "https://react.dev" },
+  { "name": "Astro",          "category": "Framework", "npm": "astro",                 "url": "https://astro.build" },
+  { "name": "Tailwind CSS",   "category": "Styling",   "npm": "tailwindcss",           "url": "https://tailwindcss.com" },
+  { "name": "TypeScript",     "category": "Language",  "npm": "typescript",            "url": "https://www.typescriptlang.org" },
+  { "name": "Node.js",        "category": "Runtime",   "node": true,                   "url": "https://nodejs.org" },
+  { "name": "Vite",           "category": "Build",     "npm": "vite",                  "url": "https://vite.dev" },
+  { "name": "Vitest",         "category": "Testing",   "npm": "vitest",                "url": "https://vitest.dev" },
+  { "name": "ESLint",         "category": "Tooling",   "npm": "eslint",                "url": "https://eslint.org" },
+  { "name": "Prisma",         "category": "Backend",   "npm": "prisma",                "url": "https://www.prisma.io" },
+  { "name": "Supabase JS",    "category": "Backend",   "npm": "@supabase/supabase-js", "url": "https://supabase.com" },
+  { "name": "Anthropic SDK",  "category": "AI",        "npm": "@anthropic-ai/sdk",     "url": "https://docs.anthropic.com" },
+  { "name": "OpenAI SDK",     "category": "AI",        "npm": "openai",                "url": "https://platform.openai.com/docs" },
+  { "name": "Vercel AI SDK",  "category": "AI",        "npm": "ai",                    "url": "https://sdk.vercel.ai" }
+]

@@ -1,108 +1,77 @@
-# Agent Profiles Configuration
+# Agent Profiles — Solo Stack Method
 #
-# Intent (Dev Notes):
-# This file defines the AI agents available for Solo Stack Method™ tasks
-# and tracks their role assignments, advisory status, and confidence levels.
-# It is the source of truth for determining which agent handles which role.
+# INTENT (Dev Notes):
+#   Source of truth for which ROLE is assigned to which model. Roles are resolved from the dated
+#   capability table below, NOT hard-coded to a model family — because frontier models change every
+#   few weeks and the scaffold/harness matters as much as the base model. The weekly Agent
+#   Capability Pulse keeps `capability_table` current; assignments reference roles, so swapping a
+#   model is a one-line table edit, not a rewrite.
 #
-# Last updated: Initial configuration
-# ---
+# Last updated: 2026-06-09 (de-pinned from the stale claude-3/gpt-4 config).
 
-# Global defaults
 defaults:
   advisory_cycles_required_for_auto: 5
   weekly_pulse_day: Friday
   confidence_threshold_for_auto: 61
-
-# Agent definitions
-agents:
-  Claude:
-    display_name: "Claude (Anthropic)"
-    model_family: "claude-3"
-    roles_allowed:
-      - Builder
-      - Final_Auditor
-      - Documentation
-    current_assignments:
-      - Builder  # Default builder per AI_CONTRACT.md
-    advisory_cycles_completed:
-      Builder: 0
-      Final_Auditor: 0
-      Documentation: 0
-    confidence:
-      Builder: 50  # Starting confidence, will adjust based on performance
-      Final_Auditor: 50
-      Documentation: 60
-    auto_assign_enabled: false
-    last_external_update_reviewed: null
-    notes: "Default builder agent. Strong at code generation and documentation."
-
-  ChatGPT:
-    display_name: "ChatGPT (OpenAI)"
-    model_family: "gpt-4"
-    roles_allowed:
-      - Builder
-      - Final_Auditor
-      - Documentation
-    current_assignments:
-      - Final_Auditor  # Default final auditor per AI_CONTRACT.md
-    advisory_cycles_completed:
-      Builder: 0
-      Final_Auditor: 0
-      Documentation: 0
-    confidence:
-      Builder: 50
-      Final_Auditor: 55  # Slightly higher due to audit focus
-      Documentation: 50
-    auto_assign_enabled: false
-    last_external_update_reviewed: null
-    notes: "Default final auditor. Strong at reasoning and edge case analysis."
-
-  # Template for adding new agents
-  # Cursor:
-  #   display_name: "Cursor AI"
-  #   model_family: "cursor"
-  #   roles_allowed:
-  #     - Builder
-  #     - Stabilization
-  #   current_assignments: []
-  #   advisory_cycles_completed:
-  #     Builder: 0
-  #     Stabilization: 0
-  #   confidence:
-  #     Builder: 30
-  #     Stabilization: 40
-  #   auto_assign_enabled: false
-  #   last_external_update_reviewed: null
-  #   notes: "Specialized for codebase stabilization passes."
+  audit_independence: strict          # builder != final auditor, always
+  prefer_cross_provider_audit: true   # different provider for the audit pass (different blind spots)
 
 # Role definitions
 roles:
   Builder:
-    description: "Creates changes, implements features, writes code/docs"
+    description: "Implements features and writes code/docs."
     requires_audit: true
-    can_self_audit: true  # For Prompt v1.5
+    can_self_audit: true            # builder self-check (lightweight)
     cannot_final_audit_own_work: true
-
-  Final_Auditor:
-    description: "Reviews changes for quality, security, and contract compliance"
+  Auditor:
+    description: "Independently reviews changes for correctness, security, intent. Runs AFTER deterministic gates pass."
     requires_evidence: true
-    verdicts:
-      - Approve
-      - Changes_Requested
-      - Block
-
+    verdicts: [Approve, Changes_Requested, Block]
   Documentation:
-    description: "Creates and maintains documentation"
-    requires_audit: false  # Lower stakes, faster iteration
-
+    description: "Creates and maintains docs/ADRs."
+    requires_audit: false
   Stabilization:
-    description: "Refactoring and code quality improvements"
+    description: "Behavior-preserving refactors / quality passes."
     requires_audit: true
-    preservation_required: true  # Must preserve existing behavior
+    preservation_required: true
 
-# Independence rules
+# Capability table — maintained by the weekly Capability Pulse.
+# Update model_ref to current frontier; assignments below reference the ROLE, not the model.
+# (Values current as of 2026-06-09; verify against official releases at each pulse.)
+capability_table:
+  primary_builder:
+    model_ref: "claude-opus-4-x (Claude Code)"
+    why: "Strong agentic coding + tool use; high SWE-bench."
+    last_verified: 2026-06-09
+  primary_auditor:
+    model_ref: "gpt-5.x-codex (or Gemini 3.x)"
+    why: "Different provider than the builder → independent blind spots for the audit pass."
+    last_verified: 2026-06-09
+  documentation:
+    model_ref: "claude-opus-4-x"
+    last_verified: 2026-06-09
+  notes: >
+    Pin nothing here long-term. If a pulse shows a better builder/auditor (by official release +
+    observed performance, NOT self-claim), edit model_ref and bump last_verified. Weigh the harness
+    (Claude Code / Codex / Cursor), not just the base model.
+
+# Current role assignments (reference capability_table keys, not model families).
+assignments:
+  Builder: primary_builder
+  Auditor: primary_auditor          # MUST differ from Builder's provider where possible
+  Documentation: documentation
+
+# Independence enforcement
 independence:
-  rule: "Builder and Final Auditor must be different agents"
+  rule: "Builder and Auditor must be different agents (prefer different providers)."
   exceptions: []
   enforcement: strict
+
+# Per-role advisory/auto-assignment state (human keeps final call until 5 clean cycles).
+state:
+  auto_assign_enabled: false
+  advisory_cycles_completed:
+    Builder: 0
+    Auditor: 0
+    Documentation: 0
+  last_pulse_run: null              # set by docs/agent-capability-pulse.md run; null = never run yet
