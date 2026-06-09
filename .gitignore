@@ -5,9 +5,11 @@ node_modules/
 .next/
 out/
 
-# Builds
-dist/
-build/
+# Builds (output dirs). NOTE: anchored to root so they don't match source dirs literally
+# named "build" (e.g. web/app/build, web/lib/build — the /build product flow).
+/dist/
+/build/
+**/.next/
 coverage/
 .turbo/
 .cache/
