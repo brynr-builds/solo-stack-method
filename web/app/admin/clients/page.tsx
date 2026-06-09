@@ -1,7 +1,7 @@
 /*
  * DEV NOTES / Intent:
  * - Why: Lightweight CRM for process intelligence (NOT sales)
- * - Purpose: Understand where users are, what's blocking them, 
+ * - Purpose: Understand where users are, what&apos;s blocking them,
  *   and how the process is performing per-user
  * - Phase 1.3: All data mocked, no database, no real users
  * - Phase 2+: Real user data from Supabase
@@ -16,7 +16,7 @@
  * Allowed actions (V1):
  * - Tag user (local state only)
  * - Add internal note (local state only)
- * - Ask AI: "Summarize this user's blockers" (placeholder)
+ * - Ask AI: "Summarize this user&apos;s blockers" (placeholder)
  *
  * Compatibility:
  * - New route (/admin/clients), no impact on existing routes
@@ -114,7 +114,7 @@ export default function CRMPage() {
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Client Intelligence</h1>
-            <p className="text-gray-600">Process intelligence — understand where users are and what's blocking them.</p>
+            <p className="text-gray-600">Process intelligence — understand where users are and what&apos;s blocking them.</p>
             <p className="text-xs text-amber-600 mt-1">Phase 1.3 — All data mocked. No real users. No email. No automation.</p>
           </div>
 
@@ -242,7 +242,7 @@ export default function CRMPage() {
                     {aiSummary ? (
                       <pre className="text-sm text-gray-800 whitespace-pre-wrap font-sans bg-gray-50 rounded-lg p-4">{aiSummary}</pre>
                     ) : (
-                      <p className="text-xs text-gray-400">Click "Summarize Blockers" to generate an AI analysis.</p>
+                      <p className="text-xs text-gray-400">Click &quot;Summarize Blockers&quot; to generate an AI analysis.</p>
                     )}
                   </div>
                 </div>
