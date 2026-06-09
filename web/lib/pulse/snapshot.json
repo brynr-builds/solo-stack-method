@@ -1,0 +1,102 @@
+{
+  "items": [
+    {
+      "name": "Next.js",
+      "category": "Framework",
+      "url": "https://nextjs.org",
+      "version": "16.2.7",
+      "date": "2026-06-01T18:18:54.597Z"
+    },
+    {
+      "name": "React",
+      "category": "Framework",
+      "url": "https://react.dev",
+      "version": "19.2.7",
+      "date": "2026-06-01T18:00:48.323Z"
+    },
+    {
+      "name": "Astro",
+      "category": "Framework",
+      "url": "https://astro.build",
+      "version": "6.4.4",
+      "date": "2026-06-03T17:37:01.753Z"
+    },
+    {
+      "name": "Tailwind CSS",
+      "category": "Styling",
+      "url": "https://tailwindcss.com",
+      "version": "4.3.0",
+      "date": "2026-05-08T20:25:26.174Z"
+    },
+    {
+      "name": "TypeScript",
+      "category": "Language",
+      "url": "https://www.typescriptlang.org",
+      "version": "6.0.3",
+      "date": "2026-04-16T23:38:27.905Z"
+    },
+    {
+      "name": "Node.js",
+      "category": "Runtime",
+      "url": "https://nodejs.org",
+      "version": "26.3.0",
+      "date": "2026-06-01"
+    },
+    {
+      "name": "Vite",
+      "category": "Build",
+      "url": "https://vite.dev",
+      "version": "8.0.16",
+      "date": "2026-06-01T09:50:43.261Z"
+    },
+    {
+      "name": "Vitest",
+      "category": "Testing",
+      "url": "https://vitest.dev",
+      "version": "4.1.8",
+      "date": "2026-06-01T08:14:50.474Z"
+    },
+    {
+      "name": "ESLint",
+      "category": "Tooling",
+      "url": "https://eslint.org",
+      "version": "10.4.1",
+      "date": "2026-05-29T20:32:32.193Z"
+    },
+    {
+      "name": "Prisma",
+      "category": "Backend",
+      "url": "https://www.prisma.io",
+      "version": "7.8.0",
+      "date": "2026-04-22T14:16:58.268Z"
+    },
+    {
+      "name": "Supabase JS",
+      "category": "Backend",
+      "url": "https://supabase.com",
+      "version": "2.108.0",
+      "date": "2026-06-08T12:01:57.054Z"
+    },
+    {
+      "name": "Anthropic SDK",
+      "category": "AI",
+      "url": "https://docs.anthropic.com",
+      "version": "0.102.0",
+      "date": "2026-06-06T17:15:26.425Z"
+    },
+    {
+      "name": "OpenAI SDK",
+      "category": "AI",
+      "url": "https://platform.openai.com/docs",
+      "version": "6.42.0",
+      "date": "2026-06-03T22:39:18.764Z"
+    },
+    {
+      "name": "Vercel AI SDK",
+      "category": "AI",
+      "url": "https://sdk.vercel.ai",
+      "version": "6.0.198",
+      "date": "2026-06-08T17:44:44.179Z"
+    }
+  ]
+}
