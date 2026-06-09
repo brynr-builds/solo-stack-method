@@ -22,7 +22,7 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
     // TODO Phase 2: Implement Supabase auth
-    console.log('Signup attempt:', { email })
+
     setTimeout(() => {
       setLoading(false)
       setStep('payment')

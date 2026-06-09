@@ -19,7 +19,7 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
     // TODO Phase 2: Implement Supabase auth
-    console.log('Login attempt:', { email })
+
     // Simulate login
     setTimeout(() => {
       window.location.href = '/dashboard'
@@ -75,7 +75,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-solo-accent font-medium hover:underline">
               Sign up
             </Link>
