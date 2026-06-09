@@ -14,6 +14,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import ClientProviders from '../components/ClientProviders'
+import Analytics from '../components/Analytics'
 
 export const metadata: Metadata = {
   title: 'Solo Stack Method™ — Build real software with AI',
@@ -31,6 +32,7 @@ export default function RootLayout({
         <ClientProviders>
           {children}
         </ClientProviders>
+        <Analytics />
       </body>
     </html>
   )

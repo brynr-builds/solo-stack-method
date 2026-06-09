@@ -8,11 +8,12 @@
  */
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import {
   SITE_TYPES, GOALS, VIBES, sectionsFor, defaultSectionIds, generatePlan,
   type Answers, type SiteType, type Goal, type Vibe,
 } from '../lib/build/plan'
+import { track } from '../lib/analytics'
 
 const STEPS = ['Type', 'Idea', 'Audience', 'Goal', 'Sections', 'Style', 'Review'] as const
 
@@ -39,7 +40,9 @@ export default function PlanIntake({ onComplete }: { onComplete: (plan: ReturnTy
     }
   }, [step, siteType, oneLiner, goal, sections, vibe])
 
+  const started = useRef(false)
   function pickType(t: SiteType) {
+    if (!started.current) { track('plan_started'); started.current = true }
     setSiteType(t)
     setSections(defaultSectionIds(t)) // smart defaults
   }
@@ -52,6 +55,7 @@ export default function PlanIntake({ onComplete }: { onComplete: (plan: ReturnTy
 
   function finish() {
     if (!siteType || !goal || !vibe) return
+    track('plan_completed', { siteType, goal })
     const answers: Answers = { siteType, oneLiner, audience, goal, sections, vibe }
     onComplete(generatePlan(answers))
   }

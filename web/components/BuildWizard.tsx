@@ -12,6 +12,7 @@
 import { useEffect, useState } from 'react'
 import PlanIntake from './PlanIntake'
 import type { Plan } from '../lib/build/plan'
+import { track } from '../lib/analytics'
 
 type Me = { configured: boolean; connected: boolean; login?: string }
 
@@ -142,7 +143,7 @@ export default function BuildWizard({ templateRepo }: { templateRepo: string }) 
               <li>✓ The free <strong>Cursor</strong> app — to build by chatting, step 5</li>
             </ul>
           </div>
-          <a href="/api/build/login" className="btn-primary inline-flex items-center gap-2"><GitHubMark /> Connect or create my free GitHub</a>
+          <a href="/api/build/login" onClick={() => track('connect_github_click')} className="btn-primary inline-flex items-center gap-2"><GitHubMark /> Connect or create my free GitHub</a>
           <p className="text-xs text-gray-400 mt-3">We only ask permission to create one public site for you — nothing private.</p>
         </div>
       )}
