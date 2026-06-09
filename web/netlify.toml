@@ -1,8 +1,10 @@
 # Netlify configuration for Solo Stack Method web app
-# DEV NOTES:
-# - Why: Deploy Next.js app to Netlify with optimized settings
-# - Phase 1: Basic deployment, no Edge Functions integration yet
-# - Phase 2+: Connect to Stack Pulse Edge Function, add auth redirects
+# DEV NOTES (2026-06-08):
+# - Why: Deploy the Next.js 14 App Router app on Netlify.
+# - FIXED: removed the `/* -> /index.html` SPA-fallback redirect. That rule is WRONG for a
+#   Next.js App Router app — it hijacked every dynamic route (/tools/<slug>, /go/<slug>,
+#   /api/*, /admin/*) and served a static index.html, which would have broken the affiliate
+#   redirect and the per-program pages. The @netlify/plugin-nextjs handles routing itself.
 
 [build]
   command = "npm run build"
@@ -11,17 +13,11 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# Next.js on Netlify plugin
+# Next.js on Netlify plugin — owns routing for App Router (do NOT add SPA redirects).
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
-# Redirects for SPA routing
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
-# Headers for security
+# Security headers
 [[headers]]
   for = "/*"
   [headers.values]
@@ -29,8 +25,7 @@
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
 
-# Environment variable placeholders
-# Set these in Netlify dashboard:
-# - NEXT_PUBLIC_SUPABASE_URL
-# - NEXT_PUBLIC_SUPABASE_ANON_KEY
-# - SUPABASE_SERVICE_ROLE_KEY (for server-side)
+# Environment variables to set in the Netlify dashboard:
+# - DATABASE_URL                          (admin auth Postgres)
+# - ADMIN_*  (see docs/solo-stack/ADMIN_AUTH.md)
+# - KV_REST_API_URL / KV_REST_API_TOKEN   (durable affiliate click logging; optional)

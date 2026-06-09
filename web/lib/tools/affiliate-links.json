@@ -1,0 +1,3 @@
+{
+  "_README": "Paste your REAL affiliate tracking links here, one per program slug, AFTER you're approved (Gate 3). Example: \"kit\": \"https://kit.com/?lmref=YOURID\". The moment a link is here, every /go/<slug> on the site starts earning — no other change. Use `node scripts/set-link.mjs <slug> <url>` to add one from the terminal. Leave this file as {} (minus the _README) until you have real links."
+}

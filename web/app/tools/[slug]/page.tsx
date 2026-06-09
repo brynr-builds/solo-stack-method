@@ -10,7 +10,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { programs, getProgram, commissionLabel } from '../../../lib/tools'
+import { programs, getProgram, commissionLabel, outboundUrl } from '../../../lib/tools'
 import AffiliateDisclosure from '../../../components/AffiliateDisclosure'
 
 export function generateStaticParams() {
@@ -75,9 +75,9 @@ export default function ProgramPage({ params }: { params: { slug: string } }) {
           <Stat label="Commission" value={commissionLabel(p.commission)} />
           <Stat label="Cookie window" value={p.cookieDays ? `${p.cookieDays} days` : '—'} />
           <Stat label="Approval" value={p.approval ?? '—'} />
+          <Stat label="Network" value={p.network ?? '—'} />
           <Stat label="New-site friendly" value={p.newSiteFriendly == null ? '—' : p.newSiteFriendly ? 'Yes' : 'No'} />
           <Stat label="Payout reach" value={p.payoutCountries ?? '—'} />
-          {p.score != null && <Stat label="Stack score" value={`${p.score}/100`} />}
         </div>
 
         {p.demand && (
@@ -87,24 +87,29 @@ export default function ProgramPage({ params }: { params: { slug: string } }) {
           </div>
         )}
 
+        {p.caveat && (
+          <div className="mb-8 bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <span className="font-semibold text-amber-800">Good to know: </span>
+            <span className="text-amber-900">{p.caveat}</span>
+          </div>
+        )}
+
         <div className="mb-8">
           <AffiliateDisclosure />
         </div>
 
-        {p.sourceUrl && (
-          <a
-            href={p.sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer sponsored"
-            className="btn-primary inline-block"
-          >
-            Visit {p.name} &rarr;
-          </a>
-        )}
+        <a
+          href={outboundUrl(p)}
+          target="_blank"
+          rel="noopener noreferrer sponsored nofollow"
+          className="btn-primary inline-block"
+        >
+          Visit {p.name} &rarr;
+        </a>
 
         <p className="text-xs text-gray-400 mt-6">
-          Figures sourced from our research corpus and {p.verified ? 'verified against the program page' : 'pending final verification against the program page'}.
-          Commission terms can change — confirm current rates on the program&rsquo;s own site before applying.
+          Figures {p.verified ? 'verified against the program’s official affiliate page' : 'pending final verification against the program page'} (June 2026).
+          Commission terms change often — confirm current rates on the program&rsquo;s own site before relying on them.
         </p>
       </div>
     </div>
