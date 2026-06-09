@@ -22,7 +22,7 @@ export default function SignupPage() {
     e.preventDefault()
     setLoading(true)
     // TODO Phase 2: Implement Supabase auth
-    console.log('Signup attempt:', { email })
+
     setTimeout(() => {
       setLoading(false)
       setStep('payment')
@@ -32,7 +32,7 @@ export default function SignupPage() {
   const handlePayment = async () => {
     setLoading(true)
     // TODO Phase 2: Implement Stripe checkout
-    console.log('Payment initiated')
+
     setTimeout(() => {
       window.location.href = '/dashboard'
     }, 1000)
