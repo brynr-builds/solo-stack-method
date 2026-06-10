@@ -1,6 +1,6 @@
 ---
 title: The Solo Founder Stack (And What It Actually Costs in 2026)
-description: We built real projects with these tools. Here's the exact stack a solo founder needs end-to-end — domain, hosting, email, funnels, AI, design — with real monthly cost breakdowns.
+description: The exact stack a solo founder needs end-to-end — domain, hosting, email, funnels, AI, design — with honest monthly cost breakdowns and when each tool is worth it.
 updated: 2026-06-09
 author: Solo Stack Method
 programs:
@@ -17,7 +17,7 @@ There's a gap between "tools to build with AI" and "tools to actually run a busi
 
 Solo founders get stuck in analysis paralysis trying to pick the perfect dozen tools. The truth is you only need seven to cover the full lifecycle: a domain, hosting, email, funnels, AI help, design, and growth.
 
-Here's our exact stack — what we actually pay for every month — and when to pick which tool over the alternatives. (Prices are approximate as of June 2026; confirm current pricing on each tool's site.)
+Here's the stack we recommend — what it actually costs month to month — and when to pick which tool over the alternatives. (Prices are approximate as of June 2026; confirm current pricing on each tool's site.)
 
 ## The 30-second answer
 
@@ -43,7 +43,7 @@ Most solo founders over-buy tools for phases they aren't in yet. We'll keep it r
 
 ## Domain — every project needs a home
 
-**Namecheap** is where we start almost every project. It's not fancy, but it works and it's something you can buy once and forget about.
+**Namecheap** is our pick for the starting line of nearly any project. It's not fancy, but it works and it's something you can buy once and forget about.
 
 - **Pros:** cheapest entry point for domains; straightforward interface; it just works.
 - **Cons:** feels behind the times when you're used to modern SaaS products; the control panel looks like it hasn't been updated since 2010.
@@ -67,7 +67,7 @@ Most solo founders over-buy tools for phases they aren't in yet. We'll keep it r
 
 ## Email — the one asset you actually own
 
-**Kit (ConvertKit)** is what we use for our own email list. Built for creators but works for any solo founder.
+**Kit (ConvertKit)** is our email pick. Built for creators but works for any solo founder.
 
 - **Pros:** tag-based subscriber model is perfect for organizing people by how they found you; automations are visual and actually work; the creator ecosystem (commerce, recommendations) compounds.
 - **Cons:** pricing climbs with subscriber count (no flat-rate plans); if you just want to send a monthly newsletter, it's more tool than you need.
@@ -103,19 +103,19 @@ Most solo founders over-buy tools for phases they aren't in yet. We'll keep it r
 
 ## Design — making things look good with no skills
 
-**Canva** is the ultimate solo founder tool for design. You'd be surprised how many projects we build where they're like "just make it look decent."
+**Canva** is the ultimate solo founder tool for design — most projects only ever need "make it look decent," and that's exactly Canva's job.
 
 - **Pros:** everyone already knows how to use it; handles social media, simple graphics, presentations; the free tier is genuinely useful.
 - **Cons:** the best bits (brand kit, background remover, resizing) are gated behind Pro; serious designers will eventually outgrow it.
 - **The catch we'd flag:** the free tier covers more than you'd expect — only upgrade to Pro when you actually hit a gate, not on day one.
 
-**Cost:** the Pro plan is $12.99/month, but you only get paid when someone converts to Pro from your link.
+**Cost:** free tier for the basics; Pro is ~$12.99/month when you hit the gates.
 
 **When to use:** Always. Even if you use other design tools, Canva handles the 90% of "make this look presentable" tasks.
 
 ## Growth — getting traffic and finding your audience
 
-**Semrush** is our SEO and growth tool, saved for when we need to go beyond just publishing content.
+**Semrush** is our growth pick, for when you need to go beyond just publishing content.
 
 - **Pros:** best-in-class keyword and competitor data; one tool covers keyword research, site audits, and rank tracking; the reports actually tell you what to do next.
 - **Cons:** priced for businesses, not hobbyists — it's the most expensive thing on this list by far.
@@ -125,19 +125,19 @@ Most solo founders over-buy tools for phases they aren't in yet. We'll keep it r
 
 **When to use:** When you need to track keywords, analyze competition, or do serious content marketing beyond just writing.
 
-## What we actually pay each month
+## What the full stack costs each month
 
-Here's what our real costs look like when you're running multiple projects:
+Here's what it adds up to if you run everything at once:
 
 - Namecheap: ~$12/year (so ~$1/month)
-- Cloudways: ~$50/month (for the package we use)
+- Cloudways: ~$50/month (a mid-size server)
 - Kit: $29/month (500 subscribers)
-- ClickFunnels: $127/month (when we really need it)
+- ClickFunnels: ~$127/month (only when you're selling)
 - Copy.ai: $24/month
 - Canva: $12.99/month (Pro version)
-- Semrush: $119/month (when we're actively growing)
+- Semrush: ~$119/month (only in growth phase)
 
-**Total:** ~$373/month when we're using everything, but we often layer them in as needed.
+**Total:** ~$373/month with everything on — but almost nobody should start there. Layer tools in as each bottleneck actually appears.
 
 ## Our situation-based picks
 

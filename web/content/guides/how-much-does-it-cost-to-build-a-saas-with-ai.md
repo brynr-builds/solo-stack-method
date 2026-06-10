@@ -1,6 +1,6 @@
 ---
 title: How Much Does It Cost to Build a SaaS with AI? (Real Numbers)
-description: Honest cost breakdown for shipping an AI-built SaaS solo: hosting + email + funnel + AI tools. The real numbers from people who actually do this.
+description: Honest cost breakdown for shipping an AI-built SaaS solo — hosting + email + funnel + AI tools, tier by tier, with the math shown.
 updated: 2026-06-09
 author: Solo Stack Method
 programs:

@@ -1,6 +1,6 @@
 ---
 title: Kit vs GetResponse vs MailerLite — Best Email Tool for Solo Founders (2026)
-description: We run an email list on these tools. Here's the honest call on which one a solo builder should start with — by price, deliverability, automation, and how fast you outgrow it.
+description: The honest call on which email tool a solo builder should start with — by price, deliverability, automation, and how fast you outgrow it.
 updated: 2026-06-08
 author: Solo Stack Method
 programs:
@@ -12,7 +12,7 @@ programs:
 Your email list is the one asset you actually own. Not your followers, not your SEO rankings —
 the list. So the tool you build it on matters more than almost anything else in your stack.
 
-We've shipped projects on all three of these. Here's the short version, then the detail.
+We ran all three through the same research rubric we use on our own stack. Here's the short version, then the detail.
 
 ## The 30-second answer
 
