@@ -237,7 +237,7 @@ export default function HomePage() {
             Every feature of Solo Stack Method was built using the governed workflow you'll learn. 
             Claude builds, ChatGPT audits, and every change goes through a pull request.
           </p>
-          <Link href="https://github.com/brynr-builds/solo-stack-method" target="_blank" className="btn-secondary">
+          <Link href="https://github.com/brynr-builds/solo-stack-method" target="_blank" rel="noopener noreferrer" className="btn-secondary">
             View Public Repository →
           </Link>
         </div>

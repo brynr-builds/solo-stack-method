@@ -31,8 +31,6 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
     // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
-    // eslint-disable-next-line no-console
-    console.log('Pulse signup:', { email, watch })
     setSubmitted(true)
   }
 
