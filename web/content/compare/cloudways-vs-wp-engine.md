@@ -19,6 +19,8 @@ We put both through the same research checklist we use on our own stack. Here's 
 
 There is no universally "best" — there's a best *for what you built and what you might become*. Below is how we'd actually choose.
 
+*Prices shown are approximate — confirm current pricing before choosing.*
+
 ## How we compared them
 
 We weighted three things founders care about: **flexibility** (what happens if you migrate platforms), **WordPress polish** (how much better is it for WordPress vs. other apps), and **where the pricing trap is** (managed hosts get expensive fast — the question is whether you actually get value at that point).
@@ -28,7 +30,7 @@ We weighted three things founders care about: **flexibility** (what happens if y
 **Best for:** AI-built apps or anyone who might migrate away from WordPress someday.
 
 - **Pros:** genuine flexibility - you're on DigitalOcean/Vultr/AWS, not WP's lock-in; great dashboard for non-DevOps folks; good speed; more control than WP Engine over server stack.
-- **Cons:** less "polished" for WordPress-specific workflows; support is solid but less hand-holding than WP Engine; pricing can feel less straightforward at times.
+- **Cons:** less "polished" for WordPress-specific workflows; support is solid but less hand-holding than WP Engine; pricing structure can feel less straightforward at times.
 - **The catch we'd flag:** their "managed" means handling servers, not necessarily optimizing WordPress. If you're a WordPress guru, you'll notice the smaller details WP Engine nails.
 
 ## WP Engine — WordPress polish with less flexibility
@@ -36,7 +38,7 @@ We weighted three things founders care about: **flexibility** (what happens if y
 **Best for:** WordPress sites, content-heavy sites, or anyone who wants "it just works" WordPress experiences.
 
 - **Pros:** the most polished WordPress experience - automatic updates, caching, staging are excellent; top-notch support that actually knows WordPress; staging sites are genuinely helpful; ecosystem of tools and integrations.
-- **Cons:** vendor lock-in - you're in WP's ecosystem; migration away can be a pain; pricing is premium for what it is (you're paying for WordPress convenience, not raw server power).
+- **Cons:** vendor lock-in - you're in WP's ecosystem; migration away can be a pain; premium pricing for what it is (you're paying for WordPress convenience, not raw server power).
 - **The catch we'd flag:** if you move away from WordPress, goodbye to most of what you paid for. The premium matters less for simple sites.
 
 ## Our pick
