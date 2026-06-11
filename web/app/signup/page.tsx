@@ -10,6 +10,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
 
 export default function SignupPage() {
@@ -17,15 +18,31 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState<'signup' | 'payment'>('signup')
+  const [error, setError] = useState<string | null>(null)
+
+  const supabase = createClient()
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    // TODO Phase 2: Implement Supabase auth
-    setTimeout(() => {
+    setError(null)
+
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+
+      if (error) {
+        setError(error.message)
+      } else {
+        setStep('payment')
+      }
+    } catch (err) {
+      setError('An unexpected error occurred')
+    } finally {
       setLoading(false)
-      setStep('payment')
-    }, 1000)
+    }
   }
 
   const handlePayment = async () => {
@@ -56,7 +73,13 @@ export default function SignupPage() {
 
         <div className="bg-white rounded-xl shadow-lg p-8">
           {step === 'signup' ? (
-            <form onSubmit={handleSignup} className="space-y-4">
+            <>
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+              <form onSubmit={handleSignup} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email
@@ -91,7 +114,8 @@ export default function SignupPage() {
               >
                 {loading ? 'Creating account...' : 'Create Account'}
               </button>
-            </form>
+              </form>
+            </>
           ) : (
             <div className="space-y-6">
               <div className="text-center p-6 bg-gray-50 rounded-lg">
