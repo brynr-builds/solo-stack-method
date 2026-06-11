@@ -13,8 +13,11 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   return a ? articleMetadata(a) : { title: 'Not found | Solo Stack Method' }
 }
 
-export default function GuidePage({ params }: { params: { slug: string } }) {
+export default async function GuidePage({ params }: { params: { slug: string } }) {
   const a = getArticle('guides', params.slug)
   if (!a) notFound()
-  return <ArticleLayout article={a} />
+  const { getLiveFacts, injectLiveTokens } = await import('../../../lib/pulse/live')
+  const live = a.pulse.length ? await getLiveFacts(a.pulse) : []
+  const article = live.length ? { ...a, html: injectLiveTokens(a.html, live) } : a
+  return <ArticleLayout article={article} live={live} />
 }

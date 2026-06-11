@@ -26,6 +26,7 @@ export type Article = {
   author: string | null
   excerpt: string | null
   programs: string[]      // program slugs to surface as monetized cards
+  pulse: string[]         // pulse keys (lib/pulse/live.ts) -> LiveFacts panel + {{pulse:*}} tokens
   html: string            // rendered body
 }
 
@@ -81,6 +82,7 @@ function readType(type: ContentType): Article[] {
         author: data.author ?? null,
         excerpt: data.excerpt ?? null,
         programs: Array.isArray(data.programs) ? data.programs : [],
+        pulse: Array.isArray(data.pulse) ? data.pulse : [],
         html: marked.parse(body, { async: false }) as string,
       }
     })

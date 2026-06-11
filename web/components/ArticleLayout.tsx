@@ -10,13 +10,28 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import type { Article } from '../lib/content'
 import { getProgram, outboundUrl, commissionLabel } from '../lib/tools'
+import type { LiveFact } from '../lib/pulse/live'
+import { freshestDate } from '../lib/pulse/live'
 import AffiliateDisclosure from './AffiliateDisclosure'
+import LiveFacts from './LiveFacts'
 
-export default function ArticleLayout({ article }: { article: Article }) {
+export default function ArticleLayout({ article, live = [] }: { article: Article; live?: LiveFact[] }) {
   const mentioned = article.programs.map((s) => getProgram(s)).filter(Boolean)
+  // honest freshness: the newest underlying data point beats the authored date
+  const modified = freshestDate(live) ?? article.updated
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    description: article.description || undefined,
+    datePublished: article.updated || undefined,
+    dateModified: modified ? modified.slice(0, 10) : undefined,
+    author: { '@type': 'Organization', name: 'Solo Stack Method' },
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-sm border-b border-gray-100 z-50">
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <Link href="/" className="font-bold text-xl text-solo-primary">Solo Stack Method™</Link>
@@ -43,6 +58,8 @@ export default function ArticleLayout({ article }: { article: Article }) {
 
         {/* FTC: disclosure ABOVE the first affiliate link */}
         <div className="mb-8"><AffiliateDisclosure /></div>
+
+        <LiveFacts facts={live} />
 
         {mentioned.length > 0 && (
           <div className="bg-white border border-gray-100 rounded-xl p-5 mb-8">
