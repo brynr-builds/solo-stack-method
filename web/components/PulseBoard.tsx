@@ -28,10 +28,32 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
   const toggle = (name: string) =>
     setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
 
-  const submit = (e: React.FormEvent) => {
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
-    setSubmitted(true)
+    setError(null)
+    setLoading(true)
+
+    try {
+      const res = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, selectedTools: watch }),
+      })
+
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.error || 'Failed to subscribe')
+      }
+
+      setSubmitted(true)
+    } catch (err: any) {
+      setError(err.message || 'An error occurred')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -116,10 +138,15 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
                   required
                   className="flex-1 px-4 py-3 rounded-lg text-solo-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
                 />
-                <button type="submit" className="bg-white text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                  Subscribe
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="bg-white text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50"
+                >
+                  {loading ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
+              {error && <p className="text-red-400 text-sm mt-3 text-center">{error}</p>}
               <p className="text-xs text-gray-400 mt-3 text-center">Free. Unsubscribe anytime.</p>
             </>
           ) : (
