@@ -3,6 +3,7 @@ title: Where to Deploy an App You Built with AI (Claude Code, Lovable, Bolt, Cur
 description: You used AI to build something real. Now where does it actually live? A plain-English guide to hosting an AI-built app — from static sites to full-stack — without a DevOps background.
 updated: 2026-06-08
 author: Solo Stack Method
+pulse: [next, astro, node]
 programs:
   - cloudways
   - kinsta

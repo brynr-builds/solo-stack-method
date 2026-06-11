@@ -13,8 +13,13 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   return a ? articleMetadata(a) : { title: 'Not found | Solo Stack Method' }
 }
 
-export default function ComparePage({ params }: { params: { slug: string } }) {
+export default async function ComparePage({ params }: { params: { slug: string } }) {
   const a = getArticle('compare', params.slug)
   if (!a) notFound()
-  return <ArticleLayout article={a} />
+  // live facts: pulse-listed tools render the LiveFacts panel and {{pulse:*}}
+  // tokens in prose resolve to current versions (hourly revalidate)
+  const { getLiveFacts, injectLiveTokens } = await import('../../../lib/pulse/live')
+  const live = a.pulse.length ? await getLiveFacts(a.pulse) : []
+  const article = live.length ? { ...a, html: injectLiveTokens(a.html, live) } : a
+  return <ArticleLayout article={article} live={live} />
 }
