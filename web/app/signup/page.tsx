@@ -28,17 +28,17 @@ export default function SignupPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
       })
 
-      if (error) {
-        setError(error.message)
+      if (signUpError) {
+        setError(signUpError.message)
       } else {
         setStep('payment')
       }
-    } catch (err) {
+    } catch (_) {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)
@@ -80,8 +80,8 @@ export default function SignupPage() {
                 </div>
               )}
               <form onSubmit={handleSignup} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email
                 </label>
                 <input
@@ -93,9 +93,9 @@ export default function SignupPage() {
                   placeholder="you@example.com"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Password
                 </label>
                 <input
                   type="password"
@@ -107,8 +107,8 @@ export default function SignupPage() {
                   placeholder="At least 8 characters"
                 />
               </div>
-              <button
-                type="submit"
+                <button
+                  type="submit"
                 disabled={loading}
                 className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
