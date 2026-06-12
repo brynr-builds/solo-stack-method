@@ -25,8 +25,8 @@
       "name": "Tailwind CSS",
       "category": "Styling",
       "url": "https://tailwindcss.com",
-      "version": "4.3.0",
-      "date": "2026-05-08T20:25:26.174Z"
+      "version": "4.3.1",
+      "date": "2026-06-12T17:59:19.225Z"
     },
     {
       "name": "TypeScript",
@@ -60,8 +60,8 @@
       "name": "ESLint",
       "category": "Tooling",
       "url": "https://eslint.org",
-      "version": "10.4.1",
-      "date": "2026-05-29T20:32:32.193Z"
+      "version": "10.5.0",
+      "date": "2026-06-12T17:54:40.577Z"
     },
     {
       "name": "Prisma",
