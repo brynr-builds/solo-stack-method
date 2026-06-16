@@ -15,26 +15,45 @@ import Link from 'next/link'
 
 export default function Step1Page() {
   const [chatInput, setChatInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState([
     { role: 'assistant', content: "I'm Claude, your Builder agent for this step. I'll help you create a GitHub repository and connect it to your project. What would you like to name your project?" }
   ])
 
-  const handleSend = () => {
-    if (!chatInput.trim()) return
+  const handleSend = async () => {
+    if (!chatInput.trim() || isLoading) return
+
+    const userMessage = chatInput
+    setChatInput('')
     
     // Add user message
-    setMessages(prev => [...prev, { role: 'user', content: chatInput }])
+    const newMessages = [...messages, { role: 'user', content: userMessage }]
+    setMessages(newMessages)
+    setIsLoading(true)
     
-    // TODO Phase 2: Real AI integration with step-specific context
-    // Simulate AI response
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: newMessages,
+          stepContext: 'Step 1: Create Repo + Connect GitHub'
+        })
+      })
+
+      if (!response.ok) throw new Error('API request failed')
+
+      const data = await response.json()
+      setMessages(prev => [...prev, { role: 'assistant', content: data.content }])
+    } catch (error) {
+      console.error('Chat error:', error)
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: "Great choice! I'll create a repository with that name. Before I proceed, I need to explain what I'm about to do:\n\n1. Create a new GitHub repository\n2. Initialize it with a README and .gitignore\n3. Add the Solo Stack governance files\n\nDo you approve this action?" 
+        content: "Sorry, I encountered an error. Please try again."
       }])
-    }, 1000)
-    
-    setChatInput('')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -150,13 +169,14 @@ export default function Step1Page() {
                   type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  onKeyDown={(e) => e.key === 'Enter' && !isLoading && handleSend()}
                   placeholder="Type your message..."
                   className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:border-solo-accent focus:ring-2 focus:ring-solo-accent/20 outline-none"
                 />
                 <button
                   onClick={handleSend}
-                  className="px-4 py-2 bg-solo-accent text-white rounded-lg hover:bg-blue-600 transition-colors"
+                  disabled={isLoading}
+                  className={`px-4 py-2 bg-solo-accent text-white rounded-lg hover:bg-blue-600 transition-colors ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   Send
                 </button>
