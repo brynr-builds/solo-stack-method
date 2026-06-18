@@ -39,8 +39,8 @@
       "name": "Node.js",
       "category": "Runtime",
       "url": "https://nodejs.org",
-      "version": "26.3.0",
-      "date": "2026-06-01"
+      "version": "26.3.1",
+      "date": "2026-06-17"
     },
     {
       "name": "Vite",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "6.0.207",
-      "date": "2026-06-16T22:04:32.841Z"
+      "version": "6.0.208",
+      "date": "2026-06-18T01:01:39.789Z"
     }
   ]
 }
