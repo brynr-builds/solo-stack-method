@@ -81,8 +81,8 @@
       "name": "Anthropic SDK",
       "category": "AI",
       "url": "https://docs.anthropic.com",
-      "version": "0.104.2",
-      "date": "2026-06-15T16:51:49.957Z"
+      "version": "0.105.0",
+      "date": "2026-06-18T17:21:04.951Z"
     },
     {
       "name": "OpenAI SDK",
