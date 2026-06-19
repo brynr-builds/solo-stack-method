@@ -33,11 +33,13 @@ export async function GET(
   }
 
   // Fire-and-forget click log (never blocks the redirect).
+  // CF-IPCountry is populated once the domain is proxied through Cloudflare; null otherwise.
   void logClick({
     slug: program.slug,
     ts: new Date().toISOString(),
     referrer: req.headers.get('referer'),
     ua: req.headers.get('user-agent'),
+    country: req.headers.get('cf-ipcountry'),
   })
 
   return NextResponse.redirect(target, { status: 302 })
