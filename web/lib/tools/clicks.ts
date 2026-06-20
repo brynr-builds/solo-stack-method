@@ -44,7 +44,8 @@ function d1Configured(): boolean {
   return Boolean(D1_ACCOUNT && D1_DATABASE && D1_TOKEN)
 }
 
-/** Low-level D1 HTTP query. Returns the parsed JSON envelope (or throws — callers guard). */
+/** Low-level D1 HTTP query. Returns the parsed JSON envelope (or throws — callers guard).
+ *  Timeout-bounded so awaiting a write on the redirect path can never stall the hop. */
 async function d1Fetch(sql: string, params: unknown[] = []): Promise<any> {
   const url = `https://api.cloudflare.com/client/v4/accounts/${D1_ACCOUNT}/d1/database/${D1_DATABASE}/query`
   const res = await fetch(url, {
@@ -54,6 +55,7 @@ async function d1Fetch(sql: string, params: unknown[] = []): Promise<any> {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ sql, params }),
+    signal: AbortSignal.timeout(2500),
   })
   return res.json()
 }

@@ -6,7 +6,8 @@
  *   is pasted into programs.json, every existing link on the site starts earning — no other
  *   code change needed.
  * - Safety: if a program has no tracking link yet, fall back to the merchant site so the
- *   link is still useful (and honest). Logging is fire-and-forget and never blocks the hop.
+ *   link is still useful (and honest). Logging is awaited but timeout-bounded and never
+ *   throws (serverless drops post-response async), so it can't break the hop.
  * - Not statically generated (dynamic) so click logging runs on every hit.
  */
 
@@ -32,9 +33,12 @@ export async function GET(
     return NextResponse.redirect(new URL('/tools', req.url))
   }
 
-  // Fire-and-forget click log (never blocks the redirect).
+  // Record the click. We AWAIT (not fire-and-forget) because on serverless platforms like
+  // Netlify/Lambda, async work started after the response returns isn't guaranteed to run —
+  // the instance freezes once the 302 is sent, silently dropping the write. logClick never
+  // throws and the D1 write is timeout-bounded (2.5s), so awaiting it can't break the hop.
   // CF-IPCountry is populated once the domain is proxied through Cloudflare; null otherwise.
-  void logClick({
+  await logClick({
     slug: program.slug,
     ts: new Date().toISOString(),
     referrer: req.headers.get('referer'),
