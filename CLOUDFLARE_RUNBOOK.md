@@ -11,8 +11,9 @@ Code status is tracked in `CLOUDFLARE_FREE_PLAN.md`. This file = the exact butto
 > - `CF_ACCOUNT_ID` = `f14fbd517a2319f53d206d16b640bbce`
 > - `CF_D1_DATABASE_ID` = `e0745cbf-8454-46be-9603-b41b80a9a4f1`  (db name `solostack`, region WNAM)
 > - ✅ database created · ✅ schema applied · ✅ write/read/delete round-trip verified
-> - ⏳ remaining: create the API token (Step 4), set the 3 Netlify env vars (Step 5), redeploy + test
-> - ⚠️ the D1 code is on branch `cloudflare-migration` — it must be shipped to `main` before Netlify runs it.
+> - ✅ shipped to `main` (commit `ebcdf0e`, 2026-06-19) → Netlify is deploying the D1 code now
+> - ⏳ remaining (you): create the API token (Step 4), set the 3 Netlify env vars (Step 5), **redeploy**, test
+> - 🛟 until the env vars exist the deployed code is D1-dormant (falls back to KV/console) — zero behavior change.
 
 The code (`web/lib/tools/clicks.ts` + `web/app/go/[slug]/route.ts`) already prefers Cloudflare
 D1 when three env vars are set. It writes fire-and-forget, so a misconfig can never break a
