@@ -7,14 +7,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
 import { getAdminEnv } from '@/lib/admin/env'
 import { query } from '@/lib/admin/storage/db'
-import { checkRateLimit } from '@/lib/admin/rate-limit'
+import { checkRateLimit, getClientIdentifier } from '@/lib/admin/rate-limit'
 import { createSessionToken, COOKIE_NAME } from '@/lib/admin/session'
 
-function getClientIdentifier(req: NextRequest): string {
-  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    ?? req.headers.get('x-real-ip')
-    ?? 'unknown'
-}
 
 function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex')
