@@ -7,33 +7,17 @@ import { startAuthentication, WebAuthnAbortService, WebAuthnError } from '@simpl
 
 const AUTH_TIMEOUT_MS = 120_000
 
-function AdminLoginForm() {
-  const searchParams = useSearchParams()
-  const emailParam = searchParams.get('email') ?? ''
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [useBackup, setUseBackup] = useState(false)
-  const [useSetupSecret, setUseSetupSecret] = useState(false)
-  const [backupCode, setBackupCode] = useState('')
-  const [setupSecret, setSetupSecret] = useState('')
-  const [isDev, setIsDev] = useState(false)
+interface PasskeyFormProps {
+  email: string;
+  loading: boolean;
+  setLoading: (l: boolean) => void;
+  setError: (e: string) => void;
+  setUseBackup: (u: boolean) => void;
+  setUseSetupSecret: (u: boolean) => void;
+  isDev: boolean;
+}
 
-  useEffect(() => {
-    setIsDev(
-      typeof window !== 'undefined' &&
-      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    )
-  }, [])
-
-  useEffect(() => {
-    setEmail(emailParam)
-  }, [emailParam])
-
-  useEffect(() => {
-    return () => WebAuthnAbortService.cancelCeremony()
-  }, [])
-
+function PasskeyForm({ email, loading, setLoading, setError, setUseBackup, setUseSetupSecret, isDev }: PasskeyFormProps) {
   const handlePasskeyLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) {
@@ -98,6 +82,73 @@ function AdminLoginForm() {
     }
   }
 
+  return (
+    <form onSubmit={handlePasskeyLogin} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          value={email}
+          readOnly
+          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-600"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loading ? 'Signing in...' : 'Sign in with Passkey'}
+      </button>
+      {loading && (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm text-gray-500 text-center">
+            Look for the TouchID/FaceID prompt—it may appear behind this window.
+          </p>
+          <button
+            type="button"
+            onClick={() => WebAuthnAbortService.cancelCeremony()}
+            className="text-sm text-gray-500 hover:text-gray-700 underline"
+          >
+            Cancel and try again
+          </button>
+        </div>
+      )}
+      <button
+        type="button"
+        onClick={() => setUseBackup(true)}
+        disabled={loading}
+        className="w-full text-sm text-gray-600 hover:text-solo-accent disabled:opacity-50"
+      >
+        Use backup code instead
+      </button>
+      {isDev && (
+        <button
+          type="button"
+          onClick={() => { setUseSetupSecret(true); setError(''); }}
+          disabled={loading}
+          className="w-full text-sm text-amber-600 hover:text-amber-700 disabled:opacity-50"
+        >
+          Passkey not working? Use setup secret (dev only)
+        </button>
+      )}
+    </form>
+  )
+}
+
+interface BackupCodeFormProps {
+  email: string;
+  loading: boolean;
+  setLoading: (l: boolean) => void;
+  setError: (e: string) => void;
+  setUseBackup: (u: boolean) => void;
+  setUseSetupSecret: (u: boolean) => void;
+  isDev: boolean;
+}
+
+function BackupCodeForm({ email, loading, setLoading, setError, setUseBackup, setUseSetupSecret, isDev }: BackupCodeFormProps) {
+  const [backupCode, setBackupCode] = useState('')
+
   const handleBackupLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !backupCode) {
@@ -125,6 +176,66 @@ function AdminLoginForm() {
       setLoading(false)
     }
   }
+
+  return (
+    <form onSubmit={handleBackupLogin} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          value={email}
+          readOnly
+          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-600"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Backup Code</label>
+        <input
+          type="text"
+          value={backupCode}
+          onChange={(e) => setBackupCode(e.target.value)}
+          required
+          className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-solo-accent focus:ring-2 focus:ring-solo-accent/20 outline-none transition-colors font-mono"
+          placeholder="XXXX-XXXX-XXXX-XXXX"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loading ? 'Verifying...' : 'Sign in with Backup Code'}
+      </button>
+      <button
+        type="button"
+        onClick={() => { setUseBackup(false); setBackupCode(''); setError(''); }}
+        className="w-full text-sm text-gray-600 hover:text-solo-accent"
+      >
+        &larr; Back to passkey
+      </button>
+      {isDev && (
+        <button
+          type="button"
+          onClick={() => { setUseBackup(false); setUseSetupSecret(true); setBackupCode(''); setError(''); }}
+          className="w-full text-sm text-amber-600 hover:text-amber-700"
+        >
+          Use setup secret (dev only)
+        </button>
+      )}
+    </form>
+  )
+}
+
+interface SetupSecretFormProps {
+  email: string;
+  loading: boolean;
+  setLoading: (l: boolean) => void;
+  setError: (e: string) => void;
+  setUseSetupSecret: (u: boolean) => void;
+}
+
+function SetupSecretForm({ email, loading, setLoading, setError, setUseSetupSecret }: SetupSecretFormProps) {
+  const [setupSecret, setSetupSecret] = useState('')
 
   const handleSetupSecretLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -155,6 +266,71 @@ function AdminLoginForm() {
   }
 
   return (
+    <form onSubmit={handleSetupSecretLogin} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input
+          type="email"
+          value={email}
+          readOnly
+          className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-600"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Setup Secret</label>
+        <input
+          type="password"
+          value={setupSecret}
+          onChange={(e) => setSetupSecret(e.target.value)}
+          required
+          className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-solo-accent focus:ring-2 focus:ring-solo-accent/20 outline-none transition-colors"
+          placeholder="From web/.env.local"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {loading ? 'Signing in...' : 'Sign in with Setup Secret'}
+      </button>
+      <button
+        type="button"
+        onClick={() => { setUseSetupSecret(false); setSetupSecret(''); setError(''); }}
+        className="w-full text-sm text-gray-600 hover:text-solo-accent"
+      >
+        &larr; Back to passkey
+      </button>
+    </form>
+  )
+}
+
+function AdminLoginForm() {
+  const searchParams = useSearchParams()
+  const emailParam = searchParams.get('email') ?? ''
+  const [email, setEmail] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [useBackup, setUseBackup] = useState(false)
+  const [useSetupSecret, setUseSetupSecret] = useState(false)
+  const [isDev, setIsDev] = useState(false)
+
+  useEffect(() => {
+    setIsDev(
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    )
+  }, [])
+
+  useEffect(() => {
+    setEmail(emailParam)
+  }, [emailParam])
+
+  useEffect(() => {
+    return () => WebAuthnAbortService.cancelCeremony()
+  }, [])
+
+  return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-6">
       <div className="max-w-md w-full">
         <div className="text-center mb-8">
@@ -173,144 +349,38 @@ function AdminLoginForm() {
           )}
 
           {!useBackup && !useSetupSecret ? (
-            <form onSubmit={handlePasskeyLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  readOnly
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-600"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Signing in...' : 'Sign in with Passkey'}
-              </button>
-              {loading && (
-                <div className="flex flex-col gap-2">
-                  <p className="text-sm text-gray-500 text-center">
-                    Look for the TouchID/FaceID prompt—it may appear behind this window.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => WebAuthnAbortService.cancelCeremony()}
-                    className="text-sm text-gray-500 hover:text-gray-700 underline"
-                  >
-                    Cancel and try again
-                  </button>
-                </div>
-              )}
-              <button
-                type="button"
-                onClick={() => setUseBackup(true)}
-                disabled={loading}
-                className="w-full text-sm text-gray-600 hover:text-solo-accent disabled:opacity-50"
-              >
-                Use backup code instead
-              </button>
-              {isDev && (
-                <button
-                  type="button"
-                  onClick={() => { setUseSetupSecret(true); setError(''); }}
-                  disabled={loading}
-                  className="w-full text-sm text-amber-600 hover:text-amber-700 disabled:opacity-50"
-                >
-                  Passkey not working? Use setup secret (dev only)
-                </button>
-              )}
-            </form>
+            <PasskeyForm
+              email={email}
+              loading={loading}
+              setLoading={setLoading}
+              setError={setError}
+              setUseBackup={setUseBackup}
+              setUseSetupSecret={setUseSetupSecret}
+              isDev={isDev}
+            />
           ) : useSetupSecret ? (
-            <form onSubmit={handleSetupSecretLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  readOnly
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-600"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Setup Secret</label>
-                <input
-                  type="password"
-                  value={setupSecret}
-                  onChange={(e) => setSetupSecret(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-solo-accent focus:ring-2 focus:ring-solo-accent/20 outline-none transition-colors"
-                  placeholder="From web/.env.local"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Signing in...' : 'Sign in with Setup Secret'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setUseSetupSecret(false); setSetupSecret(''); setError(''); }}
-                className="w-full text-sm text-gray-600 hover:text-solo-accent"
-              >
-                ← Back to passkey
-              </button>
-            </form>
+            <SetupSecretForm
+              email={email}
+              loading={loading}
+              setLoading={setLoading}
+              setError={setError}
+              setUseSetupSecret={setUseSetupSecret}
+            />
           ) : (
-            <form onSubmit={handleBackupLogin} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  readOnly
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 text-gray-600"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Backup Code</label>
-                <input
-                  type="text"
-                  value={backupCode}
-                  onChange={(e) => setBackupCode(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-solo-accent focus:ring-2 focus:ring-solo-accent/20 outline-none transition-colors font-mono"
-                  placeholder="XXXX-XXXX-XXXX-XXXX"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? 'Verifying...' : 'Sign in with Backup Code'}
-              </button>
-              <button
-                type="button"
-                onClick={() => { setUseBackup(false); setBackupCode(''); setError(''); }}
-                className="w-full text-sm text-gray-600 hover:text-solo-accent"
-              >
-                ← Back to passkey
-              </button>
-              {isDev && (
-                <button
-                  type="button"
-                  onClick={() => { setUseBackup(false); setUseSetupSecret(true); setBackupCode(''); setError(''); }}
-                  className="w-full text-sm text-amber-600 hover:text-amber-700"
-                >
-                  Use setup secret (dev only)
-                </button>
-              )}
-            </form>
+            <BackupCodeForm
+              email={email}
+              loading={loading}
+              setLoading={setLoading}
+              setError={setError}
+              setUseBackup={setUseBackup}
+              setUseSetupSecret={setUseSetupSecret}
+              isDev={isDev}
+            />
           )}
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-6">
-          <Link href="/admin/enter-email" className="hover:text-solo-accent">← Back</Link>
+          <Link href="/admin/enter-email" className="hover:text-solo-accent">&larr; Back</Link>
         </p>
       </div>
     </div>
