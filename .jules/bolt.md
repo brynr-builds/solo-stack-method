@@ -1,0 +1,3 @@
+## 2026-06-09 - Memoizing Filter Computations in Interactive UI
+**Learning:** In React UI components with interactive elements (like text inputs) that trigger frequent re-renders, recalculating derived state (like a filtered array) on every render can cause performance issues if the array is large or computation is complex.
+**Action:** Use `useMemo` to cache the result of the filtered array so that it is only recalculated when its dependencies (the source array or the filter criteria) change. This prevents unnecessary work during re-renders triggered by unrelated state changes (like typing in an email input field).
