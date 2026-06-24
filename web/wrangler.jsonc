@@ -1,0 +1,18 @@
+{
+  // Cloudflare Workers config for the OpenNext-adapted Next.js app (Tier 2 migration).
+  // PREVIEW ONLY for now — no custom domain / no DNS. `npm run cf:deploy` ships to *.workers.dev.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "solostack-web",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2024-12-30",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "account_id": "f14fbd517a2319f53d206d16b640bbce",
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "services": [{ "binding": "WORKER_SELF_REFERENCE", "service": "solostack-web" }],
+  // Native D1 binding (env.DB) — the affiliate_clicks db from Part A. The click logger currently
+  // uses the HTTP API path and falls back fire-and-forget; the native binding is the "one-file swap".
+  "d1_databases": [
+    { "binding": "DB", "database_name": "solostack", "database_id": "e0745cbf-8454-46be-9603-b41b80a9a4f1" }
+  ],
+  "observability": { "enabled": true }
+}
