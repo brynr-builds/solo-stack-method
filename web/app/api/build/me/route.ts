@@ -13,7 +13,7 @@ export async function GET() {
   if (!env.configured) {
     return NextResponse.json({ configured: false, connected: false })
   }
-  const jwe = cookies().get(GH_COOKIE)?.value
+  const jwe = (await cookies()).get(GH_COOKIE)?.value
   if (!jwe) return NextResponse.json({ configured: true, connected: false })
 
   const token = await openToken(jwe, env.sessionSecret!)

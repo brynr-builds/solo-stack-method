@@ -10,6 +10,8 @@ out/
 /dist/
 /build/
 **/.next/
+**/.open-next/
+**/.wrangler/
 coverage/
 .turbo/
 .cache/

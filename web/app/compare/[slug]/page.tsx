@@ -8,13 +8,15 @@ export function generateStaticParams() {
   return getArticles('compare').map((a) => ({ slug: a.slug }))
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const a = getArticle('compare', params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const a = getArticle('compare', slug)
   return a ? articleMetadata(a) : { title: 'Not found | Solo Stack Method' }
 }
 
-export default async function ComparePage({ params }: { params: { slug: string } }) {
-  const a = getArticle('compare', params.slug)
+export default async function ComparePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const a = getArticle('compare', slug)
   if (!a) notFound()
   // live facts: pulse-listed tools render the LiveFacts panel and {{pulse:*}}
   // tokens in prose resolve to current versions (hourly revalidate)

@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const env = getBuildEnv()
   if (!env.configured) return NextResponse.json({ error: 'Not configured.' }, { status: 503 })
 
-  const jwe = cookies().get(GH_COOKIE)?.value
+  const jwe = (await cookies()).get(GH_COOKIE)?.value
   const token = jwe ? await openToken(jwe, env.sessionSecret!) : null
   if (!token) return NextResponse.json({ error: 'Connect your GitHub account first.' }, { status: 401 })
 

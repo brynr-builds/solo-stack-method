@@ -18,9 +18,10 @@ export const dynamic = 'force-dynamic'
 
 export async function GET(
   req: Request,
-  { params }: { params: { slug: string } },
+  { params }: { params: Promise<{ slug: string }> },
 ) {
-  const program = getProgram(params.slug)
+  const { slug } = await params
+  const program = getProgram(slug)
 
   // Unknown slug → send them to The Stack rather than erroring.
   if (!program) {

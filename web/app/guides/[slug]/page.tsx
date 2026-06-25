@@ -8,13 +8,15 @@ export function generateStaticParams() {
   return getArticles('guides').map((a) => ({ slug: a.slug }))
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const a = getArticle('guides', params.slug)
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params
+  const a = getArticle('guides', slug)
   return a ? articleMetadata(a) : { title: 'Not found | Solo Stack Method' }
 }
 
-export default async function GuidePage({ params }: { params: { slug: string } }) {
-  const a = getArticle('guides', params.slug)
+export default async function GuidePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const a = getArticle('guides', slug)
   if (!a) notFound()
   const { getLiveFacts, injectLiveTokens } = await import('../../../lib/pulse/live')
   const live = a.pulse.length ? await getLiveFacts(a.pulse) : []

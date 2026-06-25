@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'GitHub connection not configured.' }, { status: 503 })
   }
 
-  const jwe = cookies().get(GH_COOKIE)?.value
+  const jwe = (await cookies()).get(GH_COOKIE)?.value
   const token = jwe ? await openToken(jwe, env.sessionSecret!) : null
   if (!token) return NextResponse.json({ error: 'Connect your GitHub account first.' }, { status: 401 })
 
