@@ -1,0 +1,3 @@
+## 2025-02-25 - React Cache for Next.js Markdown Files
+**Learning:** Next.js uses module-level scoping for build processes. Using a global module-level cache like a `Map` will break local dev with stale content. Using React's `cache` is request-scoped, which memoizes file reading during building and per-request during server side rendering but won't hold onto stale file data between requests in local development mode. Also preventing duplicated `fs.readFileSync` over `fs.readdirSync` across multiple dynamic route requests improves performance greatly.
+**Action:** Always prefer `React.cache()` for memoizing static file reads or objects in Next.js Server Components / functions to optimize performance without caching stale content locally.
