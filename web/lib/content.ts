@@ -14,6 +14,7 @@
 import fs from 'fs'
 import path from 'path'
 import { marked } from 'marked'
+import { cache } from 'react'
 
 export type ContentType = 'guides' | 'compare'
 
@@ -89,10 +90,10 @@ function readType(type: ContentType): Article[] {
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
 }
 
-export function getArticles(type: ContentType): Article[] {
+export const getArticles = cache((type: ContentType): Article[] => {
   return readType(type)
-}
+})
 
-export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
-}
+export const getArticle = cache((type: ContentType, slug: string): Article | undefined => {
+  return getArticles(type).find((a) => a.slug === slug)
+})
