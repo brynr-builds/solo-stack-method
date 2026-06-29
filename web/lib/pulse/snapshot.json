@@ -25,8 +25,8 @@
       "name": "Tailwind CSS",
       "category": "Styling",
       "url": "https://tailwindcss.com",
-      "version": "4.3.1",
-      "date": "2026-06-12T17:59:19.225Z"
+      "version": "4.3.2",
+      "date": "2026-06-29T14:30:01.168Z"
     },
     {
       "name": "TypeScript",
@@ -81,8 +81,8 @@
       "name": "Anthropic SDK",
       "category": "AI",
       "url": "https://docs.anthropic.com",
-      "version": "0.106.0",
-      "date": "2026-06-24T18:50:15.985Z"
+      "version": "0.107.0",
+      "date": "2026-06-29T15:03:55.048Z"
     },
     {
       "name": "OpenAI SDK",
