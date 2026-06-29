@@ -1,0 +1,3 @@
+## 2026-06-26 - React cache() usage for file operations
+**Learning:** In Next.js App Router, repeated calls to local file reads and parsers (like markdown parsing) can cause significant overhead within a single request context. Next.js offers `React.cache()` which can successfully memoize these file parsing functions on a per-request basis to prevent redundant disk I/O and synchronous parsing overhead.
+**Action:** Always wrap file read and parse operations that might be called multiple times during server-side page generation (such as reading content or config data) in `cache()` to memoize them safely per request without causing shared global mutable state bugs across requests.
