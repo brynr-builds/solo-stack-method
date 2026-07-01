@@ -4,8 +4,8 @@
       "name": "Next.js",
       "category": "Framework",
       "url": "https://nextjs.org",
-      "version": "16.2.9",
-      "date": "2026-06-09T23:02:22.464Z"
+      "version": "16.2.10",
+      "date": "2026-07-01T20:13:14.041Z"
     },
     {
       "name": "React",
@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.0.4",
-      "date": "2026-06-30T12:18:43.333Z"
+      "version": "7.0.5",
+      "date": "2026-07-01T18:21:07.303Z"
     },
     {
       "name": "Tailwind CSS",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.9",
-      "date": "2026-06-30T18:25:38.832Z"
+      "version": "7.0.11",
+      "date": "2026-07-01T20:03:21.040Z"
     }
   ]
 }
