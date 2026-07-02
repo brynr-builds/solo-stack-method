@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.0.5",
-      "date": "2026-07-01T18:21:07.303Z"
+      "version": "7.0.6",
+      "date": "2026-07-02T19:27:22.444Z"
     },
     {
       "name": "Tailwind CSS",
@@ -81,8 +81,8 @@
       "name": "Anthropic SDK",
       "category": "AI",
       "url": "https://docs.anthropic.com",
-      "version": "0.109.1",
-      "date": "2026-07-01T21:57:48.048Z"
+      "version": "0.110.0",
+      "date": "2026-07-02T19:22:07.668Z"
     },
     {
       "name": "OpenAI SDK",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.11",
-      "date": "2026-07-01T20:03:21.040Z"
+      "version": "7.0.13",
+      "date": "2026-07-02T18:36:24.996Z"
     }
   ]
 }
