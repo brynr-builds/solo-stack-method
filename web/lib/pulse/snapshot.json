@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.0.6",
-      "date": "2026-07-02T19:27:22.444Z"
+      "version": "7.0.7",
+      "date": "2026-07-08T16:03:25.771Z"
     },
     {
       "name": "Tailwind CSS",
@@ -32,8 +32,8 @@
       "name": "TypeScript",
       "category": "Language",
       "url": "https://www.typescriptlang.org",
-      "version": "6.0.3",
-      "date": "2026-04-16T23:38:27.905Z"
+      "version": "7.0.2",
+      "date": "2026-07-08T15:55:18.431Z"
     },
     {
       "name": "Node.js",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.17",
-      "date": "2026-07-07T23:45:45.234Z"
+      "version": "7.0.18",
+      "date": "2026-07-08T15:44:10.078Z"
     }
   ]
 }
