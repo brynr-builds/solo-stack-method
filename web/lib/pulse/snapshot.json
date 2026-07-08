@@ -39,8 +39,8 @@
       "name": "Node.js",
       "category": "Runtime",
       "url": "https://nodejs.org",
-      "version": "26.4.0",
-      "date": "2026-06-24"
+      "version": "26.5.0",
+      "date": "2026-07-08"
     },
     {
       "name": "Vite",
