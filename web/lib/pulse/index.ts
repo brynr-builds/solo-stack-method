@@ -40,7 +40,8 @@ async function fetchNode(): Promise<{ version: string | null; date: string | nul
   if (!res.ok) throw new Error(`node ${res.status}`)
   const data: any = await res.json()
   const latest = data[0]
-  return { version: String(latest.version).replace(/^v/, ''), date: latest.date ?? null }
+  const version = latest?.version ? String(latest.version).replace(/^v/, '') : null
+  return { version, date: latest?.date ?? null }
 }
 
 function daysSince(date: string | null): number | null {
