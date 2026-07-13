@@ -62,18 +62,35 @@ export function getProgram(slug: string): Program | undefined {
   return programs.find((p) => p.slug === slug)
 }
 
+// OPTIMIZATION: Memoize the niches array to avoid O(N) recalculation on every render
+// This is safe since programs array is statically loaded from JSON and never changes at runtime
+let cachedNiches: { niche: string; label: string; count: number }[] | null = null;
+
 export function getNiches(): { niche: string; label: string; count: number }[] {
+  if (cachedNiches) {
+    return cachedNiches;
+  }
   const map = new Map<string, { niche: string; label: string; count: number }>()
   for (const p of programs) {
     const existing = map.get(p.niche)
     if (existing) existing.count++
     else map.set(p.niche, { niche: p.niche, label: p.nicheLabel, count: 1 })
   }
-  return Array.from(map.values()).sort((a, b) => b.count - a.count)
+  cachedNiches = Array.from(map.values()).sort((a, b) => b.count - a.count)
+  return cachedNiches;
 }
 
+// OPTIMIZATION: Memoize the niche grouping to avoid O(N) filtering on every render
+// This is safe since programs array is statically loaded from JSON and never changes at runtime
+const programsByNicheCache = new Map<string, Program[]>();
+
 export function programsByNiche(niche: string): Program[] {
-  return programs.filter((p) => p.niche === niche).sort((a, b) => a.rank - b.rank)
+  if (programsByNicheCache.has(niche)) {
+    return programsByNicheCache.get(niche)!;
+  }
+  const filteredAndSorted = programs.filter((p) => p.niche === niche).sort((a, b) => a.rank - b.rank);
+  programsByNicheCache.set(niche, filteredAndSorted);
+  return filteredAndSorted;
 }
 
 /** Top Picks: featured programs in curated rank order. */
