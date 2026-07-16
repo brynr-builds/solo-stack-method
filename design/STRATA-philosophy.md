@@ -1,0 +1,16 @@
+# STRATA
+### A visual philosophy for layered systems
+
+---
+
+**Strata** is the aesthetic of accumulation made visible. It holds that any system worth trusting is built the way the earth is built — one deliberate layer at a time, each bearing the weight of everything above it, each legible long after it was laid down. Nothing is hidden; the section is cut clean and the history reads top to bottom. This is a philosophy of honest construction, where the structure *is* the ornament and the record of how a thing was made becomes the most beautiful thing about it.
+
+Form arrives as horizontal banding — strata of unequal thickness stacked with the patience of sediment. Space is divided not by decoration but by registration: hairline rules, measured gaps, the quiet authority of a baseline grid that never wavers. Each band is a stratum of meaning, and the eye descends through them the way a core sample is read, layer by layer, deeper into the foundation. The composition must feel surveyed rather than arranged — as though a precise instrument, not a hand, set every boundary. This is master-level execution: the kind of restraint that takes countless hours to make look effortless.
+
+Color is mineral and disciplined. A deep slate ground — the dark of compressed rock — anchors everything, against which a single charged blue surfaces like a vein of ore catching light. Neutrals between them behave as raw paper, as exposed stone face, as the pale interstitial bands of accumulated time. The palette is narrow by conviction; every hue is calibrated, weighed, placed with painstaking attention. Nothing is bright for brightness's sake. The accent earns its appearance by scarcity, and its rarity is what gives it power.
+
+Scale operates as geology operates: vast quiet zones interrupted by a single monumental gesture. One word may stand enormous, condensed and industrial, pressed against the edge of its band like strata under load. Around it, typography shrinks to the clinical — small mono labels, numeric markers, depth notations, the annotation of a discipline that measures rather than describes. Text is never paragraph; it is instrument reading. A coordinate. A unit. A name. The contrast between the colossal and the microscopic is the whole drama, and it must be tuned with the ear of someone at the absolute top of their craft.
+
+Rhythm is the cadence of the survey line — repetition that rewards sustained attention. Tick marks accumulate into scales; thin rules multiply into measure; modular units tessellate without ever tiring. The patient viewer is rewarded with a second composition hiding inside the first, the way a trained eye finds fossils in plain rock. This density is never noise; it is evidence, laid down with the meticulous care of a hand that has done this ten thousand times and refuses to do it carelessly once.
+
+Above all, **Strata** insists the work look *laboured over* — surveyed, sectioned, annotated, and refined until every alignment is inevitable and nothing can be added or removed without loss. It should read like an artifact recovered from a discipline that does not exist yet: rigorous, cohesive, quietly monumental. The product of deep expertise. A masterpiece of construction that proves something invisible — trust, foundation, the integrity of what is built layer by layer — can be measured, mapped, and made to stand.

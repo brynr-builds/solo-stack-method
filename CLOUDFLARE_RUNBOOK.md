@@ -11,9 +11,13 @@ Code status is tracked in `CLOUDFLARE_FREE_PLAN.md`. This file = the exact butto
 > - `CF_ACCOUNT_ID` = `f14fbd517a2319f53d206d16b640bbce`
 > - `CF_D1_DATABASE_ID` = `e0745cbf-8454-46be-9603-b41b80a9a4f1`  (db name `solostack`, region WNAM)
 > - ✅ database created · ✅ schema applied · ✅ write/read/delete round-trip verified
-> - ✅ shipped to `main` (commit `ebcdf0e`, 2026-06-19) → Netlify is deploying the D1 code now
-> - ⏳ remaining (you): create the API token (Step 4), set the 3 Netlify env vars (Step 5), **redeploy**, test
-> - 🛟 until the env vars exist the deployed code is D1-dormant (falls back to KV/console) — zero behavior change.
+> - ✅ **LIVE & VERIFIED 2026-06-19**: code shipped to `main`, all 3 env vars set in Netlify,
+>   redeployed (`main@7b265c5`), and test clicks at `/go/kit|getresponse|mailerlite` recorded in
+>   D1 then cleared. Affiliate click-tracking is now active at $0.
+> - Reliability hardening shipped (`88b547d`): the redirect now awaits a timeout-bounded D1 write
+>   (serverless drops fire-and-forget async), so clicks record reliably.
+> - `country` populates once the domain is proxied through Cloudflare (Tier 1 / Part D); `referrer`
+>   populates on real on-site clicks (curl tests send neither).
 
 The code (`web/lib/tools/clicks.ts` + `web/app/go/[slug]/route.ts`) already prefers Cloudflare
 D1 when three env vars are set. It writes fire-and-forget, so a misconfig can never break a
