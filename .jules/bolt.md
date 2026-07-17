@@ -1,0 +1,3 @@
+## 2025-02-27 - Direct File Reads for Content Engines
+**Learning:** `getArticle` was reading and parsing the *entire* directory of markdown files via `readType` just to find a single article by slug. This is an O(N) operation that scales poorly with content volume, performing unnecessary disk I/O and markdown parsing.
+**Action:** Retrieve single items by directly reading the specific file using a sanitized slug (`fs.readFileSync(path.join(dir, `${path.basename(slug)}.md`))`) to change it to an O(1) operation. Always sanitize dynamic input using `path.basename` to prevent path traversal vulnerabilities.
