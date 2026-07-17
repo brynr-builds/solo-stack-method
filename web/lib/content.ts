@@ -64,28 +64,30 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+function parseFile(type: ContentType, f: string, dir: string): Article {
+  const raw = fs.readFileSync(path.join(dir, f), 'utf8')
+  const { data, body } = parseFrontmatter(raw)
+  return {
+    type,
+    slug: f.replace(/\.md$/, ''),
+    title: data.title ?? f.replace(/\.md$/, ''),
+    description: data.description ?? '',
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
+}
+
 function readType(type: ContentType): Article[] {
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
   return fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.md'))
-    .map((f) => {
-      const raw = fs.readFileSync(path.join(dir, f), 'utf8')
-      const { data, body } = parseFrontmatter(raw)
-      return {
-        type,
-        slug: f.replace(/\.md$/, ''),
-        title: data.title ?? f.replace(/\.md$/, ''),
-        description: data.description ?? '',
-        updated: data.updated ?? null,
-        author: data.author ?? null,
-        excerpt: data.excerpt ?? null,
-        programs: Array.isArray(data.programs) ? data.programs : [],
-        pulse: Array.isArray(data.pulse) ? data.pulse : [],
-        html: marked.parse(body, { async: false }) as string,
-      }
-    })
+    .map((f) => parseFile(type, f, dir))
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
 }
 
@@ -93,6 +95,20 @@ export function getArticles(type: ContentType): Article[] {
   return readType(type)
 }
 
+// ⚡ Bolt: Retrieve single item by directly reading the specific file using a sanitized slug
+// rather than reading and parsing the entire directory to find a match, avoiding O(N) disk I/O and CPU bottlenecks.
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  const dir = path.join(CONTENT_ROOT, type)
+  const safeSlug = path.basename(slug) // Sanitize to prevent path traversal
+  const filePath = `${safeSlug}.md`
+
+  if (!fs.existsSync(path.join(dir, filePath))) {
+    return undefined;
+  }
+
+  try {
+    return parseFile(type, filePath, dir)
+  } catch (error) {
+    return undefined;
+  }
 }
