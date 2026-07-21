@@ -4,15 +4,15 @@
       "name": "Next.js",
       "category": "Framework",
       "url": "https://nextjs.org",
-      "version": "16.2.10",
-      "date": "2026-07-01T20:13:14.041Z"
+      "version": "16.2.11",
+      "date": "2026-07-21T16:00:01.566Z"
     },
     {
       "name": "React",
       "category": "Framework",
       "url": "https://react.dev",
-      "version": "19.2.7",
-      "date": "2026-06-01T18:00:48.323Z"
+      "version": "19.2.8",
+      "date": "2026-07-21T15:41:28.716Z"
     },
     {
       "name": "Astro",
@@ -74,8 +74,8 @@
       "name": "Supabase JS",
       "category": "Backend",
       "url": "https://supabase.com",
-      "version": "2.110.7",
-      "date": "2026-07-16T12:32:24.506Z"
+      "version": "2.110.8",
+      "date": "2026-07-21T15:40:42.596Z"
     },
     {
       "name": "Anthropic SDK",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.33",
-      "date": "2026-07-21T12:08:06.259Z"
+      "version": "7.0.34",
+      "date": "2026-07-21T15:28:49.771Z"
     }
   ]
 }
