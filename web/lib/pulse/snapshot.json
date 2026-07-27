@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.1.3",
-      "date": "2026-07-20T17:47:33.748Z"
+      "version": "7.1.4",
+      "date": "2026-07-27T13:10:18.659Z"
     },
     {
       "name": "Tailwind CSS",
@@ -67,8 +67,8 @@
       "name": "Prisma",
       "category": "Backend",
       "url": "https://www.prisma.io",
-      "version": "7.9.0",
-      "date": "2026-07-20T18:30:50.409Z"
+      "version": "7.9.1",
+      "date": "2026-07-27T13:49:09.253Z"
     },
     {
       "name": "Supabase JS",
