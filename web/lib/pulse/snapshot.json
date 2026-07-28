@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.1.4",
-      "date": "2026-07-27T13:10:18.659Z"
+      "version": "7.1.5",
+      "date": "2026-07-28T16:51:02.705Z"
     },
     {
       "name": "Tailwind CSS",
@@ -74,8 +74,8 @@
       "name": "Supabase JS",
       "category": "Backend",
       "url": "https://supabase.com",
-      "version": "2.110.9",
-      "date": "2026-07-27T15:14:16.445Z"
+      "version": "2.111.0",
+      "date": "2026-07-28T15:56:02.498Z"
     },
     {
       "name": "Anthropic SDK",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.40",
-      "date": "2026-07-28T03:31:20.049Z"
+      "version": "7.0.41",
+      "date": "2026-07-28T17:39:34.362Z"
     }
   ]
 }
