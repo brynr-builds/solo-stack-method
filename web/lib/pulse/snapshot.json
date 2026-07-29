@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.1.5",
-      "date": "2026-07-28T16:51:02.705Z"
+      "version": "7.1.6",
+      "date": "2026-07-29T14:21:53.353Z"
     },
     {
       "name": "Tailwind CSS",
@@ -39,8 +39,8 @@
       "name": "Node.js",
       "category": "Runtime",
       "url": "https://nodejs.org",
-      "version": "26.5.0",
-      "date": "2026-07-08"
+      "version": "26.5.1",
+      "date": "2026-07-28"
     },
     {
       "name": "Vite",
