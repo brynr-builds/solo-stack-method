@@ -7,7 +7,7 @@
  */
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { PulseItem } from '../lib/pulse'
 
 const statusColor: Record<string, string> = {
@@ -19,20 +19,12 @@ const statusColor: Record<string, string> = {
 
 export default function PulseBoard({ items, categories }: { items: PulseItem[]; categories: string[] }) {
   const [selected, setSelected] = useState('All')
-  const [email, setEmail] = useState('')
-  const [watch, setWatch] = useState<string[]>([])
-  const [submitted, setSubmitted] = useState(false)
 
-  const filtered = selected === 'All' ? items : items.filter((i) => i.category === selected)
-
-  const toggle = (name: string) =>
-    setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault()
-    // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
-    setSubmitted(true)
-  }
+  // ⚡ Bolt Performance Optimization:
+  // Memoized the filtered list to prevent unnecessary recalculations on re-renders.
+  const filtered = useMemo(() => {
+    return selected === 'All' ? items : items.filter((i) => i.category === selected)
+  }, [items, selected])
 
   return (
     <>
@@ -83,54 +75,77 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
       </section>
 
       {/* Newsletter */}
-      <section className="px-6 py-16 bg-solo-primary text-white">
-        <div className="max-w-2xl mx-auto">
-          {!submitted ? (
-            <>
-              <h2 className="text-2xl font-bold text-center mb-4">Get Pulse Alerts</h2>
-              <p className="text-center text-gray-300 mb-8">
-                Pick the tools you care about and we&rsquo;ll flag the updates that matter.
-              </p>
-              <div className="mb-6">
-                <p className="text-sm text-gray-400 mb-3">Watch:</p>
-                <div className="flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <button
-                      key={item.name}
-                      onClick={() => toggle(item.name)}
-                      className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                        watch.includes(item.name) ? 'bg-white text-solo-primary' : 'bg-white/10 text-white hover:bg-white/20'
-                      }`}
-                    >
-                      {item.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <form onSubmit={submit} className="flex gap-3">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  required
-                  className="flex-1 px-4 py-3 rounded-lg text-solo-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
-                />
-                <button type="submit" className="bg-white text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                  Subscribe
-                </button>
-              </form>
-              <p className="text-xs text-gray-400 mt-3 text-center">Free. Unsubscribe anytime.</p>
-            </>
-          ) : (
-            <div className="text-center">
-              <div className="text-4xl mb-4">✓</div>
-              <h2 className="text-2xl font-bold mb-2">You&rsquo;re on the list</h2>
-              <p className="text-gray-300">Watching: {watch.join(', ') || 'all tools'}</p>
-            </div>
-          )}
-        </div>
-      </section>
+      <NewsletterSection items={items} />
     </>
+  )
+}
+
+// ⚡ Bolt Performance Optimization:
+// Extracted NewsletterSection to isolate high-frequency state updates (like email input keystrokes)
+// into a leaf component, preventing the entire PulseBoard (and its grid of items) from re-rendering
+// on every single character typed.
+function NewsletterSection({ items }: { items: PulseItem[] }) {
+  const [email, setEmail] = useState('')
+  const [watch, setWatch] = useState<string[]>([])
+  const [submitted, setSubmitted] = useState(false)
+
+  const toggle = (name: string) =>
+    setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
+    setSubmitted(true)
+  }
+
+  return (
+    <section className="px-6 py-16 bg-solo-primary text-white">
+      <div className="max-w-2xl mx-auto">
+        {!submitted ? (
+          <>
+            <h2 className="text-2xl font-bold text-center mb-4">Get Pulse Alerts</h2>
+            <p className="text-center text-gray-300 mb-8">
+              Pick the tools you care about and we&rsquo;ll flag the updates that matter.
+            </p>
+            <div className="mb-6">
+              <p className="text-sm text-gray-400 mb-3">Watch:</p>
+              <div className="flex flex-wrap gap-2">
+                {items.map((item) => (
+                  <button
+                    key={item.name}
+                    onClick={() => toggle(item.name)}
+                    className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                      watch.includes(item.name) ? 'bg-white text-solo-primary' : 'bg-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    {item.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <form onSubmit={submit} className="flex gap-3">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="flex-1 px-4 py-3 rounded-lg text-solo-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
+              />
+              <button type="submit" className="bg-white text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+                Subscribe
+              </button>
+            </form>
+            <p className="text-xs text-gray-400 mt-3 text-center">Free. Unsubscribe anytime.</p>
+          </>
+        ) : (
+          <div className="text-center">
+            <div className="text-4xl mb-4">✓</div>
+            <h2 className="text-2xl font-bold mb-2">You&rsquo;re on the list</h2>
+            <p className="text-gray-300">Watching: {watch.join(', ') || 'all tools'}</p>
+          </div>
+        )}
+      </div>
+    </section>
   )
 }
