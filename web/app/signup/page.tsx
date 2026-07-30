@@ -10,6 +10,7 @@
 'use client'
 
 import { useState } from 'react'
+import { createClient } from '@/utils/supabase/client'
 import Link from 'next/link'
 
 export default function SignupPage() {
@@ -17,15 +18,31 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState<'signup' | 'payment'>('signup')
+  const [error, setError] = useState<string | null>(null)
+
+  const supabase = createClient()
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    // TODO Phase 2: Implement Supabase auth
-    setTimeout(() => {
+    setError(null)
+
+    try {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+
+      if (signUpError) {
+        setError(signUpError.message)
+      } else {
+        setStep('payment')
+      }
+    } catch (_) {
+      setError('An unexpected error occurred')
+    } finally {
       setLoading(false)
-      setStep('payment')
-    }, 1000)
+    }
   }
 
   const handlePayment = async () => {
@@ -56,9 +73,15 @@ export default function SignupPage() {
 
         <div className="bg-white rounded-xl shadow-lg p-8">
           {step === 'signup' ? (
-            <form onSubmit={handleSignup} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+            <>
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg text-sm">
+                  {error}
+                </div>
+              )}
+              <form onSubmit={handleSignup} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email
                 </label>
                 <input
@@ -70,9 +93,9 @@ export default function SignupPage() {
                   placeholder="you@example.com"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Password
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Password
                 </label>
                 <input
                   type="password"
@@ -84,14 +107,15 @@ export default function SignupPage() {
                   placeholder="At least 8 characters"
                 />
               </div>
-              <button
-                type="submit"
+                <button
+                  type="submit"
                 disabled={loading}
                 className="w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? 'Creating account...' : 'Create Account'}
               </button>
-            </form>
+              </form>
+            </>
           ) : (
             <div className="space-y-6">
               <div className="text-center p-6 bg-gray-50 rounded-lg">
