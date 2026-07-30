@@ -1,0 +1,3 @@
+## 2024-07-10 - O(N) to O(1) Optimization for Markdown Content Engine
+**Learning:** The content engine (`web/lib/content.ts`) used `fs.readdirSync` to read and parse the entire directory of markdown files for every single request calling `getArticle(type, slug)`. This is an O(N) operation that blocks the main thread with synchronous disk I/O and CPU-heavy markdown parsing (via `marked.parse`), which becomes a major bottleneck as the number of content files grows.
+**Action:** When a system reads single files from a directory based on a slug/ID, always read the specific file directly `fs.readFileSync(filepath)` instead of scanning the whole directory. Make sure to use `path.basename(slug)` to sanitize inputs and prevent path traversal security vulnerabilities.
