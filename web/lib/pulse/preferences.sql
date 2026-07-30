@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS newsletter_preferences (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT UNIQUE NOT NULL,
+  token TEXT UNIQUE NOT NULL,
+  tools TEXT[] NOT NULL DEFAULT '{}',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
