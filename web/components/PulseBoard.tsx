@@ -7,7 +7,7 @@
  */
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { PulseItem } from '../lib/pulse'
 
 const statusColor: Record<string, string> = {
@@ -22,15 +22,42 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
   const [email, setEmail] = useState('')
   const [watch, setWatch] = useState<string[]>([])
   const [submitted, setSubmitted] = useState(false)
+  const [tokenLink, setTokenLink] = useState('')
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const token = params.get('token')
+    if (token) {
+      fetch(`/api/pulse-preferences?token=${token}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data && data.email) {
+            setEmail(data.email)
+            if (data.watch && Array.isArray(data.watch)) {
+              setWatch(data.watch)
+            }
+          }
+        })
+        .catch((err) => console.error('Error fetching preferences:', err))
+    }
+  }, [])
 
   const filtered = selected === 'All' ? items : items.filter((i) => i.category === selected)
 
   const toggle = (name: string) =>
     setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
+    const res = await fetch('/api/pulse-subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, watch }),
+    })
+    const data = await res.json()
+    if (data && data.token) {
+      setTokenLink(`${window.location.origin}${window.location.pathname}?token=${data.token}`)
+    }
     setSubmitted(true)
   }
 
@@ -125,8 +152,18 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
           ) : (
             <div className="text-center">
               <div className="text-4xl mb-4">✓</div>
-              <h2 className="text-2xl font-bold mb-2">You&rsquo;re on the list</h2>
-              <p className="text-gray-300">Watching: {watch.join(', ') || 'all tools'}</p>
+              <h2 className="text-2xl font-bold mb-2">You&apos;re Subscribed!</h2>
+              <p className="text-gray-300 mb-4">
+                You&apos;ll receive updates for: {watch.join(', ') || 'All tools'}
+              </p>
+              <p className="text-sm text-gray-400">
+                Check your email for a personalized link to return with your preferences saved.
+              </p>
+              {tokenLink && (
+                 <div className="mt-4 p-4 bg-white/10 rounded-lg text-sm break-all">
+                    {tokenLink}
+                 </div>
+              )}
             </div>
           )}
         </div>
