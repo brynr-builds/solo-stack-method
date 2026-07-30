@@ -62,18 +62,31 @@ export function getProgram(slug: string): Program | undefined {
   return programs.find((p) => p.slug === slug)
 }
 
+// ⚡ Bolt: Cache niches so we avoid doing map+sort on every render
+let cachedNiches: { niche: string; label: string; count: number }[] | null = null;
 export function getNiches(): { niche: string; label: string; count: number }[] {
-  const map = new Map<string, { niche: string; label: string; count: number }>()
-  for (const p of programs) {
-    const existing = map.get(p.niche)
-    if (existing) existing.count++
-    else map.set(p.niche, { niche: p.niche, label: p.nicheLabel, count: 1 })
+  if (!cachedNiches) {
+    const map = new Map<string, { niche: string; label: string; count: number }>()
+    for (const p of programs) {
+      const existing = map.get(p.niche)
+      if (existing) existing.count++
+      else map.set(p.niche, { niche: p.niche, label: p.nicheLabel, count: 1 })
+    }
+    cachedNiches = Array.from(map.values()).sort((a, b) => b.count - a.count)
   }
-  return Array.from(map.values()).sort((a, b) => b.count - a.count)
+  return cachedNiches
 }
 
+// ⚡ Bolt: Pre-compute and memoize programs by niche to avoid repeated O(n) filters
+const nicheCache = new Map<string, Program[]>()
 export function programsByNiche(niche: string): Program[] {
-  return programs.filter((p) => p.niche === niche).sort((a, b) => a.rank - b.rank)
+  if (!nicheCache.has(niche)) {
+    nicheCache.set(
+      niche,
+      programs.filter((p) => p.niche === niche).sort((a, b) => a.rank - b.rank)
+    )
+  }
+  return nicheCache.get(niche)!
 }
 
 /** Top Picks: featured programs in curated rank order. */
