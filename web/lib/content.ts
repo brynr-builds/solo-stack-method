@@ -64,10 +64,16 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+// Performance Optimization: Cache parsed markdown files to prevent O(N) file reads
+// and CPU-intensive parsing during multiple page generations.
+const articleCache = new Map<ContentType, Article[]>()
+
 function readType(type: ContentType): Article[] {
+  if (process.env.NODE_ENV !== 'development' && articleCache.has(type)) return articleCache.get(type)!;
+
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
-  return fs
+  const articles = fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
@@ -87,6 +93,9 @@ function readType(type: ContentType): Article[] {
       }
     })
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
+
+  articleCache.set(type, articles);
+  return articles;
 }
 
 export function getArticles(type: ContentType): Article[] {

@@ -1,0 +1,3 @@
+## 2025-03-05 - In-memory caches break Next.js development workflow
+**Learning:** Using a top-level module variable (like a `Map`) as a persistent cache in Next.js Server Components breaks development hot-reloading. The cache never invalidates when markdown files change, meaning developers have to constantly restart the local server to see updates. This is also problematic in production if ISR (Incremental Static Regeneration) is used because the memory cache will bypass the filesystem entirely and serve stale data.
+**Action:** When caching file reads for static content, implement a cache invalidation strategy (like clearing the cache if `process.env.NODE_ENV === 'development'`) or rely on framework-native caching mechanisms.
