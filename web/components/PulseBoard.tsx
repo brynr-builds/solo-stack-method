@@ -7,7 +7,7 @@
  */
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { PulseItem } from '../lib/pulse'
 
 const statusColor: Record<string, string> = {
@@ -23,7 +23,11 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
   const [watch, setWatch] = useState<string[]>([])
   const [submitted, setSubmitted] = useState(false)
 
-  const filtered = selected === 'All' ? items : items.filter((i) => i.category === selected)
+  // ⚡ Bolt: Memoize filtered items to prevent unnecessary recalculations on re-renders
+  // (e.g., when the user types in the newsletter email field or changes the watch list)
+  const filtered = useMemo(() => {
+    return selected === 'All' ? items : items.filter((i) => i.category === selected)
+  }, [selected, items])
 
   const toggle = (name: string) =>
     setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
