@@ -64,10 +64,21 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+const cache = new Map<ContentType, Article[]>()
+
 function readType(type: ContentType): Article[] {
+  // ⚡ Bolt: Cache content engine reads to prevent redundant file I/O and parsing.
+  // Bypass cache in development to allow hot-reloading of markdown changes.
+  const isDev = process.env.NODE_ENV === 'development'
+
+  if (!isDev && cache.has(type)) {
+    // Return a shallow copy of the array and its articles to prevent callers from mutating the cache
+    return cache.get(type)!.map(a => ({ ...a, programs: [...a.programs], pulse: [...a.pulse] }))
+  }
+
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
-  return fs
+  const articles = fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
@@ -87,6 +98,14 @@ function readType(type: ContentType): Article[] {
       }
     })
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
+
+  if (!isDev) {
+    cache.set(type, articles)
+    // Return a safe copy to initial caller as well
+    return articles.map(a => ({ ...a, programs: [...a.programs], pulse: [...a.pulse] }))
+  }
+
+  return articles
 }
 
 export function getArticles(type: ContentType): Article[] {
