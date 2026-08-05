@@ -1,0 +1,3 @@
+## 2024-08-05 - Content Engine O(N) Lookup Fix
+**Learning:** The content engine read single articles by reading and parsing the *entire* directory using `readAll().find()`. For a growing set of Markdown guides, parsing frontmatter and executing `marked.parse` for unrequested files becomes a significant disk I/O and CPU bottleneck.
+**Action:** When retrieving individual static files by slug (like in a Next.js `getArticle` helper), always sanitize the slug (`path.basename(slug)`) and directly `fs.readFileSync` the single file instead of iterating over the directory contents. Extract a shared `parseArticle` helper to keep logic DRY.
