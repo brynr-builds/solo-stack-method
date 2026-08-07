@@ -30,10 +30,27 @@ export default function SignupPage() {
 
   const handlePayment = async () => {
     setLoading(true)
-    // TODO Phase 2: Implement Stripe checkout
-    setTimeout(() => {
-      window.location.href = '/dashboard'
-    }, 1000)
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      const data = await response.json()
+
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        console.error('No checkout URL returned')
+        setLoading(false)
+      }
+    } catch (error) {
+      console.error('Error initiating checkout:', error)
+      setLoading(false)
+    }
   }
 
   return (
