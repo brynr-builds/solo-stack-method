@@ -1,0 +1,3 @@
+## 2026-08-08 - Optimize Next.js Content Engine
+**Learning:** Next.js content engines using fs.readFileSync for markdown can easily become O(N) disk I/O bottlenecks if single-item requests (e.g. getArticle) parse the entire directory instead of targeting the specific file by slug. Module-level caching (Map) instead of React's cache() allows these optimizations to be standalone and testable in Node, provided there's a bypass for development mode to preserve hot-reloading.
+**Action:** When building or optimizing file-based content systems, separate list retrieval (readAll) from single item retrieval (readOne), use sanitized slugs to target single files directly, and extract the common parsing logic into a shared helper.
