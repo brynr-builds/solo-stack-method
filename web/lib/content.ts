@@ -64,29 +64,51 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+// Helper to parse raw markdown into an Article object, maintaining DRY principles
+function parseArticle(type: ContentType, slug: string, raw: string): Article {
+  const { data, body } = parseFrontmatter(raw)
+  return {
+    type,
+    slug,
+    title: data.title ?? slug,
+    description: data.description ?? '',
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
+}
+
+// Module-level caches for production performance optimization
+const articleCache = new Map<string, Article>()
+const typeCache = new Map<ContentType, Article[]>()
+
 function readType(type: ContentType): Article[] {
+  // O(1) Memory lookup for production, bypass in dev for hot-reloading
+  if (process.env.NODE_ENV !== 'development' && typeCache.has(type)) {
+    return typeCache.get(type)!
+  }
+
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
-  return fs
+
+  const articles = fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
+      const slug = f.replace(/\.md$/, '')
       const raw = fs.readFileSync(path.join(dir, f), 'utf8')
-      const { data, body } = parseFrontmatter(raw)
-      return {
-        type,
-        slug: f.replace(/\.md$/, ''),
-        title: data.title ?? f.replace(/\.md$/, ''),
-        description: data.description ?? '',
-        updated: data.updated ?? null,
-        author: data.author ?? null,
-        excerpt: data.excerpt ?? null,
-        programs: Array.isArray(data.programs) ? data.programs : [],
-        pulse: Array.isArray(data.pulse) ? data.pulse : [],
-        html: marked.parse(body, { async: false }) as string,
-      }
+      return parseArticle(type, slug, raw)
     })
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
+
+  if (process.env.NODE_ENV !== 'development') {
+    typeCache.set(type, articles)
+  }
+
+  return articles
 }
 
 export function getArticles(type: ContentType): Article[] {
@@ -94,5 +116,29 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  // Sanitize input to prevent path traversal
+  const safeSlug = path.basename(slug)
+  const cacheKey = `${type}:${safeSlug}`
+
+  // O(1) Memory lookup for production
+  if (process.env.NODE_ENV !== 'development' && articleCache.has(cacheKey)) {
+    return articleCache.get(cacheKey)
+  }
+
+  // O(1) Disk lookup instead of O(N) reading/parsing all articles
+  const filePath = path.join(CONTENT_ROOT, type, `${safeSlug}.md`)
+  if (!fs.existsSync(filePath)) return undefined
+
+  try {
+    const raw = fs.readFileSync(filePath, 'utf8')
+    const article = parseArticle(type, safeSlug, raw)
+
+    if (process.env.NODE_ENV !== 'development') {
+      articleCache.set(cacheKey, article)
+    }
+
+    return article
+  } catch (err) {
+    return undefined
+  }
 }
