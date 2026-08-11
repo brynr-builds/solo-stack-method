@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.2.0",
-      "date": "2026-08-06T10:48:55.757Z"
+      "version": "7.2.1",
+      "date": "2026-08-11T16:49:05.450Z"
     },
     {
       "name": "Tailwind CSS",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.59",
-      "date": "2026-08-10T20:22:26.780Z"
+      "version": "7.0.60",
+      "date": "2026-08-11T17:35:47.159Z"
     }
   ]
 }
