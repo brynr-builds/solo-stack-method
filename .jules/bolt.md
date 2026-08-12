@@ -1,0 +1,3 @@
+## 2023-10-27 - O(N) Disk I/O Anti-Pattern in Content Engine
+**Learning:** The content engine read and parsed all markdown files into HTML using `readAll().find()` just to retrieve a single article by slug. This causes O(N) disk I/O and CPU bottlenecks for every individual article request, which becomes severe as the content scales.
+**Action:** Always retrieve single static items using direct file access with `fs.readFileSync(path.join(dir, `${path.basename(slug)}.md`))` and extract core parsing logic into a shared helper. Also apply memory caching with a `Map` for production while bypassing in development to preserve hot-reloading.
