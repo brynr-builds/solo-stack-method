@@ -1,0 +1,1 @@
+## 2024-06-10 - PulseBoard re-rendering optimization\n**Learning:** Filtering arrays on every render can cause performance issues, especially when unrelated state changes trigger re-renders. We should be using useMemo to memoize filtering logic.\n**Action:** Use `useMemo` in React components to wrap expensive computations and prevent unnecessary re-evaluations.
