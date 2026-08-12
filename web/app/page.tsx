@@ -91,7 +91,7 @@ export default function HomePage() {
               <ul className="space-y-3 text-gray-600">
                 <li>• You want to "vibe code" with no structure</li>
                 <li>• You expect AI to read your mind</li>
-                <li>• You're looking for a no-code builder</li>
+                <li>• You&apos;re looking for a no-code builder</li>
                 <li>• You refuse to learn anything new</li>
                 <li>• You want magic, not method</li>
               </ul>
