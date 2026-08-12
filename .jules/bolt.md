@@ -1,0 +1,3 @@
+## 2024-05-24 - [Optimize getArticle performance]
+**Learning:** The content engine manually parsed markdown frontmatter and converted body markdown to HTML using `marked`. For `getArticle(type, slug)`, it was reading the entire content directory for the given type and parsing ALL files in the directory to find a single matching slug (O(N) operation).
+**Action:** When working with file-based content that uses slugs, optimize the lookup by sanitizing the requested slug using `path.basename(slug)` and directly reading the single target file instead of iterating over the directory contents. This turns an O(N) disk I/O and parsing operation into O(1).
