@@ -11,6 +11,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { stripePromise } from '@/lib/stripe'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -30,10 +31,26 @@ export default function SignupPage() {
 
   const handlePayment = async () => {
     setLoading(true)
-    // TODO Phase 2: Implement Stripe checkout
-    setTimeout(() => {
-      window.location.href = '/dashboard'
-    }, 1000)
+    try {
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+      })
+      const { id } = await response.json()
+
+      const stripe = await stripePromise
+      if (stripe) {
+        // Stripe.js types might not have redirectToCheckout on older or newer versions if strictly typed, but it exists at runtime.
+        // We'll cast to any for this integration to bypass the typescript error.
+        const { error } = await (stripe as any).redirectToCheckout({ sessionId: id })
+        if (error) {
+          console.error('Stripe redirect error:', error)
+        }
+      }
+    } catch (err) {
+      console.error('Checkout error:', err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
