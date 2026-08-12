@@ -1,0 +1,3 @@
+## 2026-06-23 - Content Engine Caching
+**Learning:** The content engine (`lib/content.ts`) reads, parses, and converts Markdown to HTML using `marked` synchronously on every call to `getArticles` or `getArticle`. Since the app uses these functions across multiple pages and components (like sitemap generation, guide listings, and individual guide rendering), the lack of caching leads to repeated, expensive filesystem reads and parsing operations.
+**Action:** When working with synchronous static file reading and parsing in Next.js/Node, always implement an in-memory cache map or use React `cache()` to prevent redundant file I/O and processing during build or request times.
