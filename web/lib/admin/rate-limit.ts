@@ -3,6 +3,8 @@
  * Resets on server restart. Document this limitation.
  */
 
+import { NextRequest } from 'next/server'
+
 interface Entry {
   count: number
   resetAt: number
@@ -40,4 +42,8 @@ export function checkRateLimit(
 
   entry.count++
   return { ok: true }
+}
+
+export function getClientIdentifier(req: NextRequest): string {
+  return req.ip ?? 'unknown'
 }
