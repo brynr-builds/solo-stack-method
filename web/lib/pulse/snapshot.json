@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.2.2",
-      "date": "2026-08-13T20:42:51.375Z"
+      "version": "7.2.3",
+      "date": "2026-08-18T13:43:44.533Z"
     },
     {
       "name": "Tailwind CSS",
@@ -53,8 +53,8 @@
       "name": "Vitest",
       "category": "Testing",
       "url": "https://vitest.dev",
-      "version": "4.1.10",
-      "date": "2026-07-06T06:44:42.684Z"
+      "version": "4.1.11",
+      "date": "2026-08-18T14:27:07.240Z"
     },
     {
       "name": "ESLint",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.66",
-      "date": "2026-08-14T18:41:57.488Z"
+      "version": "7.0.67",
+      "date": "2026-08-18T16:56:41.852Z"
     }
   ]
 }
