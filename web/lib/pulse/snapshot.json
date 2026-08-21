@@ -4,8 +4,8 @@
       "name": "Next.js",
       "category": "Framework",
       "url": "https://nextjs.org",
-      "version": "16.3.1",
-      "date": "2026-08-13T22:45:02.025Z"
+      "version": "16.3.2",
+      "date": "2026-08-21T09:54:02.099Z"
     },
     {
       "name": "React",
@@ -60,8 +60,8 @@
       "name": "ESLint",
       "category": "Tooling",
       "url": "https://eslint.org",
-      "version": "10.8.1",
-      "date": "2026-08-07T20:21:24.770Z"
+      "version": "10.9.0",
+      "date": "2026-08-21T13:07:47.620Z"
     },
     {
       "name": "Prisma",
