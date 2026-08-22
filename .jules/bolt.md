@@ -1,0 +1,3 @@
+## 2024-05-18 - [Optimize content engine item retrieval]
+**Learning:** [Next.js content engine file retrieval] The content engine reads Markdown files from `web/content/<type>/<slug>.md` using `fs`, parses frontmatter manually, and converts markdown to HTML server-side using `marked`. The existing implementation of `getArticle` read all files in the directory to find a match, which is O(N) disk I/O and CPU bottleneck.
+**Action:** [Direct File Reads] For file-based content engines, retrieve single items by directly reading the specific file using a sanitized slug (e.g., `fs.readFileSync(path.join(dir, `${path.basename(slug)}.md`))`) rather than reading and parsing the entire directory to find a match.
