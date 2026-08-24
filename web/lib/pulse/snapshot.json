@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.2.4",
-      "date": "2026-08-19T14:43:52.274Z"
+      "version": "7.2.6",
+      "date": "2026-08-24T16:58:31.247Z"
     },
     {
       "name": "Tailwind CSS",
@@ -60,8 +60,8 @@
       "name": "ESLint",
       "category": "Tooling",
       "url": "https://eslint.org",
-      "version": "10.9.0",
-      "date": "2026-08-21T13:07:47.620Z"
+      "version": "10.9.1",
+      "date": "2026-08-24T18:21:58.062Z"
     },
     {
       "name": "Prisma",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.77",
-      "date": "2026-08-22T05:57:45.678Z"
+      "version": "7.0.78",
+      "date": "2026-08-24T18:31:17.741Z"
     }
   ]
 }
