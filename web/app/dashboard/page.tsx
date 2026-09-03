@@ -175,8 +175,8 @@ export default function DashboardPage() {
           <h3 className="font-semibold mb-2">Why Each Step Has Its Own AI Context</h3>
           <p className="text-gray-600 text-sm leading-relaxed">
             Traditional AI chat accumulates context over time, leading to confusion and errors. 
-            Solo Stack Method isolates each step's AI conversation, ensuring the AI only sees 
-            what's relevant to that specific task. This prevents context pollution and enables 
+            Solo Stack Method isolates each step&apos;s AI conversation, ensuring the AI only sees
+            what&apos;s relevant to that specific task. This prevents context pollution and enables
             step-specific guardrails that keep AI focused on the immediate goal.
           </p>
         </div>
