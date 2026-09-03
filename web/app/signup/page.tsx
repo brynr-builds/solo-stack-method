@@ -2,7 +2,7 @@
  * DEV NOTES:
  * - Why: Signup page for new users
  * - Phase 1: UI scaffold only, simulated signup
- * - Phase 2+: Supabase Auth, Stripe payment integration
+ * - Phase 2: Supabase Auth implemented
  * 
  * PRICING: $20/month (locked)
  */
@@ -11,21 +11,38 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import { createClient } from '@/utils/supabase/client'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [step, setStep] = useState<'signup' | 'payment'>('signup')
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    // TODO Phase 2: Implement Supabase auth
-    setTimeout(() => {
-      setLoading(false)
+    setError(null)
+
+    const supabase = createClient()
+
+    try {
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+
+      if (signUpError) {
+        throw signUpError
+      }
+
       setStep('payment')
-    }, 1000)
+    } catch (err: any) {
+      setError(err.message || 'An error occurred during signup.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handlePayment = async () => {
@@ -57,6 +74,11 @@ export default function SignupPage() {
         <div className="bg-white rounded-xl shadow-lg p-8">
           {step === 'signup' ? (
             <form onSubmit={handleSignup} className="space-y-4">
+              {error && (
+                <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg">
+                  {error}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Email
