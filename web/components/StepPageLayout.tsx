@@ -19,6 +19,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import PromptGenerator from './PromptGenerator'
+import AIChat from './AIChat'
 import { useSubscription, GatingBanner } from './SubscriptionGate'
 
 interface StepPageLayoutProps {
@@ -33,6 +34,9 @@ interface StepPageLayoutProps {
   initialMessage?: string
   // Phase 1.2: Intent summary for prompt generation
   intentSummary?: string
+  // Phase 1 Code Health
+  leftColumnContent?: React.ReactNode
+  mockResponseMessage?: string
 }
 
 export default function StepPageLayout({ 
@@ -44,28 +48,17 @@ export default function StepPageLayout({
   agentRole,
   tasks,
   initialMessage,
-  intentSummary
+  intentSummary,
+  leftColumnContent,
+  mockResponseMessage
 }: StepPageLayoutProps) {
-  const [chatInput, setChatInput] = useState('')
-  const [messages, setMessages] = useState([
-    { role: 'assistant', content: initialMessage || `I'm ready to help you with ${title}. What would you like to know?` }
-  ])
+
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false)
   
   // Get subscription state (defaults to false in Phase 1.2)
   const { isSubscribed } = useSubscription()
 
-  const handleSend = () => {
-    if (!chatInput.trim()) return
-    setMessages(prev => [...prev, { role: 'user', content: chatInput }])
-    setTimeout(() => {
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: "This is a Phase 1 placeholder. Real AI integration coming in Phase 2." 
-      }])
-    }, 500)
-    setChatInput('')
-  }
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -122,7 +115,7 @@ export default function StepPageLayout({
               </div>
             </div>
             <div className="text-xs text-slate-400">
-              Governance shown so you understand the workflow — even if you don't understand the code.
+              Governance shown so you understand the workflow — even if you don&apos;t understand the code.
             </div>
           </div>
         </div>
@@ -200,8 +193,9 @@ export default function StepPageLayout({
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Left Column - Info */}
             <div className="space-y-6">
+              {leftColumnContent}
               {/* Agent Info */}
-              {agent && (
+              {agent && !leftColumnContent && (
                 <div className="card">
                   <h2 className="text-lg font-semibold mb-2">Current Agent</h2>
                   <div className="flex items-center gap-3">
@@ -217,7 +211,7 @@ export default function StepPageLayout({
               )}
 
               {/* Tasks */}
-              {tasks && tasks.length > 0 && (
+              {tasks && tasks.length > 0 && !leftColumnContent && (
                 <div className="card">
                   <h2 className="text-lg font-semibold mb-4">Tasks for this Step</h2>
                   <ul className="space-y-3">
@@ -235,39 +229,19 @@ export default function StepPageLayout({
             </div>
 
             {/* Right Column - AI Chat */}
-            <div className="card flex flex-col h-[500px]">
-              <h2 className="text-lg font-semibold mb-4">AI Assistant</h2>
-              <div className="flex-1 overflow-y-auto space-y-4 mb-4">
-                {messages.map((msg, i) => (
-                  <div
-                    key={i}
-                    className={`p-3 rounded-lg ${
-                      msg.role === 'assistant'
-                        ? 'bg-blue-50 text-gray-800'
-                        : 'bg-gray-100 text-gray-800 ml-8'
-                    }`}
-                  >
-                    {msg.content}
-                  </div>
-                ))}
+            {agent ? (
+              <AIChat
+                agentName={agent}
+                agentRole={agentRole}
+                stepNumber={stepNumber}
+                initialMessage={initialMessage || `I'm ready to help you with ${title}. What would you like to know?`}
+                mockResponse={mockResponseMessage}
+              />
+            ) : (
+              <div className="card flex flex-col h-[500px] items-center justify-center text-gray-500">
+                <p>No agent assigned to this step.</p>
               </div>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Ask about this step..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-solo-accent focus:border-transparent"
-                />
-                <button
-                  onClick={handleSend}
-                  className="px-4 py-2 bg-solo-accent text-white rounded-lg hover:bg-blue-600 transition-colors"
-                >
-                  Send
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         )}
       </main>
@@ -286,7 +260,11 @@ export default function StepPageLayout({
             ) : (
               <div />
             )}
-            {stepNumber < 7 ? (
+            {stepNumber === 1 ? (
+              <button className="px-4 py-2 bg-solo-accent text-white rounded-lg opacity-50 cursor-not-allowed" disabled>
+                Complete Step 1 →
+              </button>
+            ) : stepNumber < 7 ? (
               <Link
                 href={`/steps/${stepNumber + 1}`}
                 className="px-4 py-2 bg-solo-accent text-white rounded-lg hover:bg-blue-600 transition-colors"
