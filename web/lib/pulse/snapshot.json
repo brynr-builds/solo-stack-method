@@ -60,15 +60,15 @@
       "name": "ESLint",
       "category": "Tooling",
       "url": "https://eslint.org",
-      "version": "10.9.1",
-      "date": "2026-08-24T18:21:58.062Z"
+      "version": "10.10.0",
+      "date": "2026-09-04T14:34:21.799Z"
     },
     {
       "name": "Prisma",
       "category": "Backend",
       "url": "https://www.prisma.io",
-      "version": "8.0.0-rc.12",
-      "date": "2026-08-26T14:06:49.655Z"
+      "version": "8.0.0-rc.13",
+      "date": "2026-09-04T15:34:39.663Z"
     },
     {
       "name": "Supabase JS",
