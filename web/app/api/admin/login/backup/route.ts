@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createHash } from 'crypto'
+import bcrypt from 'bcrypt'
 import { getAdminEnv } from '@/lib/admin/env'
 import { query } from '@/lib/admin/storage/db'
 import { checkRateLimit } from '@/lib/admin/rate-limit'
@@ -18,11 +19,6 @@ function getClientIdentifier(req: NextRequest): string {
 
 function hashToken(token: string): string {
   return createHash('sha256').update(token).digest('hex')
-}
-
-function hashBackupCode(code: string, secret: string): string {
-  const normalized = code.replace(/-/g, '').toLowerCase()
-  return createHash('sha256').update(secret + normalized).digest('hex')
 }
 
 export async function POST(request: NextRequest) {
@@ -56,8 +52,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Backup code required' }, { status: 400 })
     }
 
-    const codeHash = hashBackupCode(code, env.sessionSecret)
-
     const userRows = await query<{ id: string }>(
       'SELECT id FROM admin_users WHERE email = $1 AND is_active = true',
       [email]
@@ -67,17 +61,32 @@ export async function POST(request: NextRequest) {
     }
     const userId = userRows[0]!.id
 
-    const codeRows = await query<{ id: string }>(
-      'SELECT id FROM admin_backup_codes WHERE user_id = $1 AND code_hash = $2 AND used_at IS NULL',
-      [userId, codeHash]
+    const codeRows = await query<{ id: string, code_hash: string }>(
+      'SELECT id, code_hash FROM admin_backup_codes WHERE user_id = $1 AND used_at IS NULL',
+      [userId]
     )
     if (codeRows.length === 0) {
       return NextResponse.json({ error: 'Invalid code' }, { status: 400 })
     }
 
+    const normalizedCode = code.replace(/-/g, '').toLowerCase()
+    let matchedCodeId: string | null = null
+
+    for (const row of codeRows) {
+      const isMatch = await bcrypt.compare(normalizedCode, row.code_hash)
+      if (isMatch) {
+        matchedCodeId = row.id
+        break
+      }
+    }
+
+    if (!matchedCodeId) {
+      return NextResponse.json({ error: 'Invalid code' }, { status: 400 })
+    }
+
     await query(
       'UPDATE admin_backup_codes SET used_at = now() WHERE id = $1',
-      [codeRows[0]!.id]
+      [matchedCodeId]
     )
 
     const sessionToken = await createSessionToken(userId, email, env.sessionSecret, env.sessionTtlHours)
