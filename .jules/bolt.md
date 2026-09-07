@@ -1,0 +1,3 @@
+## 2026-06-08 - Optimized O(N) file reads in getArticle
+**Learning:** The `getArticle` function was previously reading and parsing ALL markdown files in a directory using `readAll()` and then finding the one with the matching slug. This was an O(N) operation on disk I/O and CPU parsing for single-item lookups, causing unnecessary overhead when reading file-based content.
+**Action:** When working with file-based content engines that rely on slugs mapping to filenames, always use direct path-based lookups (`fs.existsSync` and `fs.readFileSync` on the specific file) instead of scanning the whole directory. Extracted the core parsing logic into `parseArticleFile` to maintain DRY and share between `getArticles` (list) and `getArticle` (single item) reads.
