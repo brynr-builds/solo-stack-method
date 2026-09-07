@@ -122,7 +122,7 @@ export default function StepPageLayout({
               </div>
             </div>
             <div className="text-xs text-slate-400">
-              Governance shown so you understand the workflow — even if you don't understand the code.
+              Governance shown so you understand the workflow — even if you don&apos;t understand the code.
             </div>
           </div>
         </div>
