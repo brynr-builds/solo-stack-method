@@ -39,8 +39,8 @@
       "name": "Node.js",
       "category": "Runtime",
       "url": "https://nodejs.org",
-      "version": "26.8.1",
-      "date": "2026-08-26"
+      "version": "26.8.2",
+      "date": "2026-09-09"
     },
     {
       "name": "Vite",
@@ -88,15 +88,15 @@
       "name": "OpenAI SDK",
       "category": "AI",
       "url": "https://platform.openai.com/docs",
-      "version": "7.12.1",
-      "date": "2026-09-09T01:28:59.753Z"
+      "version": "7.13.0",
+      "date": "2026-09-09T15:44:55.705Z"
     },
     {
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.94",
-      "date": "2026-09-08T19:31:47.545Z"
+      "version": "7.0.95",
+      "date": "2026-09-09T13:47:18.684Z"
     }
   ]
 }
