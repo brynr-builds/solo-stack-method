@@ -11,8 +11,8 @@
       "name": "React",
       "category": "Framework",
       "url": "https://react.dev",
-      "version": "19.2.8",
-      "date": "2026-07-21T15:41:28.716Z"
+      "version": "19.3.0",
+      "date": "2026-09-09T17:21:30.071Z"
     },
     {
       "name": "Astro",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.95",
-      "date": "2026-09-09T13:47:18.684Z"
+      "version": "7.0.97",
+      "date": "2026-09-09T20:28:23.342Z"
     }
   ]
 }
