@@ -4,8 +4,8 @@
       "name": "Next.js",
       "category": "Framework",
       "url": "https://nextjs.org",
-      "version": "16.3.4",
-      "date": "2026-08-31T20:00:51.381Z"
+      "version": "16.3.5",
+      "date": "2026-09-11T17:26:46.049Z"
     },
     {
       "name": "React",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.97",
-      "date": "2026-09-09T20:28:23.342Z"
+      "version": "7.0.98",
+      "date": "2026-09-11T18:56:10.871Z"
     }
   ]
 }
