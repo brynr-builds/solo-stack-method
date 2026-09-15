@@ -1,0 +1,3 @@
+## 2026-06-08 - Direct File Reads for Content Engine Lookups
+**Learning:** In Next.js static generation or content engines, finding a single markdown file by scanning and parsing all files in a directory (`readType().find()`) is an O(N) operation that blocks the thread and incurs heavy disk I/O, especially as the number of articles grows.
+**Action:** When fetching single items by slug from a file system, compute the direct path using the slug and check for existence (`fs.existsSync(path)`). Always sanitize the dynamic input using `path.basename(slug)` to prevent path traversal vulnerabilities. Extract core parsing logic into a reusable helper to keep single-item and bulk-fetch operations DRY.
