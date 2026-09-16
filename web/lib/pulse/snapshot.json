@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.3.2",
-      "date": "2026-09-08T15:55:00.599Z"
+      "version": "7.3.3",
+      "date": "2026-09-16T19:45:24.214Z"
     },
     {
       "name": "Tailwind CSS",
@@ -39,8 +39,8 @@
       "name": "Node.js",
       "category": "Runtime",
       "url": "https://nodejs.org",
-      "version": "26.8.2",
-      "date": "2026-09-09"
+      "version": "26.9.0",
+      "date": "2026-09-16"
     },
     {
       "name": "Vite",
@@ -88,15 +88,15 @@
       "name": "OpenAI SDK",
       "category": "AI",
       "url": "https://platform.openai.com/docs",
-      "version": "7.16.0",
-      "date": "2026-09-16T16:37:11.042Z"
+      "version": "7.17.0",
+      "date": "2026-09-16T19:36:19.386Z"
     },
     {
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.102",
-      "date": "2026-09-15T17:26:52.991Z"
+      "version": "7.0.103",
+      "date": "2026-09-16T18:36:07.487Z"
     }
   ]
 }
