@@ -32,6 +32,11 @@ export type Article = {
 
 const CONTENT_ROOT = path.join(process.cwd(), 'content')
 
+// Module-level caching for parsed articles to improve performance during static generation.
+// This cache is bypassed in development to ensure hot-reloading works with fresh content.
+const articleCache = new Map<string, Article>()
+const listCache = new Map<string, Article[]>()
+
 /** Minimal YAML-ish frontmatter parser: scalar strings + `[a, b]` / `- item` lists. */
 function parseFrontmatter(raw: string): { data: Record<string, any>; body: string } {
   const m = raw.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/)
@@ -64,29 +69,58 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+function parseArticle(type: ContentType, slug: string, raw: string): Article {
+  const { data, body } = parseFrontmatter(raw)
+  return {
+    type,
+    slug,
+    title: data.title ?? slug,
+    description: data.description ?? '',
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
+}
+
 function readType(type: ContentType): Article[] {
+  const listCacheKey = `list:${type}`
+  if (process.env.NODE_ENV !== 'development' && listCache.has(listCacheKey)) {
+    return listCache.get(listCacheKey)!
+  }
+
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
-  return fs
+
+  const articles = fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
-      const raw = fs.readFileSync(path.join(dir, f), 'utf8')
-      const { data, body } = parseFrontmatter(raw)
-      return {
-        type,
-        slug: f.replace(/\.md$/, ''),
-        title: data.title ?? f.replace(/\.md$/, ''),
-        description: data.description ?? '',
-        updated: data.updated ?? null,
-        author: data.author ?? null,
-        excerpt: data.excerpt ?? null,
-        programs: Array.isArray(data.programs) ? data.programs : [],
-        pulse: Array.isArray(data.pulse) ? data.pulse : [],
-        html: marked.parse(body, { async: false }) as string,
+      const slug = f.replace(/\.md$/, '')
+      const cacheKey = `${type}:${slug}`
+
+      if (process.env.NODE_ENV !== 'development' && articleCache.has(cacheKey)) {
+        return articleCache.get(cacheKey)!
       }
+
+      const raw = fs.readFileSync(path.join(dir, f), 'utf8')
+      const article = parseArticle(type, slug, raw)
+
+      if (process.env.NODE_ENV !== 'development') {
+        articleCache.set(cacheKey, article)
+      }
+
+      return article
     })
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
+
+  if (process.env.NODE_ENV !== 'development') {
+    listCache.set(listCacheKey, articles)
+  }
+
+  return articles
 }
 
 export function getArticles(type: ContentType): Article[] {
@@ -94,5 +128,24 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  const safeSlug = path.basename(slug)
+  const cacheKey = `${type}:${safeSlug}`
+
+  if (process.env.NODE_ENV !== 'development' && articleCache.has(cacheKey)) {
+    return articleCache.get(cacheKey)!
+  }
+
+  const filePath = path.join(CONTENT_ROOT, type, `${safeSlug}.md`)
+  if (!fs.existsSync(filePath)) {
+    return undefined
+  }
+
+  const raw = fs.readFileSync(filePath, 'utf8')
+  const article = parseArticle(type, safeSlug, raw)
+
+  if (process.env.NODE_ENV !== 'development') {
+    articleCache.set(cacheKey, article)
+  }
+
+  return article
 }
