@@ -1,0 +1,3 @@
+## 2026-06-08 - O(N) Content Read Optimization
+**Learning:** In Next.js App Router applications, parsing large directories of Markdown files for individual item requests causes a significant CPU/IO bottleneck during static generation or dynamic routing, especially because `fs.readdirSync` and markdown parsers scale linearly O(N).
+**Action:** When retrieving a single markdown file dynamically via slug, read the exact file directly using `fs.readFileSync(path.join(..., \`\${path.basename(slug)}.md\`))` instead of filtering the whole directory array. Extract the parsing logic to keep structures DRY.
