@@ -64,29 +64,47 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+function parseArticleContent(type: ContentType, slug: string, raw: string): Article {
+  const { data, body } = parseFrontmatter(raw)
+  return {
+    type,
+    slug,
+    title: data.title ?? slug,
+    description: data.description ?? '',
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
+}
+
+// Module-level cache for articles to prevent repeated parsing (bypassed in dev mode)
+const articlesCache = new Map<string, Article[]>()
+const singleArticleCache = new Map<string, Article>()
+
 function readType(type: ContentType): Article[] {
+  const cacheKey = type
+  if (process.env.NODE_ENV !== 'development' && articlesCache.has(cacheKey)) {
+    return articlesCache.get(cacheKey)!
+  }
+
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
-  return fs
+  const articles = fs
     .readdirSync(dir)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
       const raw = fs.readFileSync(path.join(dir, f), 'utf8')
-      const { data, body } = parseFrontmatter(raw)
-      return {
-        type,
-        slug: f.replace(/\.md$/, ''),
-        title: data.title ?? f.replace(/\.md$/, ''),
-        description: data.description ?? '',
-        updated: data.updated ?? null,
-        author: data.author ?? null,
-        excerpt: data.excerpt ?? null,
-        programs: Array.isArray(data.programs) ? data.programs : [],
-        pulse: Array.isArray(data.pulse) ? data.pulse : [],
-        html: marked.parse(body, { async: false }) as string,
-      }
+      return parseArticleContent(type, f.replace(/\.md$/, ''), raw)
     })
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
+
+  if (process.env.NODE_ENV !== 'development') {
+    articlesCache.set(cacheKey, articles)
+  }
+  return articles
 }
 
 export function getArticles(type: ContentType): Article[] {
@@ -94,5 +112,30 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  /*
+   * Performance optimization: Bypass O(N) directory traversal and parsing of all files.
+   * Instead, retrieve the single item by directly reading the specific file using a sanitized slug.
+   * Expected Impact: Reduces disk I/O and CPU bottleneck from O(N) to O(1) for single article reads.
+   */
+  const safeSlug = path.basename(slug)
+  const cacheKey = `${type}-${safeSlug}`
+
+  if (process.env.NODE_ENV !== 'development' && singleArticleCache.has(cacheKey)) {
+    return singleArticleCache.get(cacheKey)
+  }
+
+  const filePath = path.join(CONTENT_ROOT, type, `${safeSlug}.md`)
+  if (!fs.existsSync(filePath)) return undefined
+
+  try {
+    const raw = fs.readFileSync(filePath, 'utf8')
+    const article = parseArticleContent(type, safeSlug, raw)
+
+    if (process.env.NODE_ENV !== 'development') {
+      singleArticleCache.set(cacheKey, article)
+    }
+    return article
+  } catch (error) {
+    return undefined
+  }
 }
