@@ -1,0 +1,3 @@
+## 2025-02-25 - Caching and Direct Reads in Content Engine
+**Learning:** The content engine (`web/lib/content.ts`) used `readAll().find()` to retrieve a single article. This resulted in O(N) disk reads and markdown parsing just to retrieve one item. We can bypass this by reading the file directly via `fs.readFileSync(path.join(CONTENT_ROOT, type, `${slug}.md`))`. Also added module-level caching `Map` for production environments to avoid re-parsing markdown on every request.
+**Action:** When working with file-based content or O(N) read functions in Next.js, implement direct item reads by slug and use module-level caching (avoiding React `cache()` if standalone node execution is required), being sure to bypass cache in `development` mode to support hot reloading.
