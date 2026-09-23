@@ -74,8 +74,8 @@
       "name": "Supabase JS",
       "category": "Backend",
       "url": "https://supabase.com",
-      "version": "2.117.0",
-      "date": "2026-09-22T12:57:17.653Z"
+      "version": "2.117.1",
+      "date": "2026-09-23T09:35:44.476Z"
     },
     {
       "name": "Anthropic SDK",
@@ -88,15 +88,15 @@
       "name": "OpenAI SDK",
       "category": "AI",
       "url": "https://platform.openai.com/docs",
-      "version": "7.22.0",
-      "date": "2026-09-22T18:36:25.432Z"
+      "version": "7.23.0",
+      "date": "2026-09-23T07:19:25.720Z"
     },
     {
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.111",
-      "date": "2026-09-22T18:11:20.964Z"
+      "version": "7.0.112",
+      "date": "2026-09-23T08:38:49.694Z"
     }
   ]
 }
