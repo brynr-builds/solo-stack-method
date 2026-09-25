@@ -53,8 +53,8 @@
       "name": "Vitest",
       "category": "Testing",
       "url": "https://vitest.dev",
-      "version": "5.0.1",
-      "date": "2026-09-15T08:49:35.830Z"
+      "version": "5.0.2",
+      "date": "2026-09-25T09:00:46.560Z"
     },
     {
       "name": "ESLint",
@@ -74,8 +74,8 @@
       "name": "Supabase JS",
       "category": "Backend",
       "url": "https://supabase.com",
-      "version": "2.117.1",
-      "date": "2026-09-23T09:35:44.476Z"
+      "version": "2.117.2",
+      "date": "2026-09-25T10:08:51.684Z"
     },
     {
       "name": "Anthropic SDK",
