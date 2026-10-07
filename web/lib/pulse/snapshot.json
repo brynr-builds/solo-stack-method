@@ -67,15 +67,15 @@
       "name": "Prisma",
       "category": "Backend",
       "url": "https://www.prisma.io",
-      "version": "8.0.0-rc.20",
-      "date": "2026-10-05T14:46:47.236Z"
+      "version": "8.0.0-rc.21",
+      "date": "2026-10-07T12:35:17.644Z"
     },
     {
       "name": "Supabase JS",
       "category": "Backend",
       "url": "https://supabase.com",
-      "version": "2.117.2",
-      "date": "2026-09-25T10:08:51.684Z"
+      "version": "2.117.3",
+      "date": "2026-10-07T12:34:46.951Z"
     },
     {
       "name": "Anthropic SDK",
