@@ -39,7 +39,7 @@
       "name": "Node.js",
       "category": "Runtime",
       "url": "https://nodejs.org",
-      "version": "26.11.0",
+      "version": "26.11.1",
       "date": "2026-10-07"
     },
     {
@@ -81,8 +81,8 @@
       "name": "Anthropic SDK",
       "category": "AI",
       "url": "https://docs.anthropic.com",
-      "version": "0.132.0",
-      "date": "2026-10-07T18:11:52.464Z"
+      "version": "0.132.1",
+      "date": "2026-10-08T03:20:39.412Z"
     },
     {
       "name": "OpenAI SDK",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.131",
-      "date": "2026-10-07T18:31:25.101Z"
+      "version": "7.0.133",
+      "date": "2026-10-08T00:30:36.255Z"
     }
   ]
 }
