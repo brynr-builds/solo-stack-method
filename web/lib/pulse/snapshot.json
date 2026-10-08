@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.3.7",
-      "date": "2026-10-07T21:37:30.003Z"
+      "version": "7.3.8",
+      "date": "2026-10-08T15:41:04.794Z"
     },
     {
       "name": "Tailwind CSS",
@@ -67,8 +67,8 @@
       "name": "Prisma",
       "category": "Backend",
       "url": "https://www.prisma.io",
-      "version": "8.0.0-rc.21",
-      "date": "2026-10-07T12:35:17.644Z"
+      "version": "8.0.0-rc.22",
+      "date": "2026-10-08T18:19:30.528Z"
     },
     {
       "name": "Supabase JS",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.133",
-      "date": "2026-10-08T00:30:36.255Z"
+      "version": "7.0.135",
+      "date": "2026-10-08T21:40:53.182Z"
     }
   ]
 }
