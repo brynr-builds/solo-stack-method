@@ -11,8 +11,8 @@
       "name": "React",
       "category": "Framework",
       "url": "https://react.dev",
-      "version": "19.3.0",
-      "date": "2026-09-09T17:21:30.071Z"
+      "version": "19.3.1",
+      "date": "2026-10-14T16:47:15.290Z"
     },
     {
       "name": "Astro",
@@ -39,8 +39,8 @@
       "name": "Node.js",
       "category": "Runtime",
       "url": "https://nodejs.org",
-      "version": "26.11.1",
-      "date": "2026-10-07"
+      "version": "26.12.0",
+      "date": "2026-10-14"
     },
     {
       "name": "Vite",
