@@ -4,8 +4,8 @@
       "name": "Next.js",
       "category": "Framework",
       "url": "https://nextjs.org",
-      "version": "16.4.1",
-      "date": "2026-10-14T17:43:55.246Z"
+      "version": "16.4.2",
+      "date": "2026-10-15T20:57:24.007Z"
     },
     {
       "name": "React",
@@ -81,8 +81,8 @@
       "name": "Anthropic SDK",
       "category": "AI",
       "url": "https://docs.anthropic.com",
-      "version": "0.134.0",
-      "date": "2026-10-14T17:17:20.774Z"
+      "version": "0.135.0",
+      "date": "2026-10-15T19:50:45.092Z"
     },
     {
       "name": "OpenAI SDK",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.141",
-      "date": "2026-10-15T02:22:36.508Z"
+      "version": "7.0.142",
+      "date": "2026-10-15T18:11:40.780Z"
     }
   ]
 }
