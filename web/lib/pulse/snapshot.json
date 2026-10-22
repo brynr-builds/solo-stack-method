@@ -81,15 +81,15 @@
       "name": "Anthropic SDK",
       "category": "AI",
       "url": "https://docs.anthropic.com",
-      "version": "1.0.0",
-      "date": "2026-10-21T16:00:53.043Z"
+      "version": "1.1.0",
+      "date": "2026-10-21T22:03:12.817Z"
     },
     {
       "name": "OpenAI SDK",
       "category": "AI",
       "url": "https://platform.openai.com/docs",
-      "version": "7.41.0",
-      "date": "2026-10-21T15:40:35.029Z"
+      "version": "7.42.0",
+      "date": "2026-10-22T03:50:19.567Z"
     },
     {
       "name": "Vercel AI SDK",
