@@ -4,8 +4,8 @@
       "name": "Next.js",
       "category": "Framework",
       "url": "https://nextjs.org",
-      "version": "16.4.2",
-      "date": "2026-10-15T20:57:24.007Z"
+      "version": "16.4.3",
+      "date": "2026-10-23T13:40:24.922Z"
     },
     {
       "name": "React",
@@ -81,8 +81,8 @@
       "name": "Anthropic SDK",
       "category": "AI",
       "url": "https://docs.anthropic.com",
-      "version": "1.1.0",
-      "date": "2026-10-21T22:03:12.817Z"
+      "version": "1.2.0",
+      "date": "2026-10-23T13:13:52.123Z"
     },
     {
       "name": "OpenAI SDK",
