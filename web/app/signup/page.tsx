@@ -29,11 +29,33 @@ export default function SignupPage() {
   }
 
   const handlePayment = async () => {
-    setLoading(true)
-    // TODO Phase 2: Implement Stripe checkout
-    setTimeout(() => {
-      window.location.href = '/dashboard'
-    }, 1000)
+    try {
+      setLoading(true)
+
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const { url } = await response.json();
+
+      if (url) {
+        window.location.href = url;
+      } else {
+        throw new Error('No checkout URL returned');
+      }
+    } catch (error) {
+      console.error('Payment error:', error);
+      setLoading(false);
+      // Removed the simulated payment redirect for security reasons.
+      alert('Payment processing failed. Please try again.');
+    }
   }
 
   return (
