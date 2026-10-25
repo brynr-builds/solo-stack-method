@@ -28,10 +28,20 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
   const toggle = (name: string) =>
     setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
-    setSubmitted(true)
+    try {
+      const res = await fetch('/api/pulse/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, watch }),
+      })
+      if (res.ok) {
+        setSubmitted(true)
+      }
+    } catch (err) {
+      console.error('Failed to subscribe:', err)
+    }
   }
 
   return (
@@ -125,8 +135,13 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
           ) : (
             <div className="text-center">
               <div className="text-4xl mb-4">✓</div>
-              <h2 className="text-2xl font-bold mb-2">You&rsquo;re on the list</h2>
-              <p className="text-gray-300">Watching: {watch.join(', ') || 'all tools'}</p>
+              <h2 className="text-2xl font-bold mb-2">You&apos;re Subscribed!</h2>
+              <p className="text-gray-300 mb-4">
+                You&apos;ll receive updates for: {watch.join(', ') || 'All tools'}
+              </p>
+              <p className="text-sm text-gray-400">
+                Check your email for a personalized link to return with your preferences saved.
+              </p>
             </div>
           )}
         </div>
