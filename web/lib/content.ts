@@ -64,6 +64,26 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+function parseArticleFile(filepath: string, type: ContentType, slug: string): Article | undefined {
+  if (!fs.existsSync(filepath)) return undefined
+  const raw = fs.readFileSync(filepath, 'utf8')
+  const { data, body } = parseFrontmatter(raw)
+  return {
+    type,
+    slug,
+    title: data.title ?? slug,
+    description: data.description ?? '',
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
+}
+
+const articleCache = new Map<string, Article>()
+
 function readType(type: ContentType): Article[] {
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
@@ -71,21 +91,18 @@ function readType(type: ContentType): Article[] {
     .readdirSync(dir)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
-      const raw = fs.readFileSync(path.join(dir, f), 'utf8')
-      const { data, body } = parseFrontmatter(raw)
-      return {
-        type,
-        slug: f.replace(/\.md$/, ''),
-        title: data.title ?? f.replace(/\.md$/, ''),
-        description: data.description ?? '',
-        updated: data.updated ?? null,
-        author: data.author ?? null,
-        excerpt: data.excerpt ?? null,
-        programs: Array.isArray(data.programs) ? data.programs : [],
-        pulse: Array.isArray(data.pulse) ? data.pulse : [],
-        html: marked.parse(body, { async: false }) as string,
+      const slug = f.replace(/\.md$/, '')
+      const cacheKey = `${type}:${slug}`
+      if (process.env.NODE_ENV !== 'development' && articleCache.has(cacheKey)) {
+        return articleCache.get(cacheKey)!
       }
+      const article = parseArticleFile(path.join(dir, f), type, slug)
+      if (article && process.env.NODE_ENV !== 'development') {
+        articleCache.set(cacheKey, article)
+      }
+      return article
     })
+    .filter((a): a is Article => a !== undefined)
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
 }
 
@@ -94,5 +111,18 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  const cacheKey = `${type}:${slug}`
+  if (process.env.NODE_ENV !== 'development' && articleCache.has(cacheKey)) {
+    return articleCache.get(cacheKey)
+  }
+
+  // Optimization: Direct file read instead of O(N) directory scan
+  const safeSlug = path.basename(slug)
+  const filepath = path.join(CONTENT_ROOT, type, `${safeSlug}.md`)
+
+  const article = parseArticleFile(filepath, type, safeSlug)
+  if (article && process.env.NODE_ENV !== 'development') {
+    articleCache.set(cacheKey, article)
+  }
+  return article
 }
