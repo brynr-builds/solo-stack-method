@@ -1,0 +1,3 @@
+## 2026-06-08 - O(N) File System Read Bottleneck
+**Learning:** Found a major performance anti-pattern where fetching a *single* piece of markdown content by its slug resulted in reading and parsing the *entire* directory of content first. Next.js Static site generation can mask this issue locally, but dynamically fetching items directly should bypass reading adjacent files when possible.
+**Action:** When implementing file-based content engines, look out for `fs.readdirSync` usage on the critical path for single items. Sanitize user input (like a route slug) with `path.basename()` and target the file directly with `fs.readFileSync(path.join(..., slug.md))`.
