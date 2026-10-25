@@ -64,6 +64,23 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+function parseArticle(type: ContentType, filename: string, raw: string): Article {
+  const { data, body } = parseFrontmatter(raw)
+  const slug = filename.replace(/\.md$/, '')
+  return {
+    type,
+    slug,
+    title: data.title ?? slug,
+    description: data.description ?? '',
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
+}
+
 function readType(type: ContentType): Article[] {
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
@@ -72,19 +89,7 @@ function readType(type: ContentType): Article[] {
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
       const raw = fs.readFileSync(path.join(dir, f), 'utf8')
-      const { data, body } = parseFrontmatter(raw)
-      return {
-        type,
-        slug: f.replace(/\.md$/, ''),
-        title: data.title ?? f.replace(/\.md$/, ''),
-        description: data.description ?? '',
-        updated: data.updated ?? null,
-        author: data.author ?? null,
-        excerpt: data.excerpt ?? null,
-        programs: Array.isArray(data.programs) ? data.programs : [],
-        pulse: Array.isArray(data.pulse) ? data.pulse : [],
-        html: marked.parse(body, { async: false }) as string,
-      }
+      return parseArticle(type, f, raw)
     })
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
 }
@@ -94,5 +99,12 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  // Optimization: Read specific file directly using sanitized slug instead of reading
+  // and parsing the entire directory (O(1) instead of O(N))
+  const safeSlug = path.basename(slug)
+  const filePath = path.join(CONTENT_ROOT, type, `${safeSlug}.md`)
+  if (!fs.existsSync(filePath)) return undefined
+
+  const raw = fs.readFileSync(filePath, 'utf8')
+  return parseArticle(type, `${safeSlug}.md`, raw)
 }
