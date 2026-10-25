@@ -1,0 +1,3 @@
+## 2025-02-24 - Prevent Re-computations from Text Inputs
+**Learning:** In React components with mixed responsibilities (e.g., displaying a large list and a text input for a newsletter), typing into the un-debounced text input updates the component state, triggering a re-render. If the list filtering logic is not memoized, it will re-execute on every single keystroke, potentially causing UI lag.
+**Action:** Always wrap expensive list filtering operations in `useMemo` when the component also manages frequent state updates (like text inputs) to decouple the list calculation from the input renders.
