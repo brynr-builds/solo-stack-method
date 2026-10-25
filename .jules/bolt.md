@@ -1,0 +1,3 @@
+## 2024-05-18 - Optimize File-Based Content Engine O(N) reads
+**Learning:** For file-based content engines (like Next.js Markdown parsing where `fs.readdirSync` is used), retrieving single items by iterating through the directory and parsing every markdown file `getArticles().find()` is an O(N) operation in both disk I/O and CPU, especially as the content scales.
+**Action:** Always optimize single item retrieval by directly reading the specific file using a sanitized slug `path.basename(slug)` rather than reading and parsing the entire directory, extracting the core parsing logic into a shared helper function `parseArticle` to maintain DRY principles.
