@@ -1,0 +1,3 @@
+## 2024-05-18 - Avoid O(N) reads for single file markdown lookups
+**Learning:** Next.js content engines that parse local markdown directories using `fs.readdirSync().find()` result in O(N) file reads and heavy AST parsing per single-item lookup. When retrieving an article by slug, this slows down page loading since `fs` reads and `marked` parses every file in the folder before filtering.
+**Action:** Replace `readdirSync(dir).find(a => a.slug === slug)` with direct `readFileSync(path.join(dir, \`${path.basename(slug)}.md\`))`. Always sanitize the slug using `path.basename()` to prevent path traversal security vulnerabilities. Extract the core parsing logic to a helper function.
