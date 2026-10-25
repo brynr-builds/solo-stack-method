@@ -14,6 +14,7 @@
 import fs from 'fs'
 import path from 'path'
 import { marked } from 'marked'
+import { cache } from 'react'
 
 export type ContentType = 'guides' | 'compare'
 
@@ -64,7 +65,11 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
-function readType(type: ContentType): Article[] {
+// ⚡ Bolt Performance Optimization:
+// Memoize file system reads and markdown parsing per-request using React's cache().
+// This prevents reading and parsing the same markdown files multiple times when
+// getArticles or getArticle are called multiple times in a single server render pass.
+const readType = cache((type: ContentType): Article[] => {
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
   return fs
@@ -87,7 +92,7 @@ function readType(type: ContentType): Article[] {
       }
     })
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
-}
+})
 
 export function getArticles(type: ContentType): Article[] {
   return readType(type)
