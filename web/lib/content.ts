@@ -94,5 +94,22 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  // ⚡ Bolt Performance Optimization: O(1) direct file read instead of O(N) directory scan
+  const safeSlug = path.basename(slug)
+  const filePath = path.join(CONTENT_ROOT, type, `${safeSlug}.md`)
+  if (!fs.existsSync(filePath)) return undefined
+  const raw = fs.readFileSync(filePath, "utf8")
+  const { data, body } = parseFrontmatter(raw)
+  return {
+    type,
+    slug: safeSlug,
+    title: data.title ?? safeSlug,
+    description: data.description ?? "",
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
 }
