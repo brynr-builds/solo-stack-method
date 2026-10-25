@@ -22,16 +22,32 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
   const [email, setEmail] = useState('')
   const [watch, setWatch] = useState<string[]>([])
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const filtered = selected === 'All' ? items : items.filter((i) => i.category === selected)
 
   const toggle = (name: string) =>
     setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
-    setSubmitted(true)
+    setLoading(true)
+    try {
+      const res = await fetch('/api/pulse/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, tags: watch }),
+      })
+      if (res.ok) {
+        setSubmitted(true)
+      } else {
+        console.error('Subscription failed')
+      }
+    } catch (err) {
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -116,8 +132,8 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
                   required
                   className="flex-1 px-4 py-3 rounded-lg text-solo-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
                 />
-                <button type="submit" className="bg-white text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                  Subscribe
+                <button type="submit" disabled={loading} className="bg-white text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50">
+                  {loading ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
               <p className="text-xs text-gray-400 mt-3 text-center">Free. Unsubscribe anytime.</p>
