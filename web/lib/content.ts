@@ -64,29 +64,35 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+// ⚡ Bolt: Shared helper for parsing to keep logic DRY
+function parseArticleFile(filePath: string, type: ContentType, slug: string): Article {
+  const raw = fs.readFileSync(filePath, "utf8");
+  const { data, body } = parseFrontmatter(raw);
+  return {
+    type,
+    slug,
+    title: data.title ?? slug,
+    description: data.description ?? "",
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  };
+}
+
 function readType(type: ContentType): Article[] {
-  const dir = path.join(CONTENT_ROOT, type)
-  if (!fs.existsSync(dir)) return []
+  const dir = path.join(CONTENT_ROOT, type);
+  if (!fs.existsSync(dir)) return [];
   return fs
     .readdirSync(dir)
-    .filter((f) => f.endsWith('.md'))
+    .filter((f) => f.endsWith(".md"))
     .map((f) => {
-      const raw = fs.readFileSync(path.join(dir, f), 'utf8')
-      const { data, body } = parseFrontmatter(raw)
-      return {
-        type,
-        slug: f.replace(/\.md$/, ''),
-        title: data.title ?? f.replace(/\.md$/, ''),
-        description: data.description ?? '',
-        updated: data.updated ?? null,
-        author: data.author ?? null,
-        excerpt: data.excerpt ?? null,
-        programs: Array.isArray(data.programs) ? data.programs : [],
-        pulse: Array.isArray(data.pulse) ? data.pulse : [],
-        html: marked.parse(body, { async: false }) as string,
-      }
+      const slug = f.replace(/\.md$/, "");
+      return parseArticleFile(path.join(dir, f), type, slug);
     })
-    .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
+    .sort((a, b) => (b.updated ?? "").localeCompare(a.updated ?? ""));
 }
 
 export function getArticles(type: ContentType): Article[] {
@@ -94,5 +100,9 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  // ⚡ Bolt: Read single file directly to avoid O(N) disk I/O and CPU overhead
+  const cleanSlug = path.basename(slug);
+  const filePath = path.join(CONTENT_ROOT, type, `${cleanSlug}.md`);
+  if (!fs.existsSync(filePath)) return undefined;
+  return parseArticleFile(filePath, type, cleanSlug);
 }
