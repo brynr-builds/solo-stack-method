@@ -1,0 +1,3 @@
+## 2025-02-12 - File-Based Content Engine O(N) Bottleneck
+**Learning:** The content engine read the entire directory and parsed all markdown files into HTML using `marked` just to find a single article via `.find((a) => a.slug === slug)`. This O(N) operation on both disk I/O and CPU is extremely slow at scale for single page requests.
+**Action:** Always fetch single items from file-based content engines by reading the specific sanitized file (e.g. `path.basename(slug)`) directly in O(1) time. Added module-level caching with `process.env.NODE_ENV` bypass to ensure standalone testability without breaking dev mode hot-reloads.
