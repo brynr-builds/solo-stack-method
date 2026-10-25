@@ -94,5 +94,26 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  const dir = path.join(CONTENT_ROOT, type)
+  const safeSlug = path.basename(slug)
+  const filepath = path.join(dir, `${safeSlug}.md`)
+  if (!fs.existsSync(filepath)) return undefined
+
+  // ⚡ BOLT OPTIMIZATION:
+  // Directly reading the specific requested article instead of parsing the entire directory.
+  // O(1) time complexity instead of O(N) where N is number of markdown files.
+  const raw = fs.readFileSync(filepath, "utf8")
+  const { data, body } = parseFrontmatter(raw)
+  return {
+    type,
+    slug: safeSlug,
+    title: data.title ?? safeSlug,
+    description: data.description ?? "",
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
 }
