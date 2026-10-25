@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyRegistrationResponse } from '@simplewebauthn/server'
 import { createHash, randomBytes } from 'crypto'
+import bcrypt from 'bcrypt'
 import { getAdminEnv } from '@/lib/admin/env'
 import { query } from '@/lib/admin/storage/db'
 import { checkRateLimit } from '@/lib/admin/rate-limit'
@@ -29,9 +30,9 @@ function generateBackupCodes(count: number): string[] {
   return codes
 }
 
-function hashBackupCode(code: string, secret: string): string {
+async function hashBackupCode(code: string): Promise<string> {
   const normalized = code.replace(/-/g, '').toLowerCase()
-  return createHash('sha256').update(secret + normalized).digest('hex')
+  return await bcrypt.hash(normalized, 10)
 }
 
 export async function POST(request: NextRequest) {
@@ -131,7 +132,7 @@ export async function POST(request: NextRequest) {
 
     const backupCodes = generateBackupCodes(10)
     for (const code of backupCodes) {
-      const codeHash = hashBackupCode(code, env.sessionSecret)
+      const codeHash = await hashBackupCode(code)
       await query(
         `INSERT INTO admin_backup_codes (user_id, code_hash) VALUES ($1, $2)`,
         [userId, codeHash]
