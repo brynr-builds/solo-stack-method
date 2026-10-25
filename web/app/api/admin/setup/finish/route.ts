@@ -130,13 +130,24 @@ export async function POST(request: NextRequest) {
     )
 
     const backupCodes = generateBackupCodes(10)
+
+    // ⚡ Bolt: [performance improvement]
+    // Optimized bulk insert to fix N+1 query problem
+    const values: string[] = []
+    const params: unknown[] = []
+    let paramIndex = 1
+
     for (const code of backupCodes) {
       const codeHash = hashBackupCode(code, env.sessionSecret)
-      await query(
-        `INSERT INTO admin_backup_codes (user_id, code_hash) VALUES ($1, $2)`,
-        [userId, codeHash]
-      )
+      values.push(`($${paramIndex}, $${paramIndex + 1})`)
+      params.push(userId, codeHash)
+      paramIndex += 2
     }
+
+    await query(
+      `INSERT INTO admin_backup_codes (user_id, code_hash) VALUES ${values.join(', ')}`,
+      params
+    )
 
     const res = NextResponse.json({
       ok: true,
