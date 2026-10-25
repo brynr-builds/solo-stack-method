@@ -17,10 +17,12 @@ export default function SignupPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [step, setStep] = useState<'signup' | 'payment'>('signup')
+  const [error, setError] = useState<string | null>(null)
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+    setError(null)
     // TODO Phase 2: Implement Supabase auth
     setTimeout(() => {
       setLoading(false)
@@ -30,10 +32,33 @@ export default function SignupPage() {
 
   const handlePayment = async () => {
     setLoading(true)
-    // TODO Phase 2: Implement Stripe checkout
-    setTimeout(() => {
-      window.location.href = '/dashboard'
-    }, 1000)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong')
+      }
+
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        throw new Error('No checkout URL returned')
+      }
+    } catch (err: any) {
+      console.error('Payment error:', err)
+      setError(err.message || 'Failed to initiate payment')
+      setLoading(false)
+    }
   }
 
   return (
@@ -55,6 +80,12 @@ export default function SignupPage() {
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-8">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+              {error}
+            </div>
+          )}
+
           {step === 'signup' ? (
             <form onSubmit={handleSignup} className="space-y-4">
               <div>
