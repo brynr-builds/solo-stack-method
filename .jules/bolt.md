@@ -1,0 +1,3 @@
+## 2025-02-24 - O(N) File System Reads and Markdown Parsing in Content Engine
+**Learning:** The `getArticle` function in `web/lib/content.ts` was reading the entire directory of Markdown files and parsing all of them to HTML just to find a single article by slug. This causes O(N) expensive file reads and `marked.parse` calls on every single article page request (in both `generateMetadata` and the page component).
+**Action:** When fetching a single local file by ID/slug, directly read only that specific file (using `path.basename` to prevent path traversal) instead of iterating the entire directory. Wrap file parsing in React's `cache()` to prevent redundant processing within the same request lifecycle.
