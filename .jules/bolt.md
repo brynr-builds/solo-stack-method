@@ -1,0 +1,3 @@
+## 2025-02-25 - Direct File Reads for Content Engines
+**Learning:** In Next.js content engines using `fs`, using `readAll().find(a => a.slug === slug)` requires parsing the entire content directory for every single article fetch. This is an O(N) operation that causes severe CPU and disk I/O bottlenecks.
+**Action:** When retrieving single files based on a slug in Next.js content systems, always read the file directly using a sanitized filename (e.g., `fs.readFileSync(path.join(dir, `${path.basename(slug)}.md`))`) to turn it into an O(1) operation. Extract parsing logic into a shared helper to maintain DRY principles.
