@@ -64,6 +64,24 @@ function parseFrontmatter(raw: string): { data: Record<string, any>; body: strin
   return { data, body: m[2] }
 }
 
+// ⚡ PERFORMANCE OPTIMIZATION: Extract parsing logic to reuse without re-reading the whole directory
+function parseArticle(type: ContentType, filename: string, raw: string): Article {
+  const { data, body } = parseFrontmatter(raw)
+  const slug = filename.replace(/\.md$/, '')
+  return {
+    type,
+    slug,
+    title: data.title ?? slug,
+    description: data.description ?? '',
+    updated: data.updated ?? null,
+    author: data.author ?? null,
+    excerpt: data.excerpt ?? null,
+    programs: Array.isArray(data.programs) ? data.programs : [],
+    pulse: Array.isArray(data.pulse) ? data.pulse : [],
+    html: marked.parse(body, { async: false }) as string,
+  }
+}
+
 function readType(type: ContentType): Article[] {
   const dir = path.join(CONTENT_ROOT, type)
   if (!fs.existsSync(dir)) return []
@@ -72,19 +90,7 @@ function readType(type: ContentType): Article[] {
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
       const raw = fs.readFileSync(path.join(dir, f), 'utf8')
-      const { data, body } = parseFrontmatter(raw)
-      return {
-        type,
-        slug: f.replace(/\.md$/, ''),
-        title: data.title ?? f.replace(/\.md$/, ''),
-        description: data.description ?? '',
-        updated: data.updated ?? null,
-        author: data.author ?? null,
-        excerpt: data.excerpt ?? null,
-        programs: Array.isArray(data.programs) ? data.programs : [],
-        pulse: Array.isArray(data.pulse) ? data.pulse : [],
-        html: marked.parse(body, { async: false }) as string,
-      }
+      return parseArticle(type, f, raw)
     })
     .sort((a, b) => (b.updated ?? '').localeCompare(a.updated ?? ''))
 }
@@ -94,5 +100,15 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  // ⚡ PERFORMANCE OPTIMIZATION: Read only the specific file directly instead of O(N) directory scan
+  // Security note: Sanitize slug to prevent path traversal
+  const safeSlug = path.basename(slug)
+  const filepath = path.join(CONTENT_ROOT, type, `${safeSlug}.md`)
+  if (!fs.existsSync(filepath)) return undefined
+  try {
+    const raw = fs.readFileSync(filepath, 'utf8')
+    return parseArticle(type, `${safeSlug}.md`, raw)
+  } catch (e) {
+    return undefined
+  }
 }
