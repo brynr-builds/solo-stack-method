@@ -28,10 +28,34 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
   const toggle = (name: string) =>
     setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
 
-  const submit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
-    setSubmitted(true)
+    setIsSubmitting(true)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/pulse/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, watch }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to subscribe')
+      }
+
+      setSubmitted(true)
+    } catch (err) {
+      console.error('Subscription error:', err)
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -116,10 +140,11 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
                   required
                   className="flex-1 px-4 py-3 rounded-lg text-solo-primary placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
                 />
-                <button type="submit" className="bg-white text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-                  Subscribe
+                <button type="submit" disabled={isSubmitting} className="bg-white text-solo-primary px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-50">
+                  {isSubmitting ? 'Subscribing...' : 'Subscribe'}
                 </button>
               </form>
+              {error && <p className="text-red-400 text-sm mt-2 text-center">{error}</p>}
               <p className="text-xs text-gray-400 mt-3 text-center">Free. Unsubscribe anytime.</p>
             </>
           ) : (
