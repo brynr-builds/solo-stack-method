@@ -10,13 +10,8 @@ import {
 } from '@simplewebauthn/server'
 import { getAdminEnv } from '@/lib/admin/env'
 import { query } from '@/lib/admin/storage/db'
-import { checkRateLimit } from '@/lib/admin/rate-limit'
+import { checkRateLimit, getClientIdentifier } from '@/lib/admin/rate-limit'
 
-function getClientIdentifier(req: NextRequest): string {
-  return req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-    ?? req.headers.get('x-real-ip')
-    ?? 'unknown'
-}
 
 export async function POST(request: NextRequest) {
   try {
