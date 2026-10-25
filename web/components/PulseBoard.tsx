@@ -7,7 +7,7 @@
  */
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo, useCallback } from 'react'
 import type { PulseItem } from '../lib/pulse'
 
 const statusColor: Record<string, string> = {
@@ -23,16 +23,24 @@ export default function PulseBoard({ items, categories }: { items: PulseItem[]; 
   const [watch, setWatch] = useState<string[]>([])
   const [submitted, setSubmitted] = useState(false)
 
-  const filtered = selected === 'All' ? items : items.filter((i) => i.category === selected)
+  // ⚡ Bolt: Memoize the filtered array to avoid recalculation on every render
+  // unless items or selected category actually changes.
+  const filtered = useMemo(() => {
+    return selected === 'All' ? items : items.filter((i) => i.category === selected)
+  }, [items, selected])
 
-  const toggle = (name: string) =>
+  // ⚡ Bolt: Memoize callback functions to maintain stable references
+  // across re-renders. This prevents unnecessary re-renders of any
+  // memoized child components that might receive these as props.
+  const toggle = useCallback((name: string) => {
     setWatch((p) => (p.includes(name) ? p.filter((t) => t !== name) : [...p, name]))
+  }, [])
 
-  const submit = (e: React.FormEvent) => {
+  const submit = useCallback((e: React.FormEvent) => {
     e.preventDefault()
     // TODO Phase 2: POST to an ESP (Kit/MailerLite) instead of console.
     setSubmitted(true)
-  }
+  }, [])
 
   return (
     <>
