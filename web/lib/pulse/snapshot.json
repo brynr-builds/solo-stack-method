@@ -88,15 +88,15 @@
       "name": "OpenAI SDK",
       "category": "AI",
       "url": "https://platform.openai.com/docs",
-      "version": "7.43.0",
-      "date": "2026-10-22T21:54:28.472Z"
+      "version": "7.45.0",
+      "date": "2026-10-26T19:27:19.231Z"
     },
     {
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.153",
-      "date": "2026-10-24T17:57:40.777Z"
+      "version": "7.0.154",
+      "date": "2026-10-26T18:56:08.149Z"
     }
   ]
 }
