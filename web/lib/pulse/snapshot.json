@@ -60,8 +60,8 @@
       "name": "ESLint",
       "category": "Tooling",
       "url": "https://eslint.org",
-      "version": "10.13.0",
-      "date": "2026-10-16T14:24:10.765Z"
+      "version": "10.14.0",
+      "date": "2026-10-30T14:12:27.179Z"
     },
     {
       "name": "Prisma",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.157",
-      "date": "2026-10-29T17:10:09.685Z"
+      "version": "7.0.159",
+      "date": "2026-10-30T22:18:53.918Z"
     }
   ]
 }
