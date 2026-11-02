@@ -4,8 +4,8 @@
       "name": "Next.js",
       "category": "Framework",
       "url": "https://nextjs.org",
-      "version": "16.4.3",
-      "date": "2026-10-23T13:40:24.922Z"
+      "version": "16.4.4",
+      "date": "2026-11-02T10:49:48.611Z"
     },
     {
       "name": "React",
@@ -18,8 +18,8 @@
       "name": "Astro",
       "category": "Framework",
       "url": "https://astro.build",
-      "version": "7.4.4",
-      "date": "2026-10-28T20:21:47.717Z"
+      "version": "7.4.5",
+      "date": "2026-11-02T14:26:27.745Z"
     },
     {
       "name": "Tailwind CSS",
