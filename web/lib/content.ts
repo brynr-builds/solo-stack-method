@@ -94,5 +94,27 @@ export function getArticles(type: ContentType): Article[] {
 }
 
 export function getArticle(type: ContentType, slug: string): Article | undefined {
-  return readType(type).find((a) => a.slug === slug)
+  // ⚡ Bolt: Direct file read with sanitized slug to avoid O(N) directory iteration and parsing
+  const safeSlug = path.basename(slug)
+  const dir = path.join(CONTENT_ROOT, type)
+  const filePath = path.join(dir, `${safeSlug}.md`)
+  if (!fs.existsSync(filePath)) return undefined
+  try {
+    const raw = fs.readFileSync(filePath, "utf8")
+    const { data, body } = parseFrontmatter(raw)
+    return {
+      type,
+      slug: safeSlug,
+      title: data.title ?? safeSlug,
+      description: data.description ?? "",
+      updated: data.updated ?? null,
+      author: data.author ?? null,
+      excerpt: data.excerpt ?? null,
+      programs: Array.isArray(data.programs) ? data.programs : [],
+      pulse: Array.isArray(data.pulse) ? data.pulse : [],
+      html: marked.parse(body, { async: false }) as string,
+    }
+  } catch (err) {
+    return undefined
+  }
 }
