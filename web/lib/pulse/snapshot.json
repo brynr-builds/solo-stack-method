@@ -67,8 +67,8 @@
       "name": "Prisma",
       "category": "Backend",
       "url": "https://www.prisma.io",
-      "version": "8.0.0-rc.29",
-      "date": "2026-10-30T10:58:16.888Z"
+      "version": "8.0.0-rc.30",
+      "date": "2026-11-03T13:32:16.946Z"
     },
     {
       "name": "Supabase JS",
@@ -95,8 +95,8 @@
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.161",
-      "date": "2026-11-02T20:24:14.631Z"
+      "version": "7.0.162",
+      "date": "2026-11-03T01:19:34.359Z"
     }
   ]
 }
