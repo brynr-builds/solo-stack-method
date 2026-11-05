@@ -46,8 +46,8 @@
       "name": "Vite",
       "category": "Build",
       "url": "https://vite.dev",
-      "version": "8.3.5",
-      "date": "2026-10-21T06:38:54.907Z"
+      "version": "8.3.6",
+      "date": "2026-11-05T05:40:52.195Z"
     },
     {
       "name": "Vitest",
@@ -81,22 +81,22 @@
       "name": "Anthropic SDK",
       "category": "AI",
       "url": "https://docs.anthropic.com",
-      "version": "1.4.0",
-      "date": "2026-11-02T19:22:43.617Z"
+      "version": "1.5.0",
+      "date": "2026-11-04T20:29:51.892Z"
     },
     {
       "name": "OpenAI SDK",
       "category": "AI",
       "url": "https://platform.openai.com/docs",
-      "version": "7.50.0",
-      "date": "2026-11-04T02:32:43.226Z"
+      "version": "7.51.0",
+      "date": "2026-11-05T01:05:02.540Z"
     },
     {
       "name": "Vercel AI SDK",
       "category": "AI",
       "url": "https://sdk.vercel.ai",
-      "version": "7.0.162",
-      "date": "2026-11-03T01:19:34.359Z"
+      "version": "7.0.163",
+      "date": "2026-11-05T01:12:02.967Z"
     }
   ]
 }
